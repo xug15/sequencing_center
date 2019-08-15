@@ -5,6 +5,9 @@
 * [Ribo-seq : Differential translations ( Xtail )](code/a2.differential.md)
 * [Ribo-seq : De novo annotation ( RiboCode )](code/a3.denovo.md)
 
+=====
+* [HTSeq](code/a4.HTSeq.md)
+
 ## Data.
 * 鲁伯埙
 > 2019年8月14日从方剑火师姐那里接收数据。  
