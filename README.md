@@ -16,9 +16,9 @@ x-ten135-LBX-7-111-T-2_FKDL190749971-1a-47
 ```
 
 * 童明汉
-> 样本只关注W3-C3,W15-C15
-> 第三批(project_190620_TMH-XNN)应该是我合并了前两批和补测数据的
-> 只分析第三批就行了？
+> 样本只关注W3-C3,W15-C15  
+> 第三批(project_190620_TMH-XNN)应该是我合并了前两批和补测数据的  
+> 只分析第三批行  
 ```sh
 /Share/home/tiangeng/project_result/Riboseq
 project_190322_TMH_XNN #(第一批)
