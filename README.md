@@ -8,6 +8,9 @@
 =====
 * [HTSeq](code/a4.HTSeq.md)
 
+====
+* [Linux](code/b1.linux.md)
+
 ## Data.
 * [Data](code/a5.data.md)
 
