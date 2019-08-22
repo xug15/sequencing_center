@@ -100,5 +100,52 @@ do
 done
 ```
 
+## Step5: afterQC (overrepresent reads)
 
+> a7-afterqc
+**a1.afterqc.sh**
+```sh
+#!/bin/bash
+
+rpf=(7-111-T 7-7-T 7-111-R 7-7-R)
+for i in ${rpf[@]}
+do
+        nohup /Share/home/tiangeng/software/FastQC/fastqc ../a6-contam/nocontam_${i}.fastq -o ./ >${i}.log 2>&1 & 
+done
+```
+
+## step6: Tophat + readsNumCal_intron_v3.py
+
+> a8-tophat
+**a1.tophat.sh**
+```sh
+ssh node-0-11
+cd /Share/home/tiangeng/project_result/Riboseq/project_190814_luboxun/a8-tophat
+gtf=/Share/home/tiangeng/Database/Reference_genome/Mus_musculus_Ensembl_GRCm38_star_genome-index/Mus_musculus.GRCm38.95.gtf
+bowtieIndex=/Share/home/tiangeng/Database/Reference_genome/Mus_musculus_Ensembl_GRCm38_bowtie_genome-index/Mus_musculus.GRCm38.dna.primary_assembly
+transIndex=/Share/home/tiangeng/Database/Reference_genome/Mus_musculus_Ensembl_GRCm38_tophat_trans-index/Mus_musculus.GRCm38.95
+export PATH=/Share/home/tiangeng/software/bowtie-1.1.2:$PATH
+export PATH=/Share/home/tiangeng/anaconda2/bin:$PATH
+fileName=(7-111-T 7-7-T)
+for i in ${fileName[@]}
+do
+    nohup tophat -p 8 -o ${i}_out -g 10 --bowtie1 --read-realign-edit-dist 0 --library-type fr-secondstrand -G $gtf --transcriptome-index=$transIndex --no-novel-juncs --segment-length=15 $bowtieIndex ../a6-contam/nocontam_${i}.fastq > ${i}.log 2>&1 & 
+done
+```
+
+**a2.tophat.sh**
+```sh
+ssh node-0-12
+cd /Share/home/tiangeng/project_result/Riboseq/project_190814_luboxun/a8-tophat
+gtf=/Share/home/tiangeng/Database/Reference_genome/Mus_musculus_Ensembl_GRCm38_star_genome-index/Mus_musculus.GRCm38.95.gtf
+bowtieIndex=/Share/home/tiangeng/Database/Reference_genome/Mus_musculus_Ensembl_GRCm38_bowtie_genome-index/Mus_musculus.GRCm38.dna.primary_assembly
+transIndex=/Share/home/tiangeng/Database/Reference_genome/Mus_musculus_Ensembl_GRCm38_tophat_trans-index/Mus_musculus.GRCm38.95
+export PATH=/Share/home/tiangeng/software/bowtie-1.1.2:$PATH
+export PATH=/Share/home/tiangeng/anaconda2/bin:$PATH
+fileName=(7-111-R 7-7-R)
+for i in ${fileName[@]}
+do
+    nohup tophat -p 8 -o ${i}_out -g 10 --bowtie1 --read-realign-edit-dist 0 --library-type fr-secondstrand -G $gtf --transcriptome-index=$transIndex --no-novel-juncs --segment-length=15 $bowtieIndex ../a6-contam/nocontam_${i}.fastq > ${i}.log 2>&1 & 
+done
+```
 
