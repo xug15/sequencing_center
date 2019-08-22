@@ -25,6 +25,9 @@ And move the file into
 7-7-T_1.fq
 ```
 ## Remove adapter.
+
+> a3-cutadapt
+
 **a1.cutadaptRPF.sh**
 ```sh
 export PATH=$PATH:/Share/home/tiangeng/software/cap-miRNA/bin
@@ -49,7 +52,22 @@ do
         nohup cutadapt -m 17 --match-read-wildcards -a $adapt -o ${i}_trimmed.fastq ../a2-rawdata/${i}_1.fq > ${i}_trimmed.log 2>&1 &
 done
 ```
-## 
+## Before QC
 
-##
+> a4-beforeQC
+
+**a1.beforqc.sh**
+
+```sh
+#!/bin/bash
+
+rpf=(7-111-T 7-7-T 7-111-R 7-7-R)
+for i in ${rpf[@]}
+do
+        echo -e " nohup /Share/home/tiangeng/software/FastQC/fastqc ../a3-cutadapt/${i}_trimmed.fastq -o ./ > ${i}.log 2>&1 &";
+        nohup /Share/home/tiangeng/software/FastQC/fastqc ../a3-cutadapt/${i}_trimmed.fastq -o ./ > ${i}.log 2>&1 & 
+done
+```
+
+## 
 
