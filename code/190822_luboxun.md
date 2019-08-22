@@ -69,5 +69,21 @@ do
 done
 ```
 
-## 
+## Step3 : filter
+> a5-filter
+**a1.filter.sh**
+
+```sh
+#!/bin/bash
+
+rpf=(7-111-T 7-7-T 7-111-R 7-7-R)
+for i in ${rpf[@]}
+do
+        nohup /Share/app/fastx_toolkit0.14/bin/fastq_quality_filter -Q33 -v -q 25 -p 75 -i ../a3-cutadapt/${i}_trimmed.fastq -o ${i}_trimmedQfilter.fastq > ${i}_Qfilter.log 2>&1 & 
+done
+```
+
+
+
+
 
