@@ -71,6 +71,7 @@ done
 
 ## Step3 : filter
 > a5-filter
+
 **a1.filter.sh**
 
 ```sh
@@ -83,7 +84,21 @@ do
 done
 ```
 
+## Step4 : contam (remove ribosome sequence)
 
+> a6-contam
+**a1.contam.sh**
+```sh
+#!/bin/bash
+
+bowtieindex=/Share/home/tiangeng/Database/Reference_genome/Mus-musculus_rRNA_bowtie-index/musRibosomal
+name=(7-111-T 7-7-T 7-111-R 7-7-R)
+
+for i in ${name[@]}
+do
+        nohup bowtie -n 0 -norc --best -l 15 -p 8 --un=nocontam_${i}.fastq $bowtieindex -q ../a5-filter/${i}_trimmedQfilter.fastq ${i}.alin > ${i}.err 2>&1 & 
+done
+```
 
 
 
