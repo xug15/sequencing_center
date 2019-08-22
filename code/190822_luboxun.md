@@ -49,5 +49,7 @@ do
         nohup cutadapt -m 17 --match-read-wildcards -a $adapt -o ${i}_trimmed.fastq ../a2-rawdata/${i}_1.fq > ${i}_trimmed.log 2>&1 &
 done
 ```
+## 
 
+##
 
