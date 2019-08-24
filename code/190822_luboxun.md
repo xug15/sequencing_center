@@ -180,4 +180,49 @@ do
         cd ../
 done
 ```
+## Step8: readlength
+
+> a10-readlength
+
+**a1.cutadapter.sh**
+```sh
+#!/bin/bash
+export PATH=$PATH:/Share/home/tiangeng/software/cap-miRNA/bin
+rpf=(7-111-R 7-7-R 7-111-T 7-7-T)
+adapt=CTGTAGGCACCATCAAT
+
+for i in ${rpf[@]}
+do
+        nohup cutadapt --match-read-wildcards -a $adapt -o ${i}_trimmed.fastq ../a2-rawdata/${i}_1.fq > ${i}_trimmed.log 2>&1 &
+done
+```
+
+**a2.readlength.sh**
+```sh
+#!/bin/bash
+export PATH=/Share/home/tiangeng/anaconda2/bin:$PATH
+rpf=(7-111-R 7-7-R 7-111-T 7-7-T)
+
+for i in ${rpf[@]}
+do
+        nohup python ./fq_len_stat.py ./${i}_trimmed.fastq ${i}_length.png > len${i}.out 2>&1 &
+done
+```
+
+## Step9 : report
+> a11-report
+
+**a1.metaplots.sh**
+```sh
+#!/bin/bash
+export PATH="/Share/home/tiangeng/anaconda3/bin:$PATH"
+fileName=(7-111-R 7-7-R 7-111-T 7-7-T)
+for i in ${fileName[@]}
+do
+        nohup metaplots -a /Share/home/tiangeng/Database/Reference_genome/prepare_transcripts_Mus-musculus -r ../a9-STAR/${i}_STAR/${i}Aligned.toTranscriptome.out.bam -o $i > ${i}.err  2>&1 &
+done
+```
+
+
+
 
