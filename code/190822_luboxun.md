@@ -148,4 +148,15 @@ do
     nohup tophat -p 8 -o ${i}_out -g 10 --bowtie1 --read-realign-edit-dist 0 --library-type fr-secondstrand -G $gtf --transcriptome-index=$transIndex --no-novel-juncs --segment-length=15 $bowtieIndex ../a6-contam/nocontam_${i}.fastq > ${i}.log 2>&1 & 
 done
 ```
+**a3.readsnum.sh**
+```sh
+#!/bin/bash
+export PATH=/Share/home/tiangeng/anaconda2/bin:$PATH
+name=(7-111-R 7-7-R 7-111-T 7-7-T)
+gtf=/Share/home/tiangeng/Database/Reference_genome/Mus_musculus_Ensembl_GRCm38_star_genome-index/Mus_musculus.GRCm38.95.gtf
+for i in ${name[@]}
+do
+       nohup python ./readsNumCal_intron_v3.py ./${i}_out/accepted_hits.bam $gtf nocontam_${i}_mappedNum_intron.txt nocontam_${i} > read.${i}.log 2>&1 &
+done
+```
 
