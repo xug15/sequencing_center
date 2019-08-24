@@ -160,3 +160,24 @@ do
 done
 ```
 
+## Step7 : STAR + periodicity
+
+> a9-STAR
+
+run with screen.
+
+**a1.STAR.sh**
+```sh
+#!/bin/bash
+export PATH=$PATH:~/software/STAR-master/bin/Linux_x86_64_static
+genomeFile=/Share/home/tiangeng/Database/Reference_genome/Mus_musculus_Ensembl_GRCm38_star_genome-index
+fileName=(7-111-R 7-7-R 7-111-T 7-7-T)
+for i in ${fileName[@]}
+do
+        mkdir -p ${i}_STAR
+        cd ${i}_STAR
+        STAR --runThreadN 8 --alignEndsType EndToEnd --outFilterMismatchNmax 1 --outFilterMultimapNmax 1 --genomeDir $genomeFile --readFilesIn ../../a6-contam/nocontam_${i}.fastq --outFileNamePrefix $i --outSAMtype BAM SortedByCoordinate --quantMode TranscriptomeSAM GeneCounts
+        cd ../
+done
+```
+
