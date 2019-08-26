@@ -4,11 +4,13 @@
 
 ## 实验设计
 
-|实验组|对照组|测序|
-|:-|:-|:-|
-|ck0|WT|-|
-|3号 ko 小鼠 |3号 WT 小鼠 |total RNA|
-|15号 ko 小鼠 |15号 WT 小鼠 |RPF|
+|实验组|对照组|
+|:-|:-|
+|ck0|WT|
+|3号 ko 小鼠 |3号 WT 小鼠 |
+|15号 ko 小鼠 |15号 WT 小鼠 |
+
+每个都 total sequencing, Ribo-seq 数据。
 
 ## Raw data process pipeline (Ding Jiyu Finished)
 
