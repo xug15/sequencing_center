@@ -1,7 +1,9 @@
 # 童明汉 Xtail Results:
 
 > project_190620_TMH-XNN #(第三批)
+
 ## 
+[xnn_results.txt](../image/190620-XNN/xnn_results.txt)  
 
 ![FC](../image/190620-XNN/FC.png)  
 [FC](../image/190620-XNN/xnnFC.pdf)  
