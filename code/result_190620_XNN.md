@@ -1,6 +1,8 @@
-# 童明汉 Xtail Results:
+# 童明汉 Results:
 
 > project_190620_TMH-XNN #(第三批)
+
+## 实验设计
 
 |实验组|对照组|测序|
 |:-|:-|:-|
@@ -8,8 +10,9 @@
 |3号 ko 小鼠 |3号 WT 小鼠 |total RNA|
 |15号 ko 小鼠 |15号 WT 小鼠 |RPF|
 
+## Raw data process pipeline (Ding Jiyu Finished)
 
-## 
+## Differentail translatons (Xtail) Results: (Xu Gang Finished)
 [xnn_results.txt](../image/190620-XNN/xnn_results.txt)  
 
 ![FC](../image/190620-XNN/FC.png)  
