@@ -223,6 +223,64 @@ do
 done
 ```
 
+## Step 10: calculate count
+> a12-counter
 
+**a1.rna_counter.sh**
+```sh
+#!/bin/bash
+export PATH=/Share/home/tiangeng/anaconda2/bin:$PATH
+name=(7-111-T 7-7-T)
+gtf=/Share/home/tiangeng/Database/Reference_genome/Mus_musculus_Ensembl_GRCm38_star_genome-index/Mus_musculus.GRCm38.95.gtf
+data_p=../a9-STAR
+for i in ${name[@]}
+do 
+echo -e "htseq-count -q -f bam -s reverse $data_p/${i}_STAR/${i}Aligned.sortedByCoord.out.bam ${gtf} > ${i}.count";
+nohup htseq-count -q -f bam -s reverse $data_p/${i}_STAR/${i}Aligned.sortedByCoord.out.bam ${gtf} > ${i}.count 2>&1 &
+done;
+#htseq-count [options] <alignment_files> <gff_file>
+```
+**a2.ribo_counter.sh**
+```sh
+export PATH=/Share/home/tiangeng/anaconda2/bin:$PATH
+gtf=/Share/home/tiangeng/Database/Reference_genome/Mus_musculus_Ensembl_GRCm38_star_genome-index/Mus_musculus.GRCm38.95.gtf
+data_p=../a9-STAR
+name=(7-111-R 7-7-R)
+for i in ${name[@]}
+do 
+echo -e "python RPF_count_CDS.py  $data_p/${i}_STAR/${i}Aligned.sortedByCoord.out.bam ${gtf} > ${i}.count";
+nohup python RPF_count_CDS.py  $data_p/${i}_STAR/${i}Aligned.sortedByCoord.out.bam ${gtf} > ${i}.count 2>${i}.log
+done;
+```
+**a3.merge.sh**
+```sh
+name=(7-111-R 7-7-R 7-111-T 7-7-T)
+head='gene'
+for i in ${name[@]};
+do
+ head+=" ${i}";
+done
+echo -e $head >merge.counter;
+
+begin1=${name[0]};
+begin2=${name[1]};
+name2=("${name[@]:2}");
+join ${begin1}.count ${begin2}.count >merge.tmp
+commander='join';
+for i in ${name2[@]};
+do 
+echo ${i}.count;
+join merge.tmp ${i}.count >>merge.tmp2;
+mv merge.tmp2 merge.tmp
+done
+
+cat merge.counter merge.tmp > merge2.tmp;
+rm merge.tmp
+mv merge2.tmp merge.counter
+sed -i 's/ \+/\t/g' merge.counter
+
+grep -v '^__' merge.counter > merge.counter2
+mv merge.counter2 merge.counter 
+```
 
 
