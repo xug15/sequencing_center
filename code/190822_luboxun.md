@@ -320,9 +320,11 @@ dev.off()
 > 
 **a1.trans_ann.sh**
 ```sh
+export PATH=/Share/home/tiangeng/anaconda2/bin:$PATH
 fasta=/Share/home/tiangeng/Database/Reference_genome/Mus_musculus_Ensembl_GRCm38_star_genome-index/Mus_musculus.GRCm38.dna.primary_assembly.fa
 gtf=/Share/home/tiangeng/Database/Reference_genome/Mus_musculus_Ensembl_GRCm38_star_genome-index/Mus_musculus.GRCm38.95.gtf
-prepare_transcripts -g $gtf -f $fasta -o mus_anno
+prepare_transcripts -g $gtf -f $fasta -o mus_anno >log.txt 2>&1 &
+
 
 ```
 
