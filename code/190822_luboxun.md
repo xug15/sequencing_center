@@ -282,5 +282,47 @@ sed -i 's/ \+/\t/g' merge.counter
 grep -v '^__' merge.counter > merge.counter2
 mv merge.counter2 merge.counter 
 ```
+## Step 11. Xtail
 
+```sh
+mv merge.counter lbx.merge.counter
+```
+```R
+lbxd=read.table('/home/lbx.merge.counter',header=T,row.name=1)
+mrna=lbxd[,c(3,4)]
+rpf=lbxd[,c(1,2)]
+condition=c("control","treat")
+test.results=xtail(mrna,rpf,condition,bins=1000,threads=2)
+summary(test.results)
+
+#
+test.tab=resultsTable(test.results);
+head(test.tab,5)
+
+write.table(test.tab,"/home/lbx_results.txt",quote=F,sep="\t");
+
+# Visualization
+pdf('lbxFC.pdf',width=6,height=4,paper='special')
+lbxfc=plotFCs(test.results)
+dev.off()
+write.table(lbxfc$resultsTable,"/home/lbxfc_results.txt",quote=F,sep="\t");
+
+pdf('lbxRs.pdf',width=6,height=4,paper='special')
+lbxrs=plotRs(test.results)
+dev.off()
+write.table(lbxrs$resultsTable,"/home/lbxrs_results.txt",quote=F,sep="\t");
+
+pdf('lbxvolcano.pdf',width=6,height=4,paper='special')
+volcanoPlot(test.results)
+dev.off()
+```
+## Step 12 Ribo-code
+> 
+**a1.trans_ann.sh**
+```sh
+fasta=/Share/home/tiangeng/Database/Reference_genome/Mus_musculus_Ensembl_GRCm38_star_genome-index/Mus_musculus.GRCm38.dna.primary_assembly.fa
+gtf=/Share/home/tiangeng/Database/Reference_genome/Mus_musculus_Ensembl_GRCm38_star_genome-index/Mus_musculus.GRCm38.95.gtf
+prepare_transcripts -g $gtf -f $fasta -o mus_anno
+
+```
 
