@@ -59,6 +59,15 @@
 
 ## Differentail translations (Xtail) Results: 
 
+**File list**
+* [lbx_results.txt](result_190626_lbx/lbx_results.txt)
+* [lbx.merge.counter](result_190626_lbx/lbx.merge.counter)
+* [lbxfc_results.txt](result_190626_lbx/lbxfc_results.txt)
+* [lbxFC.pdf](result_190626_lbx/lbxFC.pdf)
+* [lbxrs_results.txt](result_190626_lbx/lbxrs_results.txt)
+* [lbxRs.pdf](result_190626_lbx/lbxRs.pdf)
+* [lbxvolcano.pdf](result_190626_lbx/lbxvolcano.pdf)
+
 ![lbxFC](../image/190828-lbx/lbxFC.png) 
 
 ![lbxRS](../image/190828-lbx/lbxRS.png) 
