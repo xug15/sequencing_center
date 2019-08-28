@@ -16,7 +16,10 @@
 
 * 鲁伯埙
 > 2019年8月14日从方剑火师姐那里接收数据。  
-> 文件放入c集群中。  
+> 文件放入c集群中。 
+
+[Results](result/result_190626_lbx.md)
+
 ```sh
 /Share/home/tiangeng/project_result/Riboseq/project_190814_luboxu
 X-ten134-LBX-7-111-T_FKDL190747546-1a-47_H32M5CCX2_L3
