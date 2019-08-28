@@ -140,42 +140,6 @@ mv summary2.txt summary.txt
 rm name.txt merge2.tmp
 ```
 
-```sh
-name=(7-111-R 7-7-R 7-111-T 7-7-T)
-head='gene'
-for i in ${name[@]};
-do
- head+=" ${i}";
-done
-echo -e $head >merge.counter;
-
-for i in ${name[@]};
-do
-echo ${i}.err;
-done
-
-
-begin1=${name[0]};
-begin2=${name[1]};
-name2=("${name[@]:2}");
-join ${begin1}.count ${begin2}.count >merge.tmp
-commander='join';
-for i in ${name2[@]};
-do 
-echo ${i}.count;
-join merge.tmp ${i}.count >>merge.tmp2;
-mv merge.tmp2 merge.tmp
-done
-
-cat merge.counter merge.tmp > merge2.tmp;
-rm merge.tmp
-mv merge2.tmp merge.counter
-sed -i 's/ \+/\t/g' merge.counter
-
-grep -v '^__' merge.counter > merge.counter2
-mv merge.counter2 merge.counter 
-```
-
 ## Step5: afterQC (overrepresent reads)
 
 > a7-afterqc
@@ -234,6 +198,40 @@ for i in ${name[@]}
 do
        nohup python ./readsNumCal_intron_v3.py ./${i}_out/accepted_hits.bam $gtf nocontam_${i}_mappedNum_intron.txt nocontam_${i} > read.${i}.log 2>&1 &
 done
+```
+
+**a4.merge.sh**
+```sh
+name=(7-111-R 7-7-R 7-111-T 7-7-T)
+head='Iterm'
+for i in ${name[@]};
+do
+ head+="\t${i}";
+done
+echo -e $head >merge.counter;
+
+for i in ${name[@]};
+do
+echo nocontam_${i}_mappedNum_intron.txt;
+cp nocontam_${i}_mappedNum_intron.txt ${i}_num;
+sed -i 's/:/\t/g' ${i}_num;
+done
+#
+begin1=${name[0]};
+begin2=${name[1]};
+name2=("${name[@]:2}");
+join -t $'\t' ${begin1}_num ${begin2}_num >merge.tmp
+
+for i in ${name2[@]};
+do 
+echo ${i}_num;
+join -t $'\t' merge.tmp ${i}_num >>merge.tmp2;
+mv merge.tmp2 merge.tmp
+done
+#
+cat merge.counter merge.tmp > merge2.tmp;
+mv merge2.tmp summary.txt
+rm merge.counter merge.tmp *_num
 ```
 
 ## Step7 : STAR + periodicity
