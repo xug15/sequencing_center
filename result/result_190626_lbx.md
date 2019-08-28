@@ -113,6 +113,7 @@ Those genes in which the diﬀerence of log2R in two conditions did not exceed m
 |[RiboCode_ORFs_result_collapsed.txt](result_190626_lbx/RiboCode_ORFs_result_collapsed.txt)  | combines the ORFs with the same stop codon in different transcript isoforms: the one harboring the most upstream in-frame ATG is chosen. |
 
 **Some column names of the result file:**
+
 |                    Column                      |                       mean                                | 
 |---------------------------------               |-------------------------------------------------------| 
 | - ORF_ID                                                                                    |  The identifier of ORFs that predicated.                                                                                    | 
@@ -129,8 +130,6 @@ Those genes in which the diﬀerence of log2R in two conditions did not exceed m
 | - pval_frame0_vs_frame1                                                                     |  significance levels of P-site densities of frame0 greater than of frame1                                                   | 
 | - pval_frame0_vs_frame2                                                                     |  significance levels of P-site densities of frame0 greater than of frame2                                                   | 
 | - pval_combined                                                                             |  integrated P-value                                                                                                         | 
-
-
 
 
 ### 7-111-R
