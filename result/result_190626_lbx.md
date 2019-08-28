@@ -68,7 +68,7 @@
 * [lbxRs.pdf](result_190626_lbx/lbxRs.pdf)
 * [lbxvolcano.pdf](result_190626_lbx/lbxvolcano.pdf)
 
-> 
+-----------
 * blue: for genes whoes mRNA_log2FC larger than log2FC.cutoff (transcriptional level).
 * red: for genes whoes RPF_log2FC larger than log2FC.cutoff (translational level).
 * green: for genes changing homodirectionally at both level.
@@ -78,6 +78,8 @@
 * Figure 1: Scatter plot of log2 fold changes
 
 Those genes in which the diﬀerence of mRNA_log2FC and RPF_log2FC did not exceed more than log2FC.cutoff are excluded. The points will be color-coded with the pvalue_final obtained with xtail (more signiﬁcant p values having darker color). By default the log2FC.cutoff is 1.
+
+-------------------
 
 * blue: for genes whoes log2R larger in ﬁrst condition than second condition.
 
