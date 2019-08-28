@@ -80,3 +80,7 @@
 
 ![7-7-R](../image/190828-lbx/7-7-R-28nt-psite.png)   
 ![7-7-R](../image/190828-lbx/7-7-R-29nt-psite.png)     
+
+### 
+![7-7-R](../image/190828-lbx/orfs_category.png)    
+
