@@ -57,7 +57,7 @@
 | unique mapped reads of Intron        |  207337   |  73397   |  450475  |  527807  |
 | unique mapped ambiguous reads of RNA |  191480   |  287350  |  364688  |  418920  |
 
-## Differentail translatons (Xtail) Results: 
+## Differentail translations (Xtail) Results: 
 
 
 ## Ribo code
