@@ -59,6 +59,9 @@
 
 ## Differentail translations (Xtail) Results: 
 
+![lbxFC](../image/190828-lbx/lbxFC.png) 
+
+![lbxRS](../image/190828-lbx/lbxRS.png) 
 
 ## Ribo code
 
