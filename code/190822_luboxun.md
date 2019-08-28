@@ -283,6 +283,18 @@ do
 done
 ```
 
+**a3.readlength_filter.sh**
+```sh
+#!/bin/bash
+export PATH=/Share/home/tiangeng/anaconda2/bin:$PATH
+rpf=(7-111-R 7-7-R 7-111-T 7-7-T)
+
+for i in ${rpf[@]}
+do
+        nohup python ./fq_len_stat.py ../a6-contam/nocontam_${i}.fastq ${i}_nontam.png > ${i}.nontam.out 2>&1 &
+done
+```
+
 ## Step9 : report
 > a11-report
 
