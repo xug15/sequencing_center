@@ -320,11 +320,71 @@ dev.off()
 > 
 **a1.trans_ann.sh**
 ```sh
-export PATH=/Share/home/tiangeng/anaconda2/bin:$PATH
-fasta=/Share/home/tiangeng/Database/Reference_genome/Mus_musculus_Ensembl_GRCm38_star_genome-index/Mus_musculus.GRCm38.dna.primary_assembly.fa
+#!/bin/bash
+export PATH=~/anaconda3/bin:$PATH
 gtf=/Share/home/tiangeng/Database/Reference_genome/Mus_musculus_Ensembl_GRCm38_star_genome-index/Mus_musculus.GRCm38.95.gtf
-prepare_transcripts -g $gtf -f $fasta -o mus_anno >log.txt 2>&1 &
-
+fa=/Share/home/tiangeng/Database/Reference_genome/Mus_musculus_Ensembl_GRCm38_star_genome-index/Mus_musculus.GRCm38.dna.primary_assembly.fa
+prepare_transcripts -g $gtf -f $fa -o /Share/home/tiangeng/Database/Reference_genome/prepare_transcripts_Mus-musculus
+```
+**a2.mergefile.sh**
+```sh
+#!/bin/bash
+name=(7-111-R 7-111-T 7-7-R 7-7-T)
+rm b1.merge_transcriptome.txt
+for i in ${name[@]};
+do 
+echo /Share/home/tiangeng/project_result/Riboseq/project_190814_luboxun/a9-STAR/${i}_STAR/${i}Aligned.toTranscriptome.out.bam >>b1.merge_transcriptome.txt;
+done
 
 ```
 
+**a3.metaplot.sh**
+```sh
+#!/bin/bash
+export PATH=~/anaconda3/bin:$PATH
+mkdir b3-metaplot
+rico_ann=/Share/home/tiangeng/Database/Reference_genome/prepare_transcripts_Mus-musculus
+name=7-111-R
+nohup metaplots -a $rico_ann -i b1.merge_transcriptome.txt -o b3-metaplot/meta > b3-metaplot/metaplot.log 2>&1 &
+```
+
+**a4.Ribocode.sh**
+```sh
+#!/bin/bash
+export PATH=~/anaconda3/bin:$PATH
+mkdir b4-RiboCode
+rico_ann=/Share/home/tiangeng/Database/Reference_genome/prepare_transcripts_Mus-musculus
+config=b3-metaplot/meta_pre_config.txt
+nohup RiboCode -a ${rico_ann} -c ${config} -l no -g -o b4-RiboCode/RiboCode_ORFs_result  > b4-RiboCode/ribocode.log 2>&1 &
+``` 
+
+**a5.density.sh**
+```sh
+#!/bin/bash
+export PATH=~/anaconda3/bin:$PATH
+
+mkdir b5-plot_density_orf
+rico_ann=/Share/home/tiangeng/Database/Reference_genome/prepare_transcripts_Mus-musculus
+config=b3-metaplot/meta_pre_config.txt
+tran_id=ENSMUST00000187405
+orf_start=1
+orf_end=900
+
+plot_orf_density -a ${rico_ann} -c ${config} -t ${tran_id} -s ${orf_start} -e ${orf_end} -o b5-plot_density_orf/a1.transid
+
+```
+
+**a6.orfcount.sh**
+```sh
+#!/bin/bash
+export PATH=~/anaconda3/bin:$PATH
+#RiboCode_ORFs_result.gtf
+mkdir b6-ORF_count
+name=(7-111-R 7-7-R)
+
+for i in ${name[@]};
+do 
+nohup ORFcount -g b4-RiboCode/RiboCode_ORFs_result.gtf -r /Share/home/tiangeng/project_result/Riboseq/project_190814_luboxun/a9-STAR/${i}_STAR/${i}Aligned.sortedByCoord.out.bam -f 15 -l 5 -e 100 -m 26 -M 34 -o b6-ORF_count/${i}.ORF.counts > b6-ORF_count/${i}.log 2>&1 &
+done;
+
+```
