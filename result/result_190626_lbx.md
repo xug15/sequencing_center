@@ -1,6 +1,6 @@
 # 鲁伯埙 Results:
 
-> project_190814_TMH-XNN 
+> 
 
 ## 实验设计
 
