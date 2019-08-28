@@ -106,7 +106,8 @@ Those genes in which the diﬀerence of mRNA_log2FC and RPF_log2FC did not excee
 Those genes in which the diﬀerence of log2R in two conditions did not exceed more than log2R.cutoff are excluded. The points will be color-coded with the pvalue_final obtained with xtail (more signiﬁcant p values having darker color). By default the log2R.cutoff is 1.
 
 ## Ribo code
-**File list**
+**File list**  
+
 |File name|Note|
 |---------|----|
 |[RiboCode_ORFs_result.txt](result_190626_lbx/RiboCode_ORFs_result.txt)           |contains the information of predicted ORFs in each transcript.  |
