@@ -100,6 +100,82 @@ do
 done
 ```
 
+**a2.merge.sh**
+```sh
+name=(7-111-R 7-7-R 7-111-T 7-7-T)
+head='Iterm'
+for i in ${name[@]};
+do
+ head+="\t${i}";
+done
+echo -e $head >merge.counter;
+
+for i in ${name[@]};
+do
+echo ${i}.err;
+head -n 3 ${i}.err > ${i}.err.tmp;
+sed -i 's/#//g' ${i}.err.tmp;
+sed -i 's/:/\t/g' ${i}.err.tmp;
+sed -i 's/^ //g' ${i}.err.tmp;
+done
+#
+begin1=${name[0]};
+begin2=${name[1]};
+name2=("${name[@]:2}");
+join -t $'\t' ${begin1}.err.tmp ${begin2}.err.tmp >merge.tmp
+
+for i in ${name2[@]};
+do 
+echo ${i}.err.tmp;
+join -t $'\t' merge.tmp ${i}.err.tmp >>merge.tmp2;
+mv merge.tmp2 merge.tmp
+done
+#
+cat merge.counter merge.tmp > merge2.tmp;
+cut -f 2- merge2.tmp > summary.txt
+rm merge.counter merge.tmp *.err.tmp
+echo -e "Iterm\nTotal\nrRNA\nnon rRNA">name.txt;
+paste -d $'\t' name.txt summary.txt > summary2.txt
+mv summary2.txt summary.txt
+rm name.txt merge2.tmp
+```
+
+```sh
+name=(7-111-R 7-7-R 7-111-T 7-7-T)
+head='gene'
+for i in ${name[@]};
+do
+ head+=" ${i}";
+done
+echo -e $head >merge.counter;
+
+for i in ${name[@]};
+do
+echo ${i}.err;
+done
+
+
+begin1=${name[0]};
+begin2=${name[1]};
+name2=("${name[@]:2}");
+join ${begin1}.count ${begin2}.count >merge.tmp
+commander='join';
+for i in ${name2[@]};
+do 
+echo ${i}.count;
+join merge.tmp ${i}.count >>merge.tmp2;
+mv merge.tmp2 merge.tmp
+done
+
+cat merge.counter merge.tmp > merge2.tmp;
+rm merge.tmp
+mv merge2.tmp merge.counter
+sed -i 's/ \+/\t/g' merge.counter
+
+grep -v '^__' merge.counter > merge.counter2
+mv merge.counter2 merge.counter 
+```
+
 ## Step5: afterQC (overrepresent reads)
 
 > a7-afterqc
