@@ -112,6 +112,24 @@ Those genes in which the diﬀerence of log2R in two conditions did not exceed m
 |[RiboCode_ORFs_result.txt](result_190626_lbx/RiboCode_ORFs_result.txt)           |contains the information of predicted ORFs in each transcript.  |
 |[RiboCode_ORFs_result_collapsed.txt](result_190626_lbx/RiboCode_ORFs_result_collapsed.txt)  | combines the ORFs with the same stop codon in different transcript isoforms: the one harboring the most upstream in-frame ATG is chosen. |
 
+**Some column names of the result file:**
+|                    Column                      |                       mean                                | 
+|---------------------------------               |-------------------------------------------------------| 
+| - ORF_ID                                                                                    |  The identifier of ORFs that predicated.                                                                                    | 
+| - ORF_type                                                                                  |  The type of ORF is annotated according the relative location to associated CDS. The following ORF categories are reported: | 
+|  "annotated" (overlapping annotated CDS, have the same stop with annotated CDS)             |                                                                                                                             | 
+|  "uORF" (in upstream of annotated CDS, not overlapping annotated CDS)                       |                                                                                                                             | 
+|  "dORF" (in downstream of annotated CDS, not overlapping annotated CDS)                     |                                                                                                                             | 
+|  "Overlap_uORF" (in upstream of annotated CDS, overlapping annotated CDS)                   |                                                                                                                             | 
+|  "Overlap_dORF" (in downstream of annotated CDS, overlapping annotated CDS"                 |                                                                                                                             | 
+|  "Internal" (in internal of annotated CDS, but in a different frame relative annotated CDS) |                                                                                                                             | 
+|  "novel" (in non-coding genes or non-coding transcripts of coding genes).                   |                                                                                                                             | 
+| - ORF_tstart, ORF_tstop                                                                     |  the beginning and end of ORF in RNA transcript (1-based coordinate)                                                        | 
+| - ORF_gstart, ORF_gstop                                                                     |  the beginning and end of ORF in genome (1-based coordinate)                                                                | 
+| - pval_frame0_vs_frame1                                                                     |  significance levels of P-site densities of frame0 greater than of frame1                                                   | 
+| - pval_frame0_vs_frame2                                                                     |  significance levels of P-site densities of frame0 greater than of frame2                                                   | 
+| - pval_combined                                                                             |  integrated P-value                                                                                                         | 
+
 
 
 
