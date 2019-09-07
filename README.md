@@ -10,6 +10,8 @@
 
 =====
 * [Linux](code/b1.linux.md)
+* [Python](code/b2.python.md)
+* [Singularity](code/b3.singularity.md)
 
 ## Data.
 * [Data](code/a5.data.md)
