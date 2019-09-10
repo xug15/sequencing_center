@@ -5,7 +5,7 @@ Following depletion of mitochondrial and cytoplasmic rRNA using Ribo-Zero Gold r
 
 Read data were subjected to quality control with FastQC and RNA-SeQC. 
 
-The data in fastq format were mapped to GRCh37 using the STAR v2.4.0g1 aligner (https://github.com/ alexdobin/STAR), and gene-level counts were estimated using HTSeq (https://pypi. python.org/pypi/HTSeq).
+The data in fastq format were mapped to GRCh37 using the STAR v2.4.0g1 aligner (https://github.com/alexdobin/STAR), and gene-level counts were estimated using HTSeq (https://pypi.python.org/pypi/HTSeq).
 
 Prior to statistical analyses, raw gene read counts were converted to cpm using the edgeR 66 package within R (www.R-project.org). 
 
