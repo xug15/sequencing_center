@@ -25,8 +25,9 @@ First, install the edgeR package if not already installed (which installs limma 
 Load the edgeR package (which loads limma as a dependency)
 ```R
 library(edgeR)
-```
+
 ## Loading required package: limma
+```
 Read in the counts table
 ```R
 counts <- read.delim("all_counts.txt", row.names = 1)
