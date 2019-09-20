@@ -380,8 +380,12 @@ mm <- model.matrix(~cultivar*time)
 We are specifying that model includes effects for cultivar, time, and the cultivar-time interaction (which allows the differences between cultivars to differ across time)
 ```R
 colnames(mm)
+```
+```R
 ## [1] "(Intercept)"      "cultivarI5"       "cultivarI8"      
 ## [4] "time9"            "cultivarI5:time9" "cultivarI8:time9"
+```
+```R
 y <- voom(d, mm, plot = F)
 fit <- lmFit(y, mm)
 head(coef(fit))
@@ -402,10 +406,14 @@ head(coef(fit))
 ## AT1G01050       0.22730960
 ## AT1G01060      -0.17267051
 ```
-The coefficient cultivarI5 represents the difference in mean expression between cultivar I5 and the reference cultivar (cultivar C), for time 6 (the reference level for time)
-The coefficient time9 represents the difference in mean expression between time 9 and time 6, for cultivar C
-The coefficient cultivarI5:time9 is the difference between times 9 and 6 of the differences between cultivars I5 and C (interaction effect)
+* The coefficient cultivarI5 represents the difference in mean expression between cultivar I5 and the reference cultivar (cultivar C), for time 6 (the reference level for time)
+
+* The coefficient time9 represents the difference in mean expression between time 9 and time 6, for cultivar C
+
+* The coefficient cultivarI5:time9 is the difference between times 9 and 6 of the differences between cultivars I5 and C (interaction effect)
+
 Let’s estimate the difference between cultivars I5 and C at time 6
+
 ```R
 tmp <- contrasts.fit(fit, coef = 2) # Directly test second coefficient
 tmp <- eBayes(tmp)
