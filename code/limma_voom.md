@@ -362,7 +362,11 @@ head(top.table, 20)
 ```
 ```R
 length(which(top.table$adj.P.Val < 0.05)) # number of DE genes
+```
+```R
 ## [1] 20
+```
+```R
 top.table$Gene <- rownames(top.table)
 top.table <- top.table[,c("Gene", names(top.table)[1:6])]
 write.table(top.table, file = "I5_v_C_time6.txt", row.names = F, sep = "\t", quote = F)
