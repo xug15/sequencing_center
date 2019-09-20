@@ -466,6 +466,8 @@ head(top.table, 20)
 ```
 ```R
 length(which(top.table$adj.P.Val < 0.05)) # number of DE genes
+```
+```R
 ## [1] 20
 ```
 We get the same results as with the model where each coefficient corresponded to a group mean. In essence, these are the same model, so use whichever is most convenient for what you are estimating.
@@ -489,6 +491,8 @@ head(coef(fit))
 ## AT1G01040      -0.46975071
 ## AT1G01050       0.22730960
 ## AT1G01060      -0.17267051
+```
+```R
 tmp <- contrasts.fit(fit, coef = 5) # Test cultivarI5:time9
 tmp <- eBayes(tmp)
 top.table <- topTable(tmp, sort.by = "P", n = Inf)
@@ -540,6 +544,8 @@ head(top.table, 20)
 ```
 ```R
 length(which(top.table$adj.P.Val < 0.05)) 
+```
+```R
 ## [1] 882
 ```
 The log fold change here is the difference between cultivarI5 and cultivar C in the log fold changes between times 9 and 6. It is ALSO the difference between times 9 and 6 in the log fold changes between cultivarI5 and cultivar C.
