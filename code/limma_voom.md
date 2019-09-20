@@ -284,15 +284,16 @@ head(top.table, 20)
 ## AT1G31230  9.459672
 ## AT2G27820  9.385693
 ```
-```R
-logFC: log2 fold change of I5.9/I5.6
-AveExpr: Average expression across all samples, in log2 CPM
-t: logFC divided by its standard error
-P.Value: Raw p-value (based on t) from test that logFC differs from 0
-adj.P.Val: Benjamini-Hochberg false discovery rate adjusted p-value
-B: log-odds that gene is DE (arguably less useful than the other columns)
+
+* logFC: log2 fold change of I5.9/I5.6
+* AveExpr: Average expression across all samples, in log2 CPM
+* t: logFC divided by its standard error
+* P.Value: Raw p-value (based on t) from test that logFC differs from 0
+* adj.P.Val: Benjamini-Hochberg false discovery rate adjusted p-value
+* B: log-odds that gene is DE (arguably less useful than the other columns)
+
 AT5G37260 has higher expression at time 9 than at time 6 (logFC is positive). AT2G29500 has lower expression at time 9 than at time 6 (logFC is negative).
-```
+
 How many DE genes are there?
 ```R
 length(which(top.table$adj.P.Val < 0.05))
