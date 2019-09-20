@@ -181,10 +181,10 @@ y <- voom(d, mm, plot = T)
 
 What is voom doing?
 
-Counts are transformed to log2 counts per million reads (CPM), where “per million reads” is defined based on the normalization factors we calculated earlier
-A linear model is fitted to the log2 CPM for each gene, and the residuals are calculated
-A smoothed curve is fitted to the sqrt(residual standard deviation) by average expression (see red line in plot above)
-The smoothed curve is used to obtain weights for each gene and sample that are passed into limma along with the log2 CPMs.
+* 1. Counts are transformed to log2 counts per million reads (CPM), where “per million reads” is defined based on the normalization factors we calculated earlier
+* 2. A linear model is fitted to the log2 CPM for each gene, and the residuals are calculated
+* 3. A smoothed curve is fitted to the sqrt(residual standard deviation) by average expression (see red line in plot above)
+* 4. The smoothed curve is used to obtain weights for each gene and sample that are passed into limma along with the log2 CPMs.
 More details at https://genomebiology.biomedcentral.com/articles/10.1186/gb-2014-15-2-r29
 
 The above is a “good” voom plot. If your voom plot looks like the below, you might want to filter more:
