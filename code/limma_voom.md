@@ -32,6 +32,8 @@ Read in the counts table
 ```R
 counts <- read.delim("all_counts.txt", row.names = 1)
 head(counts)
+```
+```R
 ##           C61 C62 C63 C64 C91  C92 C93 C94 I561 I562 I563 I564 I591 I592
 ## AT1G01010 341 371 275 419 400  542 377 372  677  522  455  508  821  466
 ## AT1G01020 164  94 176 155 200  183 166 115  172  157  122  152  189  171
@@ -52,6 +54,8 @@ OR read the file directly from the github page:
 ```R
 counts <- read.delim("https://raw.githubusercontent.com/ucdavis-bioinformatics-training/2018-June-RNA-Seq-Workshop/master/thursday/all_counts.txt")
 head(counts)
+```
+```R
 ##           C61 C62 C63 C64 C91 C92 C93 C94 I561 I562 I563 I564 I591 I592
 ## AT1G01010 289 317 225 343 325 449 310 299  563  438  380  407  678  386
 ## AT1G01020 127  78 142 130 156 146 144  95  138  129   99  118  154  140
@@ -77,6 +81,8 @@ Calculate normalization factors
 ```R
 d0 <- calcNormFactors(d0)
 d0
+```
+```R
 ## An object of class "DGEList"
 ## $counts
 ##           C61 C62 C63 C64 C91 C92 C93 C94 I561 I562 I563 I564 I591 I592
@@ -122,15 +128,23 @@ The sample names are the cultivar, followed by the time, followed by the replica
 ```R
 snames <- colnames(counts) # Sample names
 snames
+```
+```R
 ##  [1] "C61"  "C62"  "C63"  "C64"  "C91"  "C92"  "C93"  "C94"  "I561" "I562"
 ## [11] "I563" "I564" "I591" "I592" "I593" "I594" "I861" "I862" "I863" "I864"
 ## [21] "I891" "I892" "I893" "I894"
 cultivar <- substr(snames, 1, nchar(snames) - 2) 
 time <- substr(snames, nchar(snames) - 1, nchar(snames) - 1)
 cultivar
+```
+```R
 ##  [1] "C"  "C"  "C"  "C"  "C"  "C"  "C"  "C"  "I5" "I5" "I5" "I5" "I5" "I5"
 ## [15] "I5" "I5" "I8" "I8" "I8" "I8" "I8" "I8" "I8" "I8"
+```
+```R
 time
+```
+```R
 ##  [1] "6" "6" "6" "6" "9" "9" "9" "9" "6" "6" "6" "6" "9" "9" "9" "9" "6"
 ## [18] "6" "6" "6" "9" "9" "9" "9"
 ```
@@ -138,6 +152,8 @@ Create a new variable “group” that combines cultivar and time
 ```R
 group <- interaction(cultivar, time)
 group
+```
+```R
 ##  [1] C.6  C.6  C.6  C.6  C.9  C.9  C.9  C.9  I5.6 I5.6 I5.6 I5.6 I5.9 I5.9
 ## [15] I5.9 I5.9 I8.6 I8.6 I8.6 I8.6 I8.9 I8.9 I8.9 I8.9
 ## Levels: C.6 I5.6 I8.6 C.9 I5.9 I8.9
@@ -179,6 +195,8 @@ lmFit fits a linear model using weighted least squares for each gene:
 ```R
 fit <- lmFit(y, mm)
 head(coef(fit))
+```
+```R
 ##           groupC.6 groupI5.6 groupI8.6 groupC.9 groupI5.9 groupI8.9
 ## AT1G01010 4.837410 5.3738532  5.065354 5.043214 5.5240004  5.363809
 ## AT1G01020 3.530869 3.4993460  3.212860 3.689622 3.7209961  3.736297
@@ -195,6 +213,8 @@ Comparison between times 6 and 9 for cultivar I5
 ```R
 contr <- makeContrasts(groupI5.9 - groupI5.6, levels = colnames(coef(fit)))
 contr
+```
+```R
 ##            Contrasts
 ## Levels      groupI5.9 - groupI5.6
 ##   groupC.6                      0
@@ -216,6 +236,8 @@ What genes are most differentially expressed?
 ```R
 top.table <- topTable(tmp, sort.by = "P", n = Inf)
 head(top.table, 20)
+```
+```R
 ##                logFC  AveExpr          t      P.Value    adj.P.Val
 ## AT5G37260  3.0480867 6.964609  24.154998 1.193341e-16 2.515563e-12
 ## AT3G02990  1.6484885 3.304597  13.605334 8.573977e-12 9.036971e-08
@@ -284,6 +306,8 @@ tmp <- contrasts.fit(fit, contr)
 tmp <- eBayes(tmp)
 top.table <- topTable(tmp, sort.by = "P", n = Inf)
 head(top.table, 20)
+```
+```R
 ##                logFC    AveExpr          t      P.Value    adj.P.Val
 ## AT4G12520 -9.3396792  0.5671202 -14.118616 4.276991e-12 9.015898e-08
 ## AT3G30720  5.6550000  3.5130064  11.628491 1.543229e-10 1.626564e-06
@@ -346,6 +370,8 @@ colnames(mm)
 y <- voom(d, mm, plot = F)
 fit <- lmFit(y, mm)
 head(coef(fit))
+```
+```R
 ##           (Intercept)  cultivarI5 cultivarI8      time9 cultivarI5:time9
 ## AT1G01010    4.837410  0.53644370  0.2279446 0.20580445      -0.05565729
 ## AT1G01020    3.530869 -0.03152318 -0.3180096 0.15875297       0.06289715
@@ -370,6 +396,8 @@ tmp <- contrasts.fit(fit, coef = 2) # Directly test second coefficient
 tmp <- eBayes(tmp)
 top.table <- topTable(tmp, sort.by = "P", n = Inf)
 head(top.table, 20)
+```
+```R
 ##                logFC    AveExpr          t      P.Value    adj.P.Val
 ## AT4G12520 -9.3396792  0.5671202 -14.118616 4.276991e-12 9.015898e-08
 ## AT3G30720  5.6550000  3.5130064  11.628491 1.543229e-10 1.626564e-06
@@ -420,6 +448,8 @@ We get the same results as with the model where each coefficient corresponded to
 The interaction effects cultivarI5:time9 and cultivarI8:time9 are easier to estimate and test in this setup
 ```R
 head(coef(fit))
+```
+```R
 ##           (Intercept)  cultivarI5 cultivarI8      time9 cultivarI5:time9
 ## AT1G01010    4.837410  0.53644370  0.2279446 0.20580445      -0.05565729
 ## AT1G01020    3.530869 -0.03152318 -0.3180096 0.15875297       0.06289715
@@ -438,6 +468,8 @@ tmp <- contrasts.fit(fit, coef = 5) # Test cultivarI5:time9
 tmp <- eBayes(tmp)
 top.table <- topTable(tmp, sort.by = "P", n = Inf)
 head(top.table, 20)
+```
+```R
 ##                logFC  AveExpr         t      P.Value    adj.P.Val
 ## AT5G38200  5.2681384 5.459342 12.169571 6.750884e-11 1.423086e-06
 ## AT5G06860  3.9331835 6.449356  7.667986 1.770961e-07 1.306381e-03
@@ -507,6 +539,8 @@ tmp <- contrasts.fit(fit, contr)
 tmp <- eBayes(tmp)
 top.table <- topTable(tmp, sort.by = "P", n = Inf)
 head(top.table, 20)
+```
+```R
 ##                logFC    AveExpr          t      P.Value    adj.P.Val
 ## AT4G12520 -9.1849480  0.5671202 -13.894622 1.254284e-11 2.644031e-07
 ## AT3G30720  5.6553502  3.5130064  11.626230 2.902705e-10 3.059451e-06
@@ -558,6 +592,8 @@ What if we want to adjust for a continuous variable like RIN score:
 set.seed(99)
 RIN <- rnorm(n = 24, mean = 7.5, sd = 1)
 RIN
+```
+```R
 ##  [1] 7.713963 7.979658 7.587829 7.943859 7.137162 7.622674 6.636155
 ##  [8] 7.989624 7.135883 6.205758 6.754231 8.421550 8.250054 4.991446
 ## [15] 4.459066 7.500266 7.105981 5.754972 7.998631 7.770954 8.598922
@@ -573,6 +609,8 @@ tmp <- contrasts.fit(fit, contr)
 tmp <- eBayes(tmp)
 top.table <- topTable(tmp, sort.by = "P", n = Inf)
 head(top.table, 20)
+```
+```R
 ##                logFC    AveExpr          t      P.Value    adj.P.Val
 ## AT3G30720  5.6296669  3.5130064  18.264852 8.228016e-14 1.078373e-09
 ## AT4G12520 -9.2914672  0.5671202 -18.052498 1.023125e-13 1.078373e-09
@@ -624,6 +662,8 @@ What if we want to look at the correlation of gene expression with a continuous 
 set.seed(99)
 pH <- rnorm(n = 24, mean = 8, sd = 1.5)
 pH
+```
+```R
 ##  [1] 8.320944 8.719487 8.131743 8.665788 7.455743 8.184011 6.704232
 ##  [8] 8.734436 7.453825 6.058637 6.881346 9.382326 9.125082 4.237169
 ## [15] 3.438599 8.000399 7.408972 5.382459 8.747947 8.406431 9.648382
@@ -633,6 +673,8 @@ Specify model matrix:
 ```R
 mm <- model.matrix(~pH)
 head(mm)
+```
+```R
 ##   (Intercept)       pH
 ## 1           1 8.320944
 ## 2           1 8.719487
@@ -646,6 +688,8 @@ tmp <- contrasts.fit(fit, coef = 2) # test "pH" coefficient
 tmp <- eBayes(tmp)
 top.table <- topTable(tmp, sort.by = "P", n = Inf)
 head(top.table, 20)
+```
+```R
 ##                 logFC     AveExpr         t      P.Value adj.P.Val
 ## AT3G63220  0.10930007  3.72231850  3.984813 0.0005224914 0.9979999
 ## AT4G22790 -0.18156791  2.62688789 -3.924496 0.0006095427 0.9979999
@@ -730,6 +774,8 @@ tmp <- voom(d, mm, plot = T)
 The log2 counts per million are more variable at lower expression levels. The variance weights calculated by voom address this situation.
 ```R
 sessionInfo()
+```
+```R
 ## R version 3.5.0 (2018-04-23)
 ## Platform: x86_64-w64-mingw32/x64 (64-bit)
 ## Running under: Windows 10 x64 (build 16299)
