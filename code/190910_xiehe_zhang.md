@@ -1,4 +1,5 @@
 # Xie He.
+[Reference](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5715016/pdf/41467_2017_Article_2188.pdf)
 ## Sample library preparation, sequencing, and data processing.
 
 Following depletion of mitochondrial and cytoplasmic rRNA using Ribo-Zero Gold rRNA Removal (Illumina), mRNA libraries were sequenced on the Illumina HiSeq 2500 System with a per-sample target of 40–50 million 100 bp paired-end reads, according to the manufacturer’s protocol. 
