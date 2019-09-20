@@ -280,6 +280,8 @@ head(top.table, 20)
 ## AT1G22770  9.958652
 ## AT1G31230  9.459672
 ## AT2G27820  9.385693
+```
+```R
 logFC: log2 fold change of I5.9/I5.6
 AveExpr: Average expression across all samples, in log2 CPM
 t: logFC divided by its standard error
@@ -350,6 +352,8 @@ head(top.table, 20)
 ## AT2G25737  2.23281223
 ## AT2G37760  2.08993315
 ## AT2G30400  2.09909628
+```
+```R
 length(which(top.table$adj.P.Val < 0.05)) # number of DE genes
 ## [1] 20
 top.table$Gene <- rownames(top.table)
@@ -440,6 +444,8 @@ head(top.table, 20)
 ## AT2G25737  2.23281223
 ## AT2G37760  2.08993315
 ## AT2G30400  2.09909628
+```
+```R
 length(which(top.table$adj.P.Val < 0.05)) # number of DE genes
 ## [1] 20
 ```
@@ -512,6 +518,8 @@ head(top.table, 20)
 ## AT5G56010  4.309468
 ## AT4G37870  4.278843
 ## AT1G58110  4.041773
+```
+```R
 length(which(top.table$adj.P.Val < 0.05)) 
 ## [1] 882
 ```
@@ -583,6 +591,8 @@ head(top.table, 20)
 ## AT4G01870  2.6397139
 ## AT1G15380  2.5436455
 ## AT3G45980  2.4978614
+```
+```R
 length(which(top.table$adj.P.Val < 0.05))
 ## [1] 27
 ```
@@ -653,6 +663,8 @@ head(top.table, 20)
 ## AT5G48010  2.121253
 ## AT5G05480  2.095733
 ## AT4G34138  1.986345
+```
+```R
 length(which(top.table$adj.P.Val < 0.05))
 ## [1] 28
 ```
@@ -732,6 +744,8 @@ head(top.table, 20)
 ## AT1G63020 -1.8275637
 ## AT2G16400 -1.8149709
 ## AT1G17240 -2.5144550
+```
+```R
 length(which(top.table$adj.P.Val < 0.05))
 ## [1] 0
 ```
