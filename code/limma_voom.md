@@ -297,8 +297,11 @@ AT5G37260 has higher expression at time 9 than at time 6 (logFC is positive). AT
 How many DE genes are there?
 ```R
 length(which(top.table$adj.P.Val < 0.05))
+```
+```R
 ## [1] 4680
 ```
+
 Write top.table to a file
 ```R
 top.table$Gene <- rownames(top.table)
