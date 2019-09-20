@@ -45,10 +45,10 @@ head(counts)
 ## AT1G01030   17   26   49   17   24   48   27   28   47   32
 ## AT1G01040  871  756  361  618  641  439  783  692  768  625
 ## AT1G03993    0    0    0    1    0    1    3    2    1    1
-
 ```
-OR read the file directly from the github page:
 
+OR read the file directly from the github page:
+```R
 counts <- read.delim("https://raw.githubusercontent.com/ucdavis-bioinformatics-training/2018-June-RNA-Seq-Workshop/master/thursday/all_counts.txt")
 head(counts)
 ##           C61 C62 C63 C64 C91 C92 C93 C94 I561 I562 I563 I564 I591 I592
@@ -65,9 +65,9 @@ head(counts)
 ## AT1G01030   14   21   37   16   19   38   24   18   37   23
 ## AT1G01040  733  614  297  521  542  381  651  573  650  550
 ## AT1G03993    0    0    0    1    0    1    3    1    1    1
-
-Create DGEList object
 ```
+Create DGEList object
+```R
 d0 <- DGEList(counts)
 ```
 
