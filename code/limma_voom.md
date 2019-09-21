@@ -796,15 +796,19 @@ In this example, the log fold change logFC is the slope of the line, or the chan
 Here, a logFC of -0.19 means a 0.19 log2 CPM decrease in gene expression for each unit increase in pH, or a 14% decrease on the CPM scale (2^0.19 = 1.14).
 
 ## 6. A bit more on linear models
+
 Limma fits a linear model to each gene.
 
 Linear models include analysis of variance (ANOVA) models, linear regression, and any model of the form
 
 Y=β0+β1X1+β2X2+⋯+βpXp+ϵ
+
 The covariates X can be:
 
-a continuous variable (pH, RIN score, age, weight, temperature, etc.)
-Dummy variables coding a categorical covariate (like cultivar, time, and group)
+* a continuous variable (pH, RIN score, age, weight, temperature, etc.)
+
+* Dummy variables coding a categorical covariate (like cultivar, time, and group)
+
 The β’s are unknown parameters to be estimated.
 
 In limma, the β’s are the log fold changes.
@@ -812,13 +816,14 @@ In limma, the β’s are the log fold changes.
 The error (residual) term ϵ is assumed to be normally distributed with a variance that is constant across the range of the data.
 
 Normally distributed means the residuals come from a distribution that looks like this: 
-
+![](voom5.png)
 The log2 transformation that voom applies to the counts makes the data “normal enough”, but doesn’t completely stabilize the variance:
 ```R
 tmp <- voom(d, mm, plot = T)
 ```
 
 The log2 counts per million are more variable at lower expression levels. The variance weights calculated by voom address this situation.
+
 ```R
 sessionInfo()
 ```
