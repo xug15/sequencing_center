@@ -559,6 +559,8 @@ Let’s say we have information on the RNA extraction batch:
 ```R
 batch <- factor(rep(rep(1:2, each = 2), 6))
 batch
+```
+```R
 ##  [1] 1 1 2 2 1 1 2 2 1 1 2 2 1 1 2 2 1 1 2 2 1 1 2 2
 ## Levels: 1 2
 ```
@@ -619,6 +621,8 @@ head(top.table, 20)
 ```
 ```R
 length(which(top.table$adj.P.Val < 0.05))
+```
+```R
 ## [1] 27
 ```
 What if we want to adjust for a continuous variable like RIN score:
@@ -719,6 +723,8 @@ head(mm)
 ## 4           1 8.665788
 ## 5           1 7.455743
 ## 6           1 8.184011
+```
+```R
 y <- voom(d, mm, plot = F)
 fit <- lmFit(y, mm)
 tmp <- contrasts.fit(fit, coef = 2) # test "pH" coefficient
@@ -772,6 +778,8 @@ head(top.table, 20)
 ```
 ```R
 length(which(top.table$adj.P.Val < 0.05))
+```
+```Rvoom4.png
 ## [1] 0
 ```
 In this case, limma is fitting a linear regression model, which here is a straight line fit, with the slope and intercept defined by the model coefficients:
