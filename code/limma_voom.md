@@ -166,7 +166,7 @@ Multidimensional scaling (MDS) plot
 ```R
 plotMDS(d, col = as.numeric(group))
 ```
-
+![voom1](../image/voom/voom1.png)
 ## 3. Voom transformation and calculation of variance weights
 Specify the model to be fitted. We do this before using voom since voom uses variances of the model residuals (observed - fitted)
 ```R
