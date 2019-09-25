@@ -89,3 +89,16 @@ GAGCGCTA    ATGCCTAA    M13_7.5
 GAGCGCTA    TCCGTCTA    M13_7.15
 GAGCGCTA    ATCCTGTA    M14_7.15
 ```
+
+cut adapter
+
+```sh
+
+cutadapt -a ADAPT1 -g ADAPT2 -o out1.fastq in1.fastq
+
+                     
+```
+|parameter|mean|
+|:-|:-|
+|-a ADAPTER, --adapter=ADAPTER |equence of an adapter that was ligated to the 3\' end.The adapter itself and anything that follows is trimmed. If the adapter sequence ends with the '$' character, the adapter is anchored to the end of the read and only found if it is a suffix of the read. |
+|-g ADAPTER, --front=ADAPTER |Sequence of an adapter that was ligated to the 5\' end. If the adapter sequence starts with the character \'^\', the adapter is \'anchored\'. An anchored adapter must appear in its entirety at the 5\' end of the read (it is a prefix of the read). A non-anchored adapter may appear partially at the 5\' end, or it may occur within the read. If it is found within a read, the sequence preceding the adapter is also trimmed. In all cases, the adapter itself is trimmed. |
