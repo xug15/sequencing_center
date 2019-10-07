@@ -91,7 +91,14 @@ GAGCGCTA    ATCCTGTA    M14_7.15
 ```
 
 cut adapter
+```pl
+my $origin_seq=<STDIN>;
+my $revcomp = reverse $origin_seq;
+$revcomp =~ tr/ATGCatgc/TACGtacg/;
 
+print "$revcomp\n";
+```
+a1.cu.sh
 ```sh
 
 cutadapt -a ADAPT1 -g ADAPT2 -o out1.fastq in1.fastq
