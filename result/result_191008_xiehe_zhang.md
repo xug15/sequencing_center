@@ -97,6 +97,15 @@ This function is a variation on the usual multdimensional scaling (or principle 
 
 ### mean-variance-remove-batch-effec
 
-![](result_191008_xiehe/mean-variance-remove-batch-effect.png)
+* remove library time
+
+![](result_191008_xiehe/remove_library_time.png)
 
 [mean-variance-remove-batch-effect.pdf](result_191008_xiehe/mean-variance-remove-batch-effect.pdf)
+
+* remove concentration
+
+![](result_191008_xiehe/remove_concent.png)
+
+[mean-variance-remove-batch-effect.pdf](result_191008_xiehe/mean-variance-remove-library_time.pdf)
+
