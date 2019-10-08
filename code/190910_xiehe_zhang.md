@@ -10,11 +10,11 @@ The data in fastq format were mapped to GRCh37 using the STAR v2.4.0g1 aligner (
 
 Prior to statistical analyses, raw gene read counts were converted to cpm using the edgeR 66 package within R (www.R-project.org). 
 
-Genes with systematically low expression levels were removed, keeping only genes with c.p.m. > 0.1 in at least 10% of the samples analyzed (n = 17,337). 
+Genes with systematically low expression levels were removed, keeping only genes with c.p.m. > 0.1 in at least 10% of the samples analyzed. 
 
-Library sizes and normalization factors were estimated, and counts were then normalized using edgeR and voom in the limma R package 67, 68 , resulting in log 2 -cpms and weights for each gene. 
+Library sizes and normalization factors were estimated, and counts were then normalized using edgeR and voom in the limma R package, resulting in log 2 -cpms and weights for each gene. 
 
-Multidimensional scaling analysis was used to identify outlier RNA-seq samples, resulting in removal of one sample (Supplementary Fig. 1) from the discovery cohort. 
+Multidimensional scaling analysis was used to identify outlier RNA-seq samples, resulting in removal of one sample from the discovery cohort. 
 
 In addition, we used variancePartition 69 , to assess the contribution of technical and biological factors to variation in gene expression across the samples. 
 
