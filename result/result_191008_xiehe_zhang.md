@@ -80,15 +80,19 @@ Plot samples on a two-dimensional scatterplot so that distances on the plot appr
 This function is a variation on the usual multdimensional scaling (or principle coordinate) plot, in that a distance measure particularly appropriate for the microarray context is used. The distance between each pair of samples (columns) is the root-mean-square deviation (Euclidean distance) for the top top genes. Distances on the plot can be interpreted as leading log2-fold-change, meaning the typical (root-mean-square) log2-fold-change between the samples for the genes that distinguish those samples.
 
 ![](result_191008_xiehe/mds.png)
+[](result_191008_xiehe/mds.pdf)
 
 ### mean-variance-raw
 
 ![](result_191008_xiehe/mean-variance-raw.png)
+[](result_191008_xiehe/mean-variance-raw.pdf)
 
 ### mean-variance-remove-lowexpres
 
 ![](result_191008_xiehe/mean-variance-remove-lowexpres.png)
+[](result_191008_xiehe/mean-variance-remove-lowexpres.pdf)
 
 ### mean-variance-remove-batch-effec
 
 ![](result_191008_xiehe/mean-variance-remove-batch-effect.png)
+[](result_191008_xiehe/mean-variance-remove-batch-effect.pdf)
