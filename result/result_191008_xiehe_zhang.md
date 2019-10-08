@@ -67,5 +67,12 @@
 ## Gene counts
 [merge count.txt](result_10=91008_xiehe/merge.counter)
 
-## 
+## Differential expression gene
 
+![](result_10=91008_xiehe/mds.pdf)
+
+![](result_10=91008_xiehe/mean-variance-raw.pdf)
+
+![](result_10=91008_xiehe/mean-variance-remove-lowexpres.pdf)
+
+![](result_10=91008_xiehe/mean-variance-remove-batch-effect.pdf)
