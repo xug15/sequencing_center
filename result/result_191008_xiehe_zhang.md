@@ -101,11 +101,11 @@ This function is a variation on the usual multdimensional scaling (or principle 
 
 ![](result_191008_xiehe/remove_library_time.png)
 
-[mean-variance-remove-batch-effect.pdf](result_191008_xiehe/mean-variance-remove-batch-effect.pdf)
+[mean-variance-remove-library_time.pdf](result_191008_xiehe/mean-variance-remove-library_time.pdf)
 
 * remove concentration
 
 ![](result_191008_xiehe/remove_concent.png)
 
-[mean-variance-remove-batch-effect.pdf](result_191008_xiehe/mean-variance-remove-library_time.pdf)
+[mean-variance-remove-concen.pdf](result_191008_xiehe/mean-variance-remove-concen.pdf)
 
