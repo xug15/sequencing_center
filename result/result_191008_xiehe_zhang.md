@@ -69,10 +69,10 @@
 
 ## Differential expression gene
 
-[](result_10=91008_xiehe/mds.png)
+![](result_10=91008_xiehe/mds.png)
 
-[](result_10=91008_xiehe/mean-variance-raw.png)
+![](result_10=91008_xiehe/mean-variance-raw.png)
 
-[](result_10=91008_xiehe/mean-variance-remove-lowexpres.png)
+![](result_10=91008_xiehe/mean-variance-remove-lowexpres.png)
 
-[](result_10=91008_xiehe/mean-variance-remove-batch-effect.png)
+![](result_10=91008_xiehe/mean-variance-remove-batch-effect.png)
