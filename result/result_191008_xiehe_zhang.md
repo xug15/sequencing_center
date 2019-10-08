@@ -83,6 +83,10 @@ This function is a variation on the usual multdimensional scaling (or principle 
 
 [mds.pdf](result_191008_xiehe/mds.pdf)
 
+## mean-variance
+
+![](result_191008_xiehe/mean_variance-compring.png)
+
 ### mean-variance-raw
 
 ![](result_191008_xiehe/mean-variance-raw.png)
@@ -108,4 +112,6 @@ This function is a variation on the usual multdimensional scaling (or principle 
 ![](result_191008_xiehe/remove_concent.png)
 
 [mean-variance-remove-concen.pdf](result_191008_xiehe/mean-variance-remove-concen.pdf)
+
+
 
