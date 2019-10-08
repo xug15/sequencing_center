@@ -65,14 +65,30 @@
 | unique mapped ambiguous reads of RNA |  214405   |  181131  |  230762   |  188910   |  228414   |  245617  |  141981  |  177533  |  230701  |  133559  |  225230   |  179574  |  127925  |  199732  |  207265  |  175193  |  125837  |  182193   |  243468  |  240587  | 
 
 ## Gene counts
-[merge count.txt](result_10=91008_xiehe/merge.counter)
+[merge count.txt](result_191008_xiehe/merge.counter)
 
 ## Differential expression gene
 
-![](result_10=91008_xiehe/mds.png)
+### Multidimensional scaling plot of distances between gene expression profiles
 
-![](result_10=91008_xiehe/mean-variance-raw.png)
+* Description
 
-![](result_10=91008_xiehe/mean-variance-remove-lowexpres.png)
+Plot samples on a two-dimensional scatterplot so that distances on the plot approximate the typical log2 fold changes between the samples.
 
-![](result_10=91008_xiehe/mean-variance-remove-batch-effect.png)
+* Details
+
+This function is a variation on the usual multdimensional scaling (or principle coordinate) plot, in that a distance measure particularly appropriate for the microarray context is used. The distance between each pair of samples (columns) is the root-mean-square deviation (Euclidean distance) for the top top genes. Distances on the plot can be interpreted as leading log2-fold-change, meaning the typical (root-mean-square) log2-fold-change between the samples for the genes that distinguish those samples.
+
+![](result_191008_xiehe/mds.png)
+
+### mean-variance-raw
+
+![](result_191008_xiehe/mean-variance-raw.png)
+
+### mean-variance-remove-lowexpres
+
+![](result_191008_xiehe/mean-variance-remove-lowexpres.png)
+
+### mean-variance-remove-batch-effec
+
+![](result_191008_xiehe/mean-variance-remove-batch-effect.png)
