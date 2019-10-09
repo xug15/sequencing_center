@@ -2,7 +2,7 @@
 
 ## rRNA 
 
-* rRNA 含量比较低，说明取出核糖体序列成功。结果合理。
+* rRNA 含量比较低，说明去除核糖体序列成功，结果合理。
 
 |          |                     |                     |                     |                     |                     |                     |                     |                     |                     |                     |                     |                     |                     |                     |                     |                     |                     |                     |                     |                     | 
 |----------|---------------------|---------------------|---------------------|---------------------|---------------------|---------------------|---------------------|---------------------|---------------------|---------------------|---------------------|---------------------|---------------------|---------------------|---------------------|---------------------|---------------------|---------------------|---------------------|---------------------| 
@@ -13,7 +13,7 @@
 
 ## mapping
 
-* 各个样品的数据约 60% 可以 Uniquely map。比对结果合理。
+* 各个样品大约有 60% 可以 Uniquely map到基因组中，结果合理。
 
 ![](result_191008_xiehe/mapping_ratio.png)
 
@@ -57,7 +57,7 @@
 
 ## Duplication
 
-* 比较的结果有不同程度的 Duplication 的现象。这个是由于建库中 PCR 结果产生，结果在可以接受的区间中。去除后进行后面的统计。
+* 数据有不同程度的 Duplication 的现象。这个是由于建库中 PCR 结果产生，结果在可以接受的区间中。去除后进行后续的统计。
 
 ![](result_191008_xiehe/duplication.png)
 
@@ -68,7 +68,7 @@
 
 ## After remove duplicaton: DNA Intron and RNA
 
-* 比对的read 的分布情况。
+* read 大约有50%比对到 RNA 中，另有40%比对到intron区。结果合格。
 
 ![](result_191008_xiehe/mapping_part.png)
 
@@ -133,28 +133,7 @@ This function is a variation on the usual multdimensional scaling (or principle 
 * Gene expression after normalization: [normal_gene_expression.csv](result_191008_xiehe/normal_gene_expression.csv).
 
 ### DE results
-
-### Remove library time batch effect. [DE.remove_library.csv](result_191008_xiehe/remove_library_time.csv)
-* Cutoff: P value <0.01  (660 gene.)
-
-|      Gene       | logFC        | AveExpr      | t            | P.Value     | adj.P.Val   | B            |
-|-----------------|--------------|--------------|--------------|-------------|-------------|--------------| 
-| ENSG00000268658 | 3.264795882  | 3.203486521  | 6.625781916  | 2.40E-06    | 0.057689105 | 4.605847104  | 
-| ENSG00000183625 | 1.882921794  | 3.650082293  | 5.543445395  | 2.37E-05    | 0.222008152 | 2.695294842  | 
-| ENSG00000234832 | 2.316597584  | 1.222863803  | 5.471809681  | 2.77E-05    | 0.222008152 | 2.080780157  | 
-| ENSG00000211667 | 3.897694521  | -1.481160419 | 5.241904698  | 4.60E-05    | 0.227957697 | 1.072682667  | 
-| ENSG00000262074 | 3.330954371  | 2.22851116   | 5.197145147  | 5.08E-05    | 0.227957697 | 1.864904987  | 
-| ENSG00000188266 | -2.610963195 | -0.383434906 | -5.024243058 | 7.46E-05    | 0.227957697 | 0.546088764  | 
-| ENSG00000260078 | 1.785808498  | 3.951582035  | 5.020922045  | 7.52E-05    | 0.227957697 | 1.691549393  | 
-| ENSG00000268240 | 3.001084065  | 4.46997216   | 4.970936565  | 8.41E-05    | 0.227957697 | 1.606186986  | 
-| ENSG00000272831 | 2.988308612  | -1.296363176 | 4.948799689  | 8.84E-05    | 0.227957697 | 0.446656939  | 
-
-* logFC: log2 fold change of no drug/ treatment.   
-* AveExpr: Average expression across all samples, in log2 CPM  
-* t: logFC divided by its standard error  
-* P.Value: Raw p-value (based on t) from test that logFC differs from 0  
-* adj.P.Val: Benjamini-Hochberg false discovery rate adjusted p-value  
-* B: log-odds that gene is DE (arguably less useful than the other columns)  
+ 
 
 ### Remove RNA concentration batch effect. [DE.remove_concen.csv](result_191008_xiehe/remove_concen.csv)
 * Cutoff: P value <0.01  (352 gene.)
@@ -177,6 +156,28 @@ This function is a variation on the usual multdimensional scaling (or principle 
 * P.Value: Raw p-value (based on t) from test that logFC differs from 0  
 * adj.P.Val: Benjamini-Hochberg false discovery rate adjusted p-value  
 * B: log-odds that gene is DE (arguably less useful than the other columns)  
+
+### Remove library time batch effect. [DE.remove_library.csv](result_191008_xiehe/remove_library_time.csv)
+* Cutoff: P value <0.01  (660 gene.)
+
+|      Gene       | logFC        | AveExpr      | t            | P.Value     | adj.P.Val   | B            |
+|-----------------|--------------|--------------|--------------|-------------|-------------|--------------| 
+| ENSG00000268658 | 3.264795882  | 3.203486521  | 6.625781916  | 2.40E-06    | 0.057689105 | 4.605847104  | 
+| ENSG00000183625 | 1.882921794  | 3.650082293  | 5.543445395  | 2.37E-05    | 0.222008152 | 2.695294842  | 
+| ENSG00000234832 | 2.316597584  | 1.222863803  | 5.471809681  | 2.77E-05    | 0.222008152 | 2.080780157  | 
+| ENSG00000211667 | 3.897694521  | -1.481160419 | 5.241904698  | 4.60E-05    | 0.227957697 | 1.072682667  | 
+| ENSG00000262074 | 3.330954371  | 2.22851116   | 5.197145147  | 5.08E-05    | 0.227957697 | 1.864904987  | 
+| ENSG00000188266 | -2.610963195 | -0.383434906 | -5.024243058 | 7.46E-05    | 0.227957697 | 0.546088764  | 
+| ENSG00000260078 | 1.785808498  | 3.951582035  | 5.020922045  | 7.52E-05    | 0.227957697 | 1.691549393  | 
+| ENSG00000268240 | 3.001084065  | 4.46997216   | 4.970936565  | 8.41E-05    | 0.227957697 | 1.606186986  | 
+| ENSG00000272831 | 2.988308612  | -1.296363176 | 4.948799689  | 8.84E-05    | 0.227957697 | 0.446656939  | 
+
+* logFC: log2 fold change of no drug/ treatment.   
+* AveExpr: Average expression across all samples, in log2 CPM  
+* t: logFC divided by its standard error  
+* P.Value: Raw p-value (based on t) from test that logFC differs from 0  
+* adj.P.Val: Benjamini-Hochberg false discovery rate adjusted p-value  
+* B: log-odds that gene is DE (arguably less useful than the other columns) 
 
 ### For example: (using cpm)
 ![](result_191008_xiehe/ENSG00000169429.png)
