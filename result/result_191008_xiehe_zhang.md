@@ -87,7 +87,7 @@ This function is a variation on the usual multdimensional scaling (or principle 
 
 ![](result_191008_xiehe/mean_variance-compring.png)
 
-* Gene expression after normalization[normal_gene_expression.csv](result_191008_xiehe/normal_gene_expression.csv).
+* Gene expression after normalization: [normal_gene_expression.csv](result_191008_xiehe/normal_gene_expression.csv).
 
 ### mean-variance-raw
 
