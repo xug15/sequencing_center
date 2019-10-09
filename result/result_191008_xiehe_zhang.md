@@ -177,12 +177,51 @@ This function is a variation on the usual multdimensional scaling (or principle 
 ![](result_191008_xiehe/ENSG00000234832.png)
 
 ## KEGG
-* Using the result from removed library time batch effect.   
-* Cutoff: P value <0.01  (660 gene.)
-* DAVID recognize 423 gene, and those gene were processed.
+* Using the result from removed library time batch effect.  
+
+### Using remove RNA concentration batch effect.
+* Cutoff: P value <0.01  (352 gene.)
+* DAVID recognize 179 gene, and those gene were processed.
+
+
 
 * 其中展示非洲锥虫病，疟疾，自噬调节。相关基因都为处理有基因表达量下降。
 
+
+
+|              |                                  |       |                    |                      |                                                                                                      |            |          |           |                    |                    |                     |                    | 
+|--------------|----------------------------------|-------|--------------------|----------------------|------------------------------------------------------------------------------------------------------|------------|----------|-----------|--------------------|--------------------|---------------------|--------------------| 
+| Category     | Term                             | Count | %                  | PValue               | Genes                                                                                                | List Total | Pop Hits | Pop Total | Fold Enrichment    | Bonferroni         | Benjamini           | FDR                | 
+| KEGG_PATHWAY | hsa05143:African trypanosomiasis | 4     | 2.2346368715083798 | 0.002593677752566211 | ENSG00000244734, ENSG00000188536, ENSG00000206172, ENSG00000131203                                   | 59         | 33       | 6879      | 14.132511556240368 | 0.3208817593240545 | 0.3208817593240545  | 3.0502286764656383 | 
+| KEGG_PATHWAY | hsa04068:FoxO signaling pathway  | 6     | 3.35195530726257   | 0.005217084278771944 | ENSG00000170296, ENSG00000139112, ENSG00000034713, ENSG00000145632, ENSG00000121691, ENSG00000268173 | 59         | 134      | 6879      | 5.220591955476853  | 0.5413098615319831 | 0.32273333282375627 | 6.048494812051441  | 
+| KEGG_PATHWAY | hsa05144:Malaria                 | 4     | 2.2346368715083798 | 0.007963168114900276 | ENSG00000244734, ENSG00000188536, ENSG00000206172, ENSG00000169429                                   | 59         | 49       | 6879      | 9.517813905223106  | 0.6961622621186268 | 0.32772457178486947 | 9.095765275369471  | 
+| KEGG_PATHWAY | hsa04140:Regulation of autophagy | 3     | 1.675977653631285  | 0.018510197262068637 | ENSG00000170296, ENSG00000139112, ENSG00000034713                                                    | 59         | 25       | 6879      | 13.991186440677966 | 0.938200781685664  | 0.5014074953554677  | 19.976964163664324 | 
+| KEGG_PATHWAY | hsa00380:Tryptophan metabolism   | 3     | 1.675977653631285  | 0.04441724688206541  | ENSG00000121691, ENSG00000002726, ENSG00000131203                                                    | 59         | 40       | 6879      | 8.74449152542373   | 0.9988519068870847 | 0.741776702736      | 41.8374454927691   | 
+| KEGG_PATHWAY | hsa03013:RNA transport           | 5     | 2.793296089385475  | 0.05642461182044176  | ENSG00000265185, ENSG00000161960, ENSG00000262074, ENSG00000100664, ENSG00000173812                  | 59         | 172      | 6879      | 3.3893378005518326 | 0.9998255326932943 | 0.7636154926477781  | 49.98049687898445  | 
+| KEGG_PATHWAY | hsa04360:Axon guidance           | 4     | 2.2346368715083798 | 0.09127181911801796  | ENSG00000169242, ENSG00000154134, ENSG00000172602, ENSG00000133216                                   | 59         | 127      | 6879      | 3.6722274122514347 | 0.9999993592841743 | 0.8696119105935002  | 68.06937944880217  | 
+
+### African trypanosomiasis (非洲锥虫病)
+![](result_191008_xiehe/african_image/ENSG00000244734.png)
+![](result_191008_xiehe/african_image/ENSG00000188536.png)
+![](result_191008_xiehe/african_image/ENSG00000206172.png)
+![](result_191008_xiehe/african_image/ENSG00000131203.png)
+
+### Malaria （疟疾）
+![](result_191008_xiehe/malaria_image/ENSG00000169429.png)
+![](result_191008_xiehe/malaria_image/ENSG00000188536.png)
+![](result_191008_xiehe/malaria_image/ENSG00000206172.png)
+![](result_191008_xiehe/malaria_image/ENSG00000244734.png)
+
+## Regulation of autophagy (自噬调节)
+![](result_191008_xiehe/autophagy_image/ENSG00000034713.png)
+![](result_191008_xiehe/autophagy_image/ENSG00000139112.png)
+![](result_191008_xiehe/autophagy_image/ENSG00000170296.png)
+
+
+
+### Using remove library batch effect.
+* Cutoff: P value <0.01  (660 gene.)
+* DAVID recognize 423 gene, and those gene were processed.
 |              |                                                                     |       |                    |                      |                                                                                                                                                                                           |            |          |           |                    |                     |                     |                    | 
 |--------------|---------------------------------------------------------------------|-------|--------------------|----------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|------------|----------|-----------|--------------------|---------------------|---------------------|--------------------| 
 | Category     | Term                                                                | Count | %                  | PValue               | Genes                                                                                                                                                                                     | List Total | Pop Hits | Pop Total | Fold Enrichment    | Bonferroni          | Benjamini           | FDR                | 
@@ -230,35 +269,6 @@ This function is a variation on the usual multdimensional scaling (or principle 
 | KEGG_PATHWAY | hsa04010:MAPK signaling pathway                                     | 10    | 2.3640661938534278 | 0.09461237454009233  | ENSG00000102882, ENSG00000138166, ENSG00000132155, ENSG00000177606, ENSG00000173110, ENSG00000128591, ENSG00000115594, ENSG00000165995, ENSG00000067182, ENSG00000154229                  | 149        | 253      | 6879      | 1.8248136456481947 | 0.9999999998243657  | 0.44629404792954197 | 71.93588831572649  | 
 
 
-
-
-|              |                                  |       |                    |                      |                                                                                                      |            |          |           |                    |                    |                     |                    | 
-|--------------|----------------------------------|-------|--------------------|----------------------|------------------------------------------------------------------------------------------------------|------------|----------|-----------|--------------------|--------------------|---------------------|--------------------| 
-| Category     | Term                             | Count | %                  | PValue               | Genes                                                                                                | List Total | Pop Hits | Pop Total | Fold Enrichment    | Bonferroni         | Benjamini           | FDR                | 
-| KEGG_PATHWAY | hsa05143:African trypanosomiasis | 4     | 2.2346368715083798 | 0.002593677752566211 | ENSG00000244734, ENSG00000188536, ENSG00000206172, ENSG00000131203                                   | 59         | 33       | 6879      | 14.132511556240368 | 0.3208817593240545 | 0.3208817593240545  | 3.0502286764656383 | 
-| KEGG_PATHWAY | hsa04068:FoxO signaling pathway  | 6     | 3.35195530726257   | 0.005217084278771944 | ENSG00000170296, ENSG00000139112, ENSG00000034713, ENSG00000145632, ENSG00000121691, ENSG00000268173 | 59         | 134      | 6879      | 5.220591955476853  | 0.5413098615319831 | 0.32273333282375627 | 6.048494812051441  | 
-| KEGG_PATHWAY | hsa05144:Malaria                 | 4     | 2.2346368715083798 | 0.007963168114900276 | ENSG00000244734, ENSG00000188536, ENSG00000206172, ENSG00000169429                                   | 59         | 49       | 6879      | 9.517813905223106  | 0.6961622621186268 | 0.32772457178486947 | 9.095765275369471  | 
-| KEGG_PATHWAY | hsa04140:Regulation of autophagy | 3     | 1.675977653631285  | 0.018510197262068637 | ENSG00000170296, ENSG00000139112, ENSG00000034713                                                    | 59         | 25       | 6879      | 13.991186440677966 | 0.938200781685664  | 0.5014074953554677  | 19.976964163664324 | 
-| KEGG_PATHWAY | hsa00380:Tryptophan metabolism   | 3     | 1.675977653631285  | 0.04441724688206541  | ENSG00000121691, ENSG00000002726, ENSG00000131203                                                    | 59         | 40       | 6879      | 8.74449152542373   | 0.9988519068870847 | 0.741776702736      | 41.8374454927691   | 
-| KEGG_PATHWAY | hsa03013:RNA transport           | 5     | 2.793296089385475  | 0.05642461182044176  | ENSG00000265185, ENSG00000161960, ENSG00000262074, ENSG00000100664, ENSG00000173812                  | 59         | 172      | 6879      | 3.3893378005518326 | 0.9998255326932943 | 0.7636154926477781  | 49.98049687898445  | 
-| KEGG_PATHWAY | hsa04360:Axon guidance           | 4     | 2.2346368715083798 | 0.09127181911801796  | ENSG00000169242, ENSG00000154134, ENSG00000172602, ENSG00000133216                                   | 59         | 127      | 6879      | 3.6722274122514347 | 0.9999993592841743 | 0.8696119105935002  | 68.06937944880217  | 
-
-### African trypanosomiasis (非洲锥虫病)
-![](result_191008_xiehe/african_image/ENSG00000244734.png)
-![](result_191008_xiehe/african_image/ENSG00000188536.png)
-![](result_191008_xiehe/african_image/ENSG00000206172.png)
-![](result_191008_xiehe/african_image/ENSG00000131203.png)
-
-### Malaria （疟疾）
-![](result_191008_xiehe/malaria_image/ENSG00000169429.png)
-![](result_191008_xiehe/malaria_image/ENSG00000188536.png)
-![](result_191008_xiehe/malaria_image/ENSG00000206172.png)
-![](result_191008_xiehe/malaria_image/ENSG00000244734.png)
-
-## Regulation of autophagy (自噬调节)
-![](result_191008_xiehe/autophagy_image/ENSG00000034713.png)
-![](result_191008_xiehe/autophagy_image/ENSG00000139112.png)
-![](result_191008_xiehe/autophagy_image/ENSG00000170296.png)
 
 ## GO
 
