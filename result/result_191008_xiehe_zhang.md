@@ -272,10 +272,9 @@ This function is a variation on the usual multdimensional scaling (or principle 
 
 ## GO
 
-* Using the result from removed library time batch effect.   
-* Cutoff: P value <0.01  
-
-* Using the result from removed library time batch effect. 
+### Using remove RNA concentration batch effect.
+* Cutoff: P value <0.01  (352 gene.)
+* DAVID recognize 179 gene, and those gene were processed.
 
 |                  |                                                                                                             |       |                    |                       |                                                                                                                                                                                                                                              |            |          |           |                    |                     |                     |                     | 
 |------------------|-------------------------------------------------------------------------------------------------------------|-------|--------------------|-----------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|------------|----------|-----------|--------------------|---------------------|---------------------|---------------------| 
