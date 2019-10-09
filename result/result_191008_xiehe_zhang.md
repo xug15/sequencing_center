@@ -183,7 +183,7 @@ This function is a variation on the usual multdimensional scaling (or principle 
 ![](result_191008_xiehe/ENSG00000169429.png)
 ![](result_191008_xiehe/ENSG00000183625.png)
 ![](result_191008_xiehe/ENSG00000197013.png)
-![](result_191008_xiehe/ENSG00000211667.png)
+![](result_191008_xiehe/ENSG00000260078.png)
 ![](result_191008_xiehe/ENSG00000234832.png)
 
 ## KEGG
