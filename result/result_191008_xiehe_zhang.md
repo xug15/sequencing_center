@@ -190,6 +190,8 @@ This function is a variation on the usual multdimensional scaling (or principle 
 * Using the result from removed library time batch effect.   
 * Cutoff: P value <0.01  
 
+
+
 |              |                                  |       |                    |                      |                                                                                                      |            |          |           |                    |                    |                     |                    | 
 |--------------|----------------------------------|-------|--------------------|----------------------|------------------------------------------------------------------------------------------------------|------------|----------|-----------|--------------------|--------------------|---------------------|--------------------| 
 | Category     | Term                             | Count | %                  | PValue               | Genes                                                                                                | List Total | Pop Hits | Pop Total | Fold Enrichment    | Bonferroni         | Benjamini           | FDR                | 
@@ -200,6 +202,12 @@ This function is a variation on the usual multdimensional scaling (or principle 
 | KEGG_PATHWAY | hsa00380:Tryptophan metabolism   | 3     | 1.675977653631285  | 0.04441724688206541  | ENSG00000121691, ENSG00000002726, ENSG00000131203                                                    | 59         | 40       | 6879      | 8.74449152542373   | 0.9988519068870847 | 0.741776702736      | 41.8374454927691   | 
 | KEGG_PATHWAY | hsa03013:RNA transport           | 5     | 2.793296089385475  | 0.05642461182044176  | ENSG00000265185, ENSG00000161960, ENSG00000262074, ENSG00000100664, ENSG00000173812                  | 59         | 172      | 6879      | 3.3893378005518326 | 0.9998255326932943 | 0.7636154926477781  | 49.98049687898445  | 
 | KEGG_PATHWAY | hsa04360:Axon guidance           | 4     | 2.2346368715083798 | 0.09127181911801796  | ENSG00000169242, ENSG00000154134, ENSG00000172602, ENSG00000133216                                   | 59         | 127      | 6879      | 3.6722274122514347 | 0.9999993592841743 | 0.8696119105935002  | 68.06937944880217  | 
+
+### African trypanosomiasis (非洲锥虫病)
+![](result_191008_xiehe/african_image/ENSG00000244734.png)
+![](result_191008_xiehe/african_image/ENSG00000188536.png)
+![](result_191008_xiehe/african_image/ENSG00000206172.png)
+![](result_191008_xiehe/african_image/ENSG00000131203.png)
 
 ## GO
 
