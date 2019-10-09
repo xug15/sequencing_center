@@ -181,6 +181,12 @@ This function is a variation on the usual multdimensional scaling (or principle 
 ![](result_191008_xiehe/african_image/ENSG00000206172.png)
 ![](result_191008_xiehe/african_image/ENSG00000131203.png)
 
+### Malaria （疟疾）
+![](result_191008_xiehe/malaria_image/ENSG00000169429.png)
+![](result_191008_xiehe/malaria_image/ENSG00000188536.png)
+![](result_191008_xiehe/malaria_image/ENSG00000206172.png)
+![](result_191008_xiehe/malaria_image/ENSG00000244734.png)
+
 ## GO
 
 * Using the result from removed library time batch effect.   
