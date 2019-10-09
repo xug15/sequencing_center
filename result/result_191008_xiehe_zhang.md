@@ -187,6 +187,11 @@ This function is a variation on the usual multdimensional scaling (or principle 
 ![](result_191008_xiehe/malaria_image/ENSG00000206172.png)
 ![](result_191008_xiehe/malaria_image/ENSG00000244734.png)
 
+## Regulation of autophagy (自噬调节)
+![](result_191008_xiehe/autophagy_image/ENSG00000034713.png)
+![](result_191008_xiehe/autophagy_image/ENSG00000139112.png)
+![](result_191008_xiehe/autophagy_image/ENSG00000170296.png)
+
 ## GO
 
 * Using the result from removed library time batch effect.   
