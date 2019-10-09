@@ -99,9 +99,7 @@ This function is a variation on the usual multdimensional scaling (or principle 
 
 [mds.pdf](result_191008_xiehe/mds.pdf)
 
-## mean-variance
-
-* Bacth effect
+## Bacth effect
 
 | Num |                         | 旧编号  | 日期         | tube | 新编号   | 浓度     |
 |-----|-------------------------|------|------------|------|-------|--------| 
@@ -128,6 +126,8 @@ This function is a variation on the usual multdimensional scaling (or principle 
 
 * Remove batch effect.
 
+**mean-variance**
+
 ![](result_191008_xiehe/mean_variance-compring.png)
 
 * Gene expression after normalization: [normal_gene_expression.csv](result_191008_xiehe/normal_gene_expression.csv).
@@ -136,7 +136,6 @@ This function is a variation on the usual multdimensional scaling (or principle 
 
 ### Remove library time batch effect. [DE.remove_library.csv](result_191008_xiehe/remove_library_time.csv)
 * Cutoff: P value <0.01  (660 gene.)
-
 
 |      Gene       | logFC        | AveExpr      | t            | P.Value     | adj.P.Val   | B            |
 |-----------------|--------------|--------------|--------------|-------------|-------------|--------------| 
@@ -150,7 +149,6 @@ This function is a variation on the usual multdimensional scaling (or principle 
 | ENSG00000268240 | 3.001084065  | 4.46997216   | 4.970936565  | 8.41E-05    | 0.227957697 | 1.606186986  | 
 | ENSG00000272831 | 2.988308612  | -1.296363176 | 4.948799689  | 8.84E-05    | 0.227957697 | 0.446656939  | 
 
-
 * logFC: log2 fold change of no drug/ treatment.   
 * AveExpr: Average expression across all samples, in log2 CPM  
 * t: logFC divided by its standard error  
@@ -160,7 +158,6 @@ This function is a variation on the usual multdimensional scaling (or principle 
 
 ### Remove RNA concentration batch effect. [DE.remove_concen.csv](result_191008_xiehe/remove_concen.csv)
 * Cutoff: P value <0.01  (352 gene.)
-
 
 | logFC           | AveExpr      | t            | P.Value      | adj.P.Val   | B           |              | 
 |-----------------|--------------|--------------|--------------|-------------|-------------|--------------| 
@@ -174,15 +171,12 @@ This function is a variation on the usual multdimensional scaling (or principle 
 | ENSG00000229436 | -2.040532208 | 1.364829905  | -4.625295052 | 0.000118529 | 0.333461188 | 0.336269222  | 
 | ENSG00000231890 | 1.583336541  | 2.956686637  | 4.604213967  | 0.000124923 | 0.333461188 | 1.03949527   | 
 
-
-
 * logFC: log2 fold change of no drug/ treatment.   
 * AveExpr: Average expression across all samples, in log2 CPM  
 * t: logFC divided by its standard error  
 * P.Value: Raw p-value (based on t) from test that logFC differs from 0  
 * adj.P.Val: Benjamini-Hochberg false discovery rate adjusted p-value  
 * B: log-odds that gene is DE (arguably less useful than the other columns)  
-
 
 ### For example: (using cpm)
 ![](result_191008_xiehe/ENSG00000169429.png)
@@ -198,8 +192,6 @@ This function is a variation on the usual multdimensional scaling (or principle 
 * Cutoff: P value <0.01  (352 gene.)
 * DAVID recognize 179 gene, and those gene were processed.
 
-
-
 * 其中展示非洲锥虫病，疟疾，自噬调节。相关基因都为处理有基因表达量下降。
 
 |                   |                                  |       |             |             |                                                                                                      |            |          |           |                 |             |             |             | 
@@ -212,9 +204,6 @@ This function is a variation on the usual multdimensional scaling (or principle 
 | hsa00380：色氨酸代谢    | hsa00380:Tryptophan metabolism   | 3     | 1.675977654 | 0.044417247 | ENSG00000121691, ENSG00000002726, ENSG00000131203                                                    | 59         | 40       | 6879      | 8.744491525     | 0.998851907 | 0.741776703 | 41.83744549 | 
 | hsa03013：RNA转运    | hsa03013:RNA transport           | 5     | 2.793296089 | 0.056424612 | ENSG00000265185, ENSG00000161960, ENSG00000262074, ENSG00000100664, ENSG00000173812                  | 59         | 172      | 6879      | 3.389337801     | 0.999825533 | 0.763615493 | 49.98049688 | 
 | hsa04360：轴突指南     | hsa04360:Axon guidance           | 4     | 2.234636872 | 0.091271819 | ENSG00000169242, ENSG00000154134, ENSG00000172602, ENSG00000133216                                   | 59         | 127      | 6879      | 3.672227412     | 0.999999359 | 0.869611911 | 68.06937945 | 
-
-
-
 
 ### African trypanosomiasis (非洲锥虫病)
 ![](result_191008_xiehe/african_image/ENSG00000244734.png)
@@ -232,8 +221,6 @@ This function is a variation on the usual multdimensional scaling (or principle 
 ![](result_191008_xiehe/autophagy_image/ENSG00000034713.png)
 ![](result_191008_xiehe/autophagy_image/ENSG00000139112.png)
 ![](result_191008_xiehe/autophagy_image/ENSG00000170296.png)
-
-
 
 ### Using remove library batch effect.
 * Cutoff: P value <0.01  (660 gene.)
@@ -285,8 +272,6 @@ This function is a variation on the usual multdimensional scaling (or principle 
 | hsa04514：细胞粘附分子（CAMs）      | hsa04514:Cell adhesion molecules (CAMs)                             | 7     | 1.654846336 | 0.085230846 | ENSG00000197822, ENSG00000196126, ENSG00000158887, ENSG00000091129, ENSG00000261371, ENSG00000172116, ENSG00000170558                                                                     | 149        | 142      | 6879      | 2.275876737     | 0.999999998 | 0.419654619 | 67.98253305 | 
 | hsa04010：MAPK信号通路          | hsa04010:MAPK signaling pathway                                     | 10    | 2.364066194 | 0.094612375 | ENSG00000102882, ENSG00000138166, ENSG00000132155, ENSG00000177606, ENSG00000173110, ENSG00000128591, ENSG00000115594, ENSG00000165995, ENSG00000067182, ENSG00000154229                  | 149        | 253      | 6879      | 1.824813646     | 1           | 0.446294048 | 71.93588832 | 
 
-
-
 ## GO
 
 ### Using remove RNA concentration batch effect.
@@ -333,5 +318,3 @@ This function is a variation on the usual multdimensional scaling (or principle 
 | GOTERM_BP_DIRECT | GO:0060996~dendritic spine development                                                                      | 2     | 1.1173184357541899 | 0.08477837104248362   | ENSG00000168374, ENSG00000133216                                                                                                                                                                                                             | 115        | 13       | 16792     | 22.464214046822743 | 1.0                 | 0.9056240377628247  | 74.47617881831003   | 
 | GOTERM_BP_DIRECT | GO:0070306~lens fiber cell differentiation                                                                  | 2     | 1.1173184357541899 | 0.08477837104248362   | ENSG00000178573, ENSG00000136603                                                                                                                                                                                                             | 115        | 13       | 16792     | 22.464214046822743 | 1.0                 | 0.9056240377628247  | 74.47617881831003   | 
 | GOTERM_BP_DIRECT | GO:0032869~cellular response to insulin stimulus                                                            | 3     | 1.675977653631285  | 0.09632714070078213   | ENSG00000175567, ENSG00000220205, ENSG00000268173                                                                                                                                                                                            | 115        | 77       | 16792     | 5.688989271597967  | 1.0                 | 0.9267951076894462  | 79.01378990467431   | 
-
-
