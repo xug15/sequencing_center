@@ -116,34 +116,6 @@ This function is a variation on the usual multdimensional scaling (or principle 
 
 * Gene expression after normalization: [normal_gene_expression.csv](result_191008_xiehe/normal_gene_expression.csv).
 
-### mean-variance-raw
-
-
-
-![](result_191008_xiehe/mean-variance-raw.png)
-
-[mean-variance-raw.pdf](result_191008_xiehe/mean-variance-raw.pdf)
-
-### mean-variance-remove-lowexpres
-
-![](result_191008_xiehe/mean-variance-remove-lowexpres.png)
-
-[mean-variance-remove-lowexpres.pd](result_191008_xiehe/mean-variance-remove-lowexpres.pdf)
-
-### mean-variance-remove-batch-effec
-
-* remove library time
-
-![](result_191008_xiehe/remove_library_time.png)
-
-[mean-variance-remove-library_time.pdf](result_191008_xiehe/mean-variance-remove-library_time.pdf)
-
-* remove concentration
-
-![](result_191008_xiehe/remove_concent.png)
-
-[mean-variance-remove-concen.pdf](result_191008_xiehe/mean-variance-remove-concen.pdf)
-
 ### DE results
 
 * Remove library time batch effect. [DE.remove_library.csv](result_191008_xiehe/remove_library_time.csv)
