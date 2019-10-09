@@ -184,8 +184,7 @@ This function is a variation on the usual multdimensional scaling (or principle 
 * B: log-odds that gene is DE (arguably less useful than the other columns)  
 
 
-
-* Remove RNA concentration batch effect. [DE.remove_concentration.csv](result_191008_xiehe/remove_concen.csv)
+### For example: (using cpm)
 ![](result_191008_xiehe/ENSG00000169429.png)
 ![](result_191008_xiehe/ENSG00000183625.png)
 ![](result_191008_xiehe/ENSG00000197013.png)
