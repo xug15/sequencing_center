@@ -134,7 +134,7 @@ This function is a variation on the usual multdimensional scaling (or principle 
 
 ### DE results
 
-* Remove library time batch effect. [DE.remove_library.csv](result_191008_xiehe/remove_library_time.csv)
+### Remove library time batch effect. [DE.remove_library.csv](result_191008_xiehe/remove_library_time.csv)
 * Cutoff: P value <0.01  (660 gene.)
 
 
@@ -158,7 +158,7 @@ This function is a variation on the usual multdimensional scaling (or principle 
 * adj.P.Val: Benjamini-Hochberg false discovery rate adjusted p-value  
 * B: log-odds that gene is DE (arguably less useful than the other columns)  
 
-* Remove RNA concentration batch effect. [DE.remove_concen.csv](result_191008_xiehe/remove_concen.csv)
+### Remove RNA concentration batch effect. [DE.remove_concen.csv](result_191008_xiehe/remove_concen.csv)
 * Cutoff: P value <0.01  (352 gene.)
 
 
