@@ -87,6 +87,8 @@ This function is a variation on the usual multdimensional scaling (or principle 
 
 ![](result_191008_xiehe/mean_variance-compring.png)
 
+* Gene expression after normalization[normal_gene_expression.csv](result_191008_xiehe/normal_gene_expression.csv).
+
 ### mean-variance-raw
 
 ![](result_191008_xiehe/mean-variance-raw.png)
@@ -113,6 +115,42 @@ This function is a variation on the usual multdimensional scaling (or principle 
 
 [mean-variance-remove-concen.pdf](result_191008_xiehe/mean-variance-remove-concen.pdf)
 
+### DE results
+
+* Remove library time batch effect. [DE.remove_library.csv](result_191008_xiehe/remove_library_time.csv)
+
+|      Gene       | logFC        | AveExpr      | t            | P.Value     | adj.P.Val   | B            |
+|-----------------|--------------|--------------|--------------|-------------|-------------|--------------| 
+| ENSG00000268658 | 3.264795882  | 3.203486521  | 6.625781916  | 2.40E-06    | 0.057689105 | 4.605847104  | 
+| ENSG00000183625 | 1.882921794  | 3.650082293  | 5.543445395  | 2.37E-05    | 0.222008152 | 2.695294842  | 
+| ENSG00000234832 | 2.316597584  | 1.222863803  | 5.471809681  | 2.77E-05    | 0.222008152 | 2.080780157  | 
+| ENSG00000211667 | 3.897694521  | -1.481160419 | 5.241904698  | 4.60E-05    | 0.227957697 | 1.072682667  | 
+| ENSG00000262074 | 3.330954371  | 2.22851116   | 5.197145147  | 5.08E-05    | 0.227957697 | 1.864904987  | 
+| ENSG00000188266 | -2.610963195 | -0.383434906 | -5.024243058 | 7.46E-05    | 0.227957697 | 0.546088764  | 
+| ENSG00000260078 | 1.785808498  | 3.951582035  | 5.020922045  | 7.52E-05    | 0.227957697 | 1.691549393  | 
+| ENSG00000268240 | 3.001084065  | 4.46997216   | 4.970936565  | 8.41E-05    | 0.227957697 | 1.606186986  | 
+| ENSG00000272831 | 2.988308612  | -1.296363176 | 4.948799689  | 8.84E-05    | 0.227957697 | 0.446656939  | 
+| ENSG00000197013 | 1.490139659  | 4.563861697  | 4.885387415  | 0.000101885 | 0.227957697 | 1.438110126  | 
+| ENSG00000271532 | -2.783551246 | -0.711442585 | -4.819147454 | 0.000118255 | 0.227957697 | 0.095332039  | 
+| ENSG00000169429 | 2.21571796   | 9.259948174  | 4.778862387  | 0.000129492 | 0.227957697 | 1.224097206  | 
+| ENSG00000260898 | 2.082312102  | 4.178667397  | 4.758823237  | 0.00013548  | 0.227957697 | 1.179479104  | 
+| ENSG00000175485 | 3.479549898  | -1.230743411 | 4.59710829   | 0.000195317 | 0.227957697 | 0.153954313  | 
+| ENSG00000133800 | 1.940116798  | 2.274309263  | 4.593672895  | 0.000196844 | 0.227957697 | 0.746053564  | 
+| ENSG00000222675 | 2.322183461  | -1.721682461 | 4.590364001  | 0.000198327 | 0.227957697 | -0.110531871 | 
+| ENSG00000259438 | 3.181130887  | -1.085125486 | 4.58846187   | 0.000199184 | 0.227957697 | 0.111017737  | 
+| ENSG00000253314 | 3.481526062  | -1.812980991 | 4.553171904  | 0.000215788 | 0.227957697 | -0.375073845 | 
+| ENSG00000107593 | 2.784951996  | -1.215973654 | 4.523566621  | 0.000230794 | 0.227957697 | -0.237812025 | 
+| ENSG00000223946 | -1.963284556 | 1.500154739  | -4.509036215 | 0.00023854  | 0.227957697 | 0.308161136  | 
+
+* logFC: log2 fold change of no drug/ treatment.   
+* AveExpr: Average expression across all samples, in log2 CPM  
+* t: logFC divided by its standard error  
+* P.Value: Raw p-value (based on t) from test that logFC differs from 0  
+* adj.P.Val: Benjamini-Hochberg false discovery rate adjusted p-value  
+* B: log-odds that gene is DE (arguably less useful than the other columns)  
+
+
+* Remove RNA concentration batch effect. [DE.remove_concentration.csv](result_191008_xiehe/remove_concen.csv)
 
 ## KEGG
 
