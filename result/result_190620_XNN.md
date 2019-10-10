@@ -46,6 +46,15 @@ TW15
 TW3
 ![FC](./result_190620_XNN/TW3_length.png)  
 
+## read to RNA DNA and Intron (Using Tophat and readsNumCal_intron_v3)
+
+| Iterm                                | RC15     | RC3      | RW15     | RW3      | TC15     | TC3      | TW15     | TW3      | 
+|--------------------------------------|----------|----------|----------|----------|----------|----------|----------|----------| 
+| unique mapped reads of RNA           |  2781456 |  2052673 |  3081580 |  3376747 |  3404711 |  3176944 |  3445547 |  3377738 | 
+| unique mapped reads of Intron        |  1459873 |  1136971 |  1735785 |  1886293 |  477659  |  569024  |  359882  |  522544  | 
+| unique mapped ambiguous reads of RNA |  327081  |  196881  |  492936  |  564206  |  299193  |  183668  |  308807  |  307879  | 
+| unique mapped reads of DNA           |  612731  |  381812  |  679016  |  536901  |  3750711 |  2842941 |  3290770 |  3258154 | 
+
 
 ## Differentail translatons (Xtail) Results: (Xu Gang Finished)
 [xnn_results.txt](../image/190620-XNN/xnn_results.txt)  
