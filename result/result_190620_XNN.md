@@ -99,19 +99,6 @@ Those genes in which the diﬀerence of mRNA_log2FC and RPF_log2FC did not excee
 
 Those genes in which the diﬀerence of log2R in two conditions did not exceed more than log2R.cutoff are excluded. The points will be color-coded with the pvalue_final obtained with xtail (more signiﬁcant p values having darker color). By default the log2R.cutoff is 1.
 
-
-
-
-
-[xnn_results.txt](../image/190620-XNN/xnn_results.txt)  
-
-![FC](../image/190620-XNN/FC.png)  
-[FC](../image/190620-XNN/xnnFC.pdf)  
-
-![Rs](../image/190620-XNN/Rs.png)  
-[Rs](../image/190620-XNN/xnnRs.pdf)  
-
-
 ![Volcano](../image/190620-XNN/volcano.png)  
 [Volcano](../image/190620-XNN/xnnvolcano.pdf)  
 
