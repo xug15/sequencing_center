@@ -72,6 +72,36 @@ TW3
 |[xnnrs_results.txt](./result_190620_XNN/xnnrs_results.txt) |Figure 2: result records.|
 |[xnnvolcano.pdf](./result_190620_XNN/xnnvolcano.pdf)       |It can also be useful to evaluate the fold changes cutoﬀ and p values thresholds by looking at the volcano plot.|
 
+-----------
+* blue: for genes whoes mRNA_log2FC larger than log2FC.cutoff (transcriptional level).
+* red: for genes whoes RPF_log2FC larger than log2FC.cutoff (translational level).
+* green: for genes changing homodirectionally at both level.
+* yellow: for genes changing antidirectionally at two levels.
+
+![FC](../image/190620-XNN/FC.png)   
+* Figure 1: Scatter plot of log2 fold changes
+
+Those genes in which the diﬀerence of mRNA_log2FC and RPF_log2FC did not exceed more than log2FC.cutoff are excluded. The points will be color-coded with the pvalue_final obtained with xtail (more signiﬁcant p values having darker color). By default the log2FC.cutoff is 1.
+
+-------------------
+
+* blue: for genes whoes log2R larger in ﬁrst condition than second condition.
+
+* red: for genes whoes log2R larger in second condition than the ﬁrst condition.
+
+* green: for genes whoes log2R changing homodirectionally in two condition.
+
+* yellow: for genes whoes log2R changing antidirectionally in two conditon.
+
+![Rs](../image/190620-XNN/Rs.png)
+
+* Figure 2: Scatter plot of log2 RPF-to-mRNA ratios
+
+Those genes in which the diﬀerence of log2R in two conditions did not exceed more than log2R.cutoff are excluded. The points will be color-coded with the pvalue_final obtained with xtail (more signiﬁcant p values having darker color). By default the log2R.cutoff is 1.
+
+
+
+
 
 [xnn_results.txt](../image/190620-XNN/xnn_results.txt)  
 
