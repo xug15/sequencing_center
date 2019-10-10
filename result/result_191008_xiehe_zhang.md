@@ -68,7 +68,7 @@
 
 ## After remove duplicaton: DNA Intron and RNA
 
-* read 大约有50%比对到 RNA 中，另有40%比对到intron区。结果合格。
+* read 大约有50%比对到 RNA 和 intron区。结果合格。
 
 ![](result_191008_xiehe/mapping_part.png)
 
