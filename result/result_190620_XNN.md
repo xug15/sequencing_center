@@ -59,6 +59,18 @@ TW3
 
 
 ## Differentail translatons (Xtail) Results: (Xu Gang Finished)
+
+### File list
+
+* [xnnFC.pdf](./result_190620_XNN/xnnFC.pdf)  
+* [xnnRs.pdf](./result_190620_XNN/xnnRs.pdf)  
+* [xnn_results.txt](./result_190620_XNN/xnn_results.txt)  
+* [xnnfc_results.txt](./result_190620_XNN/xnnfc_results.txt)  
+* [xnnmerge.counter](./result_190620_XNN/xnnmerge.counter)  
+* [xnnrs_results.txt](./result_190620_XNN/xnnrs_results.txt)  
+* [xnnvolcano.pdf](./result_190620_XNN/xnnvolcano.pdf)  
+
+
 [xnn_results.txt](../image/190620-XNN/xnn_results.txt)  
 
 ![FC](../image/190620-XNN/FC.png)  
