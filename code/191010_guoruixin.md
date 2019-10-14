@@ -457,7 +457,7 @@ nohup metaplots -a $rico_ann -i b1.merge_transcriptome.txt -o b3-metaplot/meta >
 export PATH=~/anaconda3/bin:$PATH
 mkdir b4-RiboCode
 rico_ann=/Share/home/tiangeng/reference_genome/tair_ribocode/tair
-config=b3-metaplot/meta_pre_config.txt
+config=b3-metaplot/config.txt
 nohup RiboCode -a ${rico_ann} -c ${config} -l no -g -o b4-RiboCode/RiboCode_ORFs_result  > b4-RiboCode/ribocode.log 2>&1 &
 ``` 
 
@@ -468,7 +468,7 @@ export PATH=~/anaconda3/bin:$PATH
 
 mkdir b5-plot_density_orf
 rico_ann=/Share/home/tiangeng/reference_genome/tair_ribocode/tair
-config=b3-metaplot/meta_pre_config.txt
+config=b3-metaplot/config.txt
 tran_id=ENSMUST00000187405
 orf_start=1
 orf_end=900
@@ -491,3 +491,6 @@ nohup ORFcount -g b4-RiboCode/RiboCode_ORFs_result.gtf -r /Share/home/tiangeng/p
 done;
 
 ```
+
+## 
+
