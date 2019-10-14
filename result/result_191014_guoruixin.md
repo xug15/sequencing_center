@@ -94,6 +94,8 @@ d14
 
 ## Ribocode
 
+### b3-metaplot
+
 col
 
 [col](./result_191014_guoruixin/metacolAligned.toTranscriptome.out.pdf)   
