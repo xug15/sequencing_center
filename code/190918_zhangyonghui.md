@@ -90,7 +90,9 @@ GAGCGCTA    TCCGTCTA    M13_7.15
 GAGCGCTA    ATCCTGTA    M14_7.15
 ```
 
-cut adapter
+## cut adapter
+
+**reverse and compliment**
 ```pl
 my $origin_seq=<STDIN>;
 my $revcomp = reverse $origin_seq;
@@ -110,7 +112,7 @@ cutadapt -a ADAPT1 -g ADAPT2 -o out1.fastq in1.fastq
 |-a ADAPTER, --adapter=ADAPTER |equence of an adapter that was ligated to the 3\' end.The adapter itself and anything that follows is trimmed. If the adapter sequence ends with the '$' character, the adapter is anchored to the end of the read and only found if it is a suffix of the read. |
 |-g ADAPTER, --front=ADAPTER |Sequence of an adapter that was ligated to the 5\' end. If the adapter sequence starts with the character \'^\', the adapter is \'anchored\'. An anchored adapter must appear in its entirety at the 5\' end of the read (it is a prefix of the read). A non-anchored adapter may appear partially at the 5\' end, or it may occur within the read. If it is found within a read, the sequence preceding the adapter is also trimmed. In all cases, the adapter itself is trimmed. |
 
-
+## remove adapter
 
 ```sh
 f1=GCGAGTTCTTGTGGAAAGGACGAAACACCG
@@ -151,7 +153,7 @@ echo "cutadapt -g $f4 -a $r1 -o M11_6.22_out.fastq ../split_file/M11_6.22.fq"
 cutadapt -g $f4 -a $r1 -o M11_6.22_out.fastq ../split_file/M11_6.22.fq>M11_6.22.log 2>&1
 ```
 
-id, index, name
+## id, index, name
 
 ```sh
 HGLibA_00001,GTCGCTGAGCTCCGATTCGA,A1BG
@@ -166,6 +168,8 @@ HGLibA_00009,CAAACTCCTTCATCCAAGTC,A2M
 HGLibA_00010,AAATTTCCCCTCCGTTCAGA,A2ML1
 ```
 
+## a1.csv2fa.pl
+
 ```pl
 open D, "<geckov2.csv";
 open O, ">geckov2.fa";
@@ -178,10 +182,25 @@ while(<D>)
 }
 ```
 
-Build bowtie index
+## Build bowtie index
 
 ```sh
+cd /Share/home/tiangeng/reference_genome/zhangyonghui
+
 bowtie-build geckov2.fa geckov2
+```
+
+## bowtie map
+
+```sh
+bowtieindex=/Share/home/tiangeng/reference_genome/zhangyonghui/geckov2
+
+for i in `ls ../b2-removeadapter|grep out.fastq`;do
+echo $i;
+
+echo "bowtie -n 0 -norc --best -l 15 -p 8 --un=nocontam_${i}.fastq $bowtieindex -q ../b2-removeadapter/${i} ${i}.alin > ${i}.err 2>&1"
+bowtie -n 0 -norc --best -l 15 -p 8 --un=nocontam_${i}.fastq $bowtieindex -q ../b2-removeadapter/${i} ${i}.alin > ${i}.err 2>&1
+done
 ```
 
 
