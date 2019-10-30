@@ -297,4 +297,37 @@ mv summary2.txt summary.txt
 rm name.txt merge2.tmp
 ```
 
+a3.count.sh
+
+```sh
+for i in `ls|grep alin`;do
+echo "cut -f 3 $i |sort |uniq -c > $i.count.txt";
+cut -f 3 $i |sort |uniq -c > $i.count.txt;
+done
+```
+
+a4.count2csv.pl
+```pl
+open D, "<$ARGV[0]";
+open O, ">$ARGV[0].csv";
+print O "\" Name\" ,\"Count\"\n";
+while(<D>)
+{
+chomp;
+$_=~s/^\s+//g;
+@data=split/ /,$_;
+print O "\"$data[1]\",";
+print O "$data[0]\n";
+}
+
+```
+
+a5.csv.sh
+```sh
+for i in `ls|grep alin.count.txt`;do
+echo "perl /Share/home/tiangeng/apps/a4.count2csv.pl $i";
+perl /Share/home/tiangeng/apps/a4.count2csv.pl $i;
+done;
+```
+
 
