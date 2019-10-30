@@ -1,6 +1,44 @@
 # zhangyonghui
 /Share/home/tiangeng/project_result/sgRNA_count/project111_20190815_zhangyonghui_ylj/YLJ-6
 
+
+## id, index, name
+
+```sh
+HGLibA_00001,GTCGCTGAGCTCCGATTCGA,A1BG
+HGLibA_00002,ACCTGTAGTTGCCGGCGTGC,A1BG
+HGLibA_00003,CGTCAGCGTCACATTGGCCA,A1BG
+HGLibA_00004,CGCGCACTGGTCCAGCGCAC,A1CF
+HGLibA_00005,CCAAGCTATATCCTGTGCGC,A1CF
+HGLibA_00006,AAGTTGCTTGATTGCATTCT,A1CF
+HGLibA_00007,CGCTTCTTAAATTCTTGGGT,A2M
+HGLibA_00008,TCACAGCGAAGGCGACACAG,A2M
+HGLibA_00009,CAAACTCCTTCATCCAAGTC,A2M
+HGLibA_00010,AAATTTCCCCTCCGTTCAGA,A2ML1
+```
+
+## a1.csv2fa.pl
+
+```pl
+open D, "<geckov2.csv";
+open O, ">geckov2.fa";
+
+while(<D>)
+{
+    chomp;
+    @data=split/,/,$_;
+    print O ">$data[0]\n$data[1]\n";
+}
+```
+
+## Build bowtie index
+
+```sh
+cd /Share/home/tiangeng/reference_genome/zhangyonghui
+
+bowtie-build geckov2.fa geckov2
+```
+
 ```py
 
 import sys
@@ -115,6 +153,10 @@ cutadapt -a ADAPT1 -g ADAPT2 -o out1.fastq in1.fastq
 ## remove adapter
 
 ```sh
+mkdir b2-removeadapter
+```
+
+```sh
 f1=GCGAGTTCTTGTGGAAAGGACGAAACACCG
 f2=CTCCTTCTTGTGGAAAGGACGAAACACCG
 f4=AGGCTCCGTCTTGTGGAAAGGACGAAACACCG
@@ -153,54 +195,106 @@ echo "cutadapt -g $f4 -a $r1 -o M11_6.22_out.fastq ../split_file/M11_6.22.fq"
 cutadapt -g $f4 -a $r1 -o M11_6.22_out.fastq ../split_file/M11_6.22.fq>M11_6.22.log 2>&1
 ```
 
-## id, index, name
+## cut the read to 20bp
+
+a1.run.sh
 
 ```sh
-HGLibA_00001,GTCGCTGAGCTCCGATTCGA,A1BG
-HGLibA_00002,ACCTGTAGTTGCCGGCGTGC,A1BG
-HGLibA_00003,CGTCAGCGTCACATTGGCCA,A1BG
-HGLibA_00004,CGCGCACTGGTCCAGCGCAC,A1CF
-HGLibA_00005,CCAAGCTATATCCTGTGCGC,A1CF
-HGLibA_00006,AAGTTGCTTGATTGCATTCT,A1CF
-HGLibA_00007,CGCTTCTTAAATTCTTGGGT,A2M
-HGLibA_00008,TCACAGCGAAGGCGACACAG,A2M
-HGLibA_00009,CAAACTCCTTCATCCAAGTC,A2M
-HGLibA_00010,AAATTTCCCCTCCGTTCAGA,A2ML1
+
+mkdir b3-cutlength
+
 ```
 
-## a1.csv2fa.pl
 
+```sh
+for i in `ls ../b2-removeadapter|grep out.fastq`;do
+echo $i;
+echo "perl a2.20.pl ../b2-removeadapter/$i $i";
+perl /Share/home/tiangeng/apps/a2.20.pl ../b2-removeadapter/$i $i ;
+done
+```
+
+a2.20.pl
 ```pl
-open D, "<geckov2.csv";
-open O, ">geckov2.fa";
+open D, "<$ARGV[0]";
+open O, ">$ARGV[1].20.fa";
 
 while(<D>)
 {
-    chomp;
-    @data=split/,/,$_;
-    print O ">$data[0]\n$data[1]\n";
+    $name=$_;
+    $seq=<D>;
+    <D>;
+    $qua=<D>;
+    $seq_s = substr($seq, 0, 20); 
+    $qua_s = substr($qua, 0, 20); 
+    print O "$name";
+    print O "$seq_s\n";
+    print O "+\n";
+    print O "$qua_s\n";
 }
+close D;
+close O;
 ```
 
-## Build bowtie index
-
-```sh
-cd /Share/home/tiangeng/reference_genome/zhangyonghui
-
-bowtie-build geckov2.fa geckov2
-```
 
 ## bowtie map
 
 ```sh
+mkdir b4-bowtie
+```
+
+```sh
 bowtieindex=/Share/home/tiangeng/reference_genome/zhangyonghui/geckov2
 
-for i in `ls ../b2-removeadapter|grep out.fastq`;do
+for i in `ls ../b3-cutlength|grep .20.fa`;do
 echo $i;
 
-echo "bowtie -n 0 -norc --best -l 15 -p 8 --un=nocontam_${i}.fastq $bowtieindex -q ../b2-removeadapter/${i} ${i}.alin > ${i}.err 2>&1"
-bowtie -n 0 -norc --best -l 15 -p 8 --un=nocontam_${i}.fastq $bowtieindex -q ../b2-removeadapter/${i} ${i}.alin > ${i}.err 2>&1
+echo "bowtie -n 0 -norc --best -l 15 -p 8 --un=nocontam_${i}.fastq $bowtieindex -q ../b3-cutlength/${i} ${i}.alin > ${i}.err 2>&1";
+bowtie -n 0 -norc --best -l 15 -p 8 --un=nocontam_${i}.fastq $bowtieindex -q ../b3-cutlength/${i} ${i}.alin > ${i}.err 2>&1
+
 done
+```
+
+a2.merge.sh
+
+```sh 
+
+name=(H0_4.7_out.fastq.20.fa H10_7.19_out.fastq.20.fa H10_7.5_out.fastq.20.fa H11_7.19_out.fastq.20.fa H8_6.22_out.fastq.20.fa H8_7.1_out.fastq.20.fa H9_7.15_out.fastq.20.fa H9_7.19_out.fastq.20.fa H9_7.1_out.fastq.20.fa H9_HMBPP_7.15H9_out.fastq.20.fa M0_4.5_out.fastq.20.fa M11_6.22_out.fastq.20.fa M11_7.1_out.fastq.20.fa M12_7.15_out.fastq.20.fa M12_7.1_out.fastq.20.fa M12_HMBPP_7.15_out.fastq.20.fa M13_7.15_out.fastq.20.fa M13_7.5_out.fastq.20.fa M14_7.15_out.fastq.20.fa)
+head='Iterm'
+for i in ${name[@]};
+do
+ head+="\t${i}";
+done
+echo -e $head >merge.counter;
+
+for i in ${name[@]};
+do
+echo ${i}.err;
+grep -A 2 'reads processed' ${i}.err > ${i}.err.tmp;
+sed -i 's/#//g' ${i}.err.tmp;
+sed -i 's/:/\t/g' ${i}.err.tmp;
+sed -i 's/^ //g' ${i}.err.tmp;
+done
+#
+begin1=${name[0]};
+begin2=${name[1]};
+name2=("${name[@]:2}");
+join -t $'\t' ${begin1}.err.tmp ${begin2}.err.tmp >merge.tmp
+
+for i in ${name2[@]};
+do 
+echo ${i}.err.tmp;
+join -t $'\t' merge.tmp ${i}.err.tmp >>merge.tmp2;
+mv merge.tmp2 merge.tmp
+done
+#
+cat merge.counter merge.tmp > merge2.tmp;
+cut -f 2- merge2.tmp > summary.txt
+rm merge.counter merge.tmp *.err.tmp
+echo -e "Iterm\nTotal\nalin\nnon">name.txt;
+paste -d $'\t' name.txt summary.txt > summary2.txt
+mv summary2.txt summary.txt
+rm name.txt merge2.tmp
 ```
 
 
