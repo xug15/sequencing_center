@@ -1,44 +1,116 @@
 # bigwig
 
-```sh
-#!/bin/bash
+## 1. Software environment
 
-# this script is from Tao Liu https://gist.github.com/taoliu/2469050 
-# check commands: slopBed, bedGraphToBigWig and bedClip
- 
-which bedtools &>/dev/null || { echo "bedtools not found! Download bedTools: <http://code.google.com/p/bedtools/>"; exit 1; }
-which bedGraphToBigWig &>/dev/null || { echo "bedGraphToBigWig not found! Download: <http://hgdownload.soe.ucsc.edu/admin/exe/linux.x86_64/bedGraphToBigWig>"; exit 1; }
-which bedClip &>/dev/null || { echo "bedClip not found! Download: <http://hgdownload.soe.ucsc.edu/admin/exe/linux.x86_64/bedClip>"; exit 1; }
- 
-# end of checking
- 
-if [ $# -lt 2 ];then
-    echo "Need 2 parameters! <bedgraph> <chrom info>"
-    exit
-fi
- 
-F=$1
-G=$2
- 
-bedtools slop -i ${F} -g ${G} -b 0 | bedClip stdin ${G} ${F}.clip
- 
-bedGraphToBigWig ${F}.clip ${G} ${F/bdg/bw}
- 
-rm -f ${F}.clip
+```sh
+# download docker images
+docker pull gangxu/normalize_bw:1.0
+
+# run container.
+docker run --name normalize_bw -dt -v ~/Downloads/data:/data gangxu/normalize_bw:1.0
+
+# get into the container.
+docker exec -it normalize_bw bash
 ```
+
+## Prepare files
+
+**mm10.chrom.size**
+
+```
+1   195471971
+10	130694993
+11	122082543
+12	120129022
+13	120421639
+14	124902244
+15	104043685
+16	98207768
+17	94987271
+18	90702639
+19	61431566
+2	182113224
+3	160039680
+4	156508116
+5	151834684
+6	149736546
+7	145441459
+8	129401213
+9	124595110
+MT	16299
+X	171031299
+Y	91744698
+JH584299.1	953012
+GL456233.1	336933
+JH584301.1	259875
+GL456211.1	241735
+GL456350.1	227966
+JH584293.1	207968
+GL456221.1	206961
+JH584297.1	205776
+JH584296.1	199368
+GL456354.1	195993
+JH584294.1	191905
+JH584298.1	184189
+JH584300.1	182347
+GL456219.1	175968
+GL456210.1	169725
+JH584303.1	158099
+JH584302.1	155838
+GL456212.1	153618
+JH584304.1	114452
+GL456379.1	72385
+GL456216.1	66673
+GL456393.1	55711
+GL456366.1	47073
+GL456367.1	42057
+GL456239.1	40056
+GL456213.1	39340
+GL456383.1	38659
+GL456385.1	35240
+GL456360.1	31704
+GL456378.1	31602
+GL456389.1	28772
+GL456372.1	28664
+GL456370.1	26764
+GL456381.1	25871
+GL456387.1	24685
+GL456390.1	24668
+GL456394.1	24323
+GL456392.1	23629
+GL456382.1	23158
+GL456359.1	22974
+GL456396.1	21240
+GL456368.1	20208
+JH584292.1	14945
+JH584295.1	1976
+```
+
+## run script
+
+**a1.bdg.sh**
 
 ```sh
 #! /bin/bash
+chrom=./mm10.chrom.size
 
 for bam in *bam
-do 
-echo $bam 
-genomeCoverageBed -ibam $bam -bg -g hg19.genome.info > $(basename $bam .bam).bdg
-done
-
-for bdg in *bdg
-do 
-echo $bdg
-bdg2bw $bdg hg19.genome.info 
+do
+echo $bam
+echo "genomeCoverageBed -ibam $bam -bg -g ${chrom} > $(basename $bam .bam).bdg";
+genomeCoverageBed -ibam $bam -bg -g ${chrom} > $(basename $bam .bam).bdg;
 done
 ```
+
+**a2.bg.sh**
+
+```sh
+chrom=./mm10.chrom.size
+
+for bdg in *bdg
+do
+echo $bdg
+bdg2bw2 $bdg $chrom
+done
+```
+
