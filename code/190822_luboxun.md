@@ -475,3 +475,51 @@ done;
 ```
 
 ## RiboMiner.
+
+**Star docker.**
+data
+
+### Prepare sequences and annotaiton files on transcriptome level.
+
+**a0-prepare.sh**
+
+```sh
+#!/bin/bash
+#SBATCH -J prepare
+#SBATCH -p CN_BIOT
+#SBATCH --nodes=1
+#SBATCH --ntasks=4
+#SBATCH --output=%j.out
+#SBATCH --error=%j.err
+
+export PATH=/Share/home/xugang/bin/ribodocker:$PATH
+
+gtf=/Share/home/xugang/reference/Mus-musculus_Ensembl_release-85/Mus_musculus.GRCm38.85.gtf
+fa=/Share/home/xugang/reference/Mus-musculus_Ensembl_release-85/Mus_musculus.GRCm38.dna.nonchromosomal-chromosomal.genome.fa
+out=/Share/home/xugang/project/riboseq/project_190814_luboxun/Ribocode
+
+prepare_transcripts -g $gtf -f $fa -o $out
+```
+
+### Prepare the longest transcript annotaion files.
+
+**a1-annotation.sh**
+
+```sh
+export PATH=/Share/home/xugang/bin/ribodocker:$PATH
+gtf=/Share/home/xugang/reference/Mus-musculus_Ensembl_release-85/Mus_musculus.GRCm38.85.clean.gtf
+fa=/Share/home/xugang/reference/Mus-musculus_Ensembl_release-85/Mus_musculus.GRCm38.dna.nonchromosomal-chromosomal.genome.fa
+cds=/Share/home/xugang/project/riboseq/project_190814_luboxun/Ribocode/transcripts_cds.txt
+trans=/Share/home/xugang/project/riboseq/project_190814_luboxun/Ribocode/transcripts_sequence.fa
+longest_info=/Share/home/xugang/project/riboseq/project_190814_luboxun/RiboMiner/longest.transcripts.info.txt
+all_info=/Share/home/xugang/project/riboseq/project_190814_luboxun/RiboMiner/all.transcripts.info.txt
+out=/Share/home/xugang/project/riboseq/project_190814_luboxun/RiboMiner
+
+mkdir $out
+
+echo "OutputTranscriptInfo -c $cds -g $gtf -f $trans -o $longest_info -O $all_info"
+OutputTranscriptInfo -c $cds -g $gtf -f $trans -o $longest_info -O $all_info
+```
+
+
+
