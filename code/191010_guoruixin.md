@@ -499,6 +499,17 @@ done;
 
 ## RiboAnalyzer
 
+### Star docker.
+data
+
+**x1.rundocker.sh**
+
+```sh
+#/Users/xugang/Documents/data
+
+docker run -dt --name ribo --restart unless-stopped -v /Users/xugang/Documents/data:/data gangxu/ribodocker:1.3
+```
+
 ### Prepare sequences and annotaiton files on transcriptome level.
 ```sh
 prepare_transcripts -g /data/reference/tair/Arabidopsis_thaliana.TAIR10.43.gtf -f /data/reference/tair/Arabidopsis_thaliana.TAIR10.dna.toplevel.fa -o /data/reference/RiboCode_annot
