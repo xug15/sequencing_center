@@ -155,3 +155,9 @@ Those genes in which the diﬀerence of log2R in two conditions did not exceed m
 ### 
 ![7-7-R](../image/190828-lbx/orfs_category.png)    
 
+预期是111的stalling增加，您看看是否有这个现象
+
+**Htt**
+
+![](../image/190828-lbx/a1-htt.png)    
+
