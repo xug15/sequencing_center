@@ -159,5 +159,5 @@ Those genes in which the diﬀerence of log2R in two conditions did not exceed m
 
 **Htt**
 
-![](../image/190828-lbx/a1-htt.png)    
+![](./result_190626_lbx/a1-htt.png)    
 
