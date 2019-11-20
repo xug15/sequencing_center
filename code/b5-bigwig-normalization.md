@@ -86,6 +86,12 @@ JH584292.1	14945
 JH584295.1	1976
 ```
 
+this file can get by this way:
+```sh
+samtools faidx genome.fa
+# keep the 1,2 conclon.
+```
+
 ## run script
 
 **a1.bdg.sh**
