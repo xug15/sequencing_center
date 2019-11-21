@@ -477,6 +477,8 @@ done;
 ## RiboMiner.
 
 ```sh
+sudo singularity exec -w -B /home/xugang/singularity_image:/home/share /home/xugang/singularity_image/ribocodeminer/ bash
+
 pip uninstall RiboMiner
 
 把包克隆下来，然后
