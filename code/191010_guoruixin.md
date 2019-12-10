@@ -589,7 +589,7 @@ MetageneAnalysisForTheWholeRegions -f /data/data/attributes.txt -c /data/referen
 a9-PlotMetageneAnalysisForTheWholeRegions.sh
 
 ```sh
-PlotMetageneAnalysisForTheWholeRegions -i /data/data/a8-metagene_scaled_density_dataframe.txt -o /data/data/a9-meta_gene_whole_regin -g group1,group2 -r group1,group2 -b 15,90,60 --mode all 
+PlotMetageneAnalysisForTheWholeRegions -i /data/data/a8-metagene_scaled_density_dataframe.txt -o /data/data/a9-meta_gene_whole_regin -g group1,group2 -r group1__group2 -b 15,90,60 --mode all 
 
 ```
 
