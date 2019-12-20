@@ -702,8 +702,8 @@ date
 echo "Local tRNA adaptation index and global tRNA adaptation index"
 date
 #Local tRNA adaptation index and global tRNA adaptation index
-echo tAI -i /home/share/riboseq/RiboMiner/transcript_cds_sequences.fa -t tair -o /home/share/riboseq/c6-tAI -u 0 -d 500 --table 1 -N /home/share/riboseq/aratha/araTha1-tRNAs-confidence-set.out
-tAI -i /home/share/riboseq/RiboMiner/transcript_cds_sequences.fa -t mouse -o /home/share/riboseq/c6-tAI -u 0 -d 500 --table 1 -N /home/share/riboseq/aratha/araTha1-tRNAs-confidence-set.out
+echo tAI -i /home/share/riboseq/RiboMiner/transcript_cds_sequences.fa -t mouse -o /home/share/riboseq/c6-tAI -u 0 -d 500 --table 1 -N /home/share/riboseq/mouse-tRNAs-confidence.txt
+tAI -i /home/share/riboseq/RiboMiner/transcript_cds_sequences.fa -t mouse -o /home/share/riboseq/c6-tAI -u 0 -d 500 --table 1 -N /home/share/riboseq/mouse-tRNAs-confidence.txt
 
 echo tAIPlot -i /home/share/riboseq/c6-tAI_tAI_dataframe.txt -o /home/share/riboseq/c7-tAIPlot -u 0 -d 500 --mode all --start 5 --window 7 --step 1
 tAIPlot -i /home/share/riboseq/c6-tAI_tAI_dataframe.txt -o /home/share/riboseq/c7-tAIPlot -u 0 -d 500 --mode all --start 5 --window 7 --step 1
@@ -714,8 +714,8 @@ date
 echo "Local codon adaptation index and global codon adaptation index"
 date
 # Local codon adaptation index and global codon adaptation index
-echo cAI -i /home/share/riboseq/RiboMiner/transcript_cds_sequences_tAI.fa -o /home/share/riboseq/c8-cAI -t tair -u 0 -d 500 --reference /home/share/riboseq/RiboMiner/reference.fa
-cAI -i /home/share/riboseq/RiboMiner/transcript_cds_sequences_tAI.fa -o /home/share/riboseq/c8-cAI -t tair -u 0 -d 500 --reference /home/share/riboseq/RiboMiner/reference.fa
+echo cAI -i /home/share/riboseq/RiboMiner/transcript_cds_sequences_tAI.fa -o /home/share/riboseq/c8-cAI -t mouse -u 0 -d 500 --reference /home/share/riboseq/RiboMiner/reference.fa
+cAI -i /home/share/riboseq/RiboMiner/transcript_cds_sequences_tAI.fa -o /home/share/riboseq/c8-cAI -t mouse -u 0 -d 500 --reference /home/share/riboseq/RiboMiner/reference.fa
 
 echo cAIPlot -i /home/share/riboseq/c8-cAI_local_cAI_dataframe.txt -o /home/share/riboseq/c9-cAIPlot -u 0 -d 500 --mode all --start 5 --window 7 --step 1
 cAIPlot -i /home/share/riboseq/c8-cAI_local_cAI_dataframe.txt -o /home/share/riboseq/c9-cAIPlot -u 0 -d 500 --mode all --start 5 --window 7 --step 1
