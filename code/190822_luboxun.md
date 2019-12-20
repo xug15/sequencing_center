@@ -616,6 +616,12 @@ PolarityCalculation -f /home/share/riboseq/attributes.txt -c /home/share/riboseq
 
 We need tRNA file, that can be download from [GtRNAdb](http://gtrnadb.ucsc.edu/genomes/eukaryota/Mmusc10/Mmusc10-gene-list.html)
 
+[tair10 tRNA](./araTha1-tRNAs-confidence-set.txt)
+
+|Chr|	tRNA|	Begin|	End|	Isotype	Anticodon|	Upstream|	Downstream|
+| -| -| -| -|-| -|-|
+|chr6	|95	|58141949	|58141877	|Ala	|AGC	|tttctccctc	|gtttcttgtc|
+|chr6	|25	|26751918	|26751990	|Ala	|AGC	|agtgtagtgt	|gcttctttta|
 
 
 ```sh
