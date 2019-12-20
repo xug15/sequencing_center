@@ -612,18 +612,7 @@ echo PolarityCalculation -f /home/share/riboseq/attributes.txt -c /home/share/ri
 PolarityCalculation -f /home/share/riboseq/attributes.txt -c /home/share/riboseq/RiboMiner/longest.transcripts.info.txt -o /home/share/riboseq/b3-polarity -n 64
 ```
 
-**d.feature_analysis.sh**
-
-We need tRNA file, that can be download from [GtRNAdb](http://gtrnadb.ucsc.edu/genomes/eukaryota/Mmusc10/Mmusc10-gene-list.html)
-
-[tair10 tRNA](./araTha1-tRNAs-confidence-set.txt)  
-[mm10 tRNA](./mouse-tRNAs-confidence.txt)
-
-|Chr|tRNA|Begin|End|Isotype|Anticodon|Upstream|Downstream|
-| -| -| -| -|-| -|-|-|
-|chr6	|95	|58141949	|58141877	|Ala	|AGC	|tttctccctc	|gtttcttgtc|
-|chr6	|25	|26751918	|26751990	|Ala	|AGC	|agtgtagtgt	|gcttctttta|
-
+**d1.feature_analysis.sh**
 
 ```sh
 
@@ -698,6 +687,23 @@ PlotGCContent -i /home/share/riboseq/c4-GCContent-normal_GC_content.txt -o /home
 PlotGCContent -i /home/share/riboseq/c4-GCContent-frames_GC_content_frames.txt -o /home/share/riboseq/c5-PlotGCContent-frames --mode frames
 echo "Finished:## frames mode"
 date
+```
+
+**d2.feature_analysis.sh**
+
+We need tRNA file, that can be download from [GtRNAdb](http://gtrnadb.ucsc.edu/genomes/eukaryota/Mmusc10/Mmusc10-gene-list.html)
+
+[tair10 tRNA](./araTha1-tRNAs-confidence-set.txt)  
+[mm10 tRNA](./mouse-tRNAs-confidence.txt)
+
+|Chr|tRNA|Begin|End|Isotype|Anticodon|Upstream|Downstream|
+| -| -| -| -|-| -|-|-|
+|chr6	|95	|58141949	|58141877	|Ala	|AGC	|tttctccctc	|gtttcttgtc|
+|chr6	|25	|26751918	|26751990	|Ala	|AGC	|agtgtagtgt	|gcttctttta|
+
+
+```sh
+
 
 echo "Local tRNA adaptation index and global tRNA adaptation index"
 date
