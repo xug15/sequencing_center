@@ -238,6 +238,21 @@ rm merge.counter merge.tmp *_num
 
 > a9-STAR
 
+**Build star index**
+
+a0.generate.sh
+
+```sh
+#!/bin/bash
+
+fasta=/home/xugang/singularity_image/riboseq/Mus-musculus_Ensembl_release-85/genome/Mus_musculus.GRCm38.dna.primary_assembly.fa
+gtf=/home/xugang/singularity_image/riboseq/Mus-musculus_Ensembl_release-85/genome/Mus_musculus.GRCm38.87.gtf
+genomeout=/home/xugang/singularity_image/riboseq/Mus-musculus_Ensembl_release-85/genome/star
+
+nohup STAR --runThreadN 8 --runMode genomeGenerate --limitGenomeGenerateRAM 162003700778 --genomeDir ${genomeout} --genomeFastaFiles ${fasta} --sjdbGTFfile ${gtf} >log.txt 2>&1 &
+
+```
+
 run with screen.
 
 **a1.STAR.sh**
@@ -479,6 +494,8 @@ done;
 ```sh
 sudo singularity exec -w -B /home/xugang/singularity_image:/home/share /home/xugang/singularity_image/ribocodeminer/ bash
 
+cd /home/test
+
 pip uninstall RiboMiner
 
 把包克隆下来，然后
@@ -497,350 +514,228 @@ data
 
 ### Prepare sequences and annotaiton files on transcriptome level.
 
-**a0-prepare.sh**
+
+**a.datapreparation.sh**  
 
 ```sh
-gtf=/home/share/riboseq/Mus-musculus_Ensembl_release-85/Mus_musculus.GRCm38.85.gtf
-fa=/home/share/riboseq/Mus-musculus_Ensembl_release-85/Mus_musculus.GRCm38.dna.nonchromosomal-chromosomal.genome.fa
+gtf=/home/share/riboseq/mus_ensemble/Mus_musculus.GRCm38.87.gtf
+fa=/home/share/riboseq/mus_ensemble/Mus_musculus.GRCm38.dna.primary_assembly.fa
 out=/home/share/riboseq/Ribocode
 
+# Prepare sequences and annotaiton files on transcriptome level.
 prepare_transcripts -g $gtf -f $fa -o $out
-```
 
-### Prepare the longest transcript annotaion files.
+# Prepare the longest transcript annotaion files.
 
-**a1-annotation.sh**
-
-```sh
-gtf=/home/share/riboseq/Mus-musculus_Ensembl_release-85/Mus_musculus.GRCm38.85.clean.gtf
-fa=/home/share/riboseq/Mus-musculus_Ensembl_release-85/Mus_musculus.GRCm38.dna.nonchromosomal-chromosomal.genome.fa
 cds=/home/share/riboseq/Ribocode/transcripts_cds.txt
 trans=/home/share/riboseq/Ribocode/transcripts_sequence.fa
 longest_info=/home/share/riboseq/RiboMiner/longest.transcripts.info.txt
 all_info=/home/share/riboseq/RiboMiner/all.transcripts.info.txt
 out=/home/share/riboseq/RiboMiner
-
 mkdir $out
-
 echo "OutputTranscriptInfo -c $cds -g $gtf -f $trans -o $longest_info -O $all_info"
-OutputTranscriptInfo -c $cds -g $gtf -f $trans -o $longest_info -O $all_info
-```
+OutputTranscriptInfo -c $cds -g $gtf -f $trans -o $longest_info -O $all_info 
 
-
-### Prepare the sequence file for the longest transcripts
-
-a2-transcript.sh
-```sh
+# Prepare the sequence file for the longest transcripts
 transcripts_sequence=/home/share/riboseq/Ribocode/transcripts_sequence.fa
 longest_info=/home/share/riboseq/RiboMiner/longest.transcripts.info.txt
 transcript=/home/share/riboseq/RiboMiner/transcript
 
-GetProteinCodingSequence -i $transcripts_sequence  -c $longest_info -o $transcript --mode whole --table 1 
-```
+GetProteinCodingSequence -i $transcripts_sequence  -c $longest_info -o $transcript --mode whole --table 1
 
-### Prepare the UTR sequence
-
-a3-utr.sh
-
-```sh
+# Sometines, UTR sequences are needed. In this case, GetUTRSequences maybe helpful:
 transcripts_sequence=/home/share/riboseq/Ribocode/transcripts_sequence.fa
 utr=/home/share/riboseq/RiboMiner/utr
-transcript_cds=/home/share/riboseq/RiboMiner/transcript_cds_sequences.fa
+transcript_cds=/home/share/riboseq/Ribocode/transcripts_cds.txt
 
 GetUTRSequences -i $transcripts_sequence -o $utr -c $transcript_cds
 ```
 
-### 
-
-a4-metaplot.sh
+**b.qualitycontrol.sh**
 
 ```sh
-metaplots -a /data/reference/RiboCode_annot -r /data/data/colAligned.toTranscriptome.out.bam -o /data/data/a4-col
-metaplots -a /data/reference/RiboCode_annot -r /data/data/d14Aligned.toTranscriptome.out.bam -o /data/data/a4-d14
+#Periodicity checking
+#Ribosome profiling data with a good quality tend to have a good 3-nt periodicity.
+ribocode='/home/share/riboseq/Ribocode'
+a111R='/home/share/riboseq/a9-STAR/7-111-R_STAR/7-111-RAligned.toTranscriptome.out.bam'
+a111R_o='/home/share/riboseq/metaplot/7111r'
+a7R='/home/share/riboseq/a9-STAR/7-7-R_STAR/7-7-RAligned.toTranscriptome.out.bam'
+a7R_o='/home/share/riboseq/metaplot/77r'
+[[ -d /home/share/riboseq/metaplot/ ]] || mkdir /home/share/riboseq/metaplot/
+echo -e "metaplots -a $ribocode -r ${a111R} -o ${a111R_o}"
+metaplots -a $ribocode -r ${a111R} -o ${a111R_o}
+echo ""
+echo -e "metaplots -a $ribocode -r ${a7R} -o ${a7R_o}"
+metaplots -a $ribocode -r ${a7R} -o ${a7R_o}
+echo ""
+ribocode='/home/share/riboseq/Ribocode'
+long='/home/share/riboseq/RiboMiner/longest.transcripts.info.txt'
+a111R='/home/share/riboseq/a9-STAR/7-111-R_STAR/7-111-R.toTranscriptome.sort.bam'
+a111R_o='/home/share/riboseq/a5-periodicity/7111r'
+a7R='/home/share/riboseq/a9-STAR/7-7-R_STAR/7-7-R.toTranscriptome.sort.bam'
+a7R_o='/home/share/riboseq/a5-periodicity/77r'
+[ -d /home/share/riboseq/a5-periodicity ] || mkdir /home/share/riboseq/a5-periodicity
+echo Periodicity -i $a111R -a $ribocode -o $a111R_o -c $long -L 25 -R 35
+Periodicity -i $a111R -a $ribocode -o $a111R_o -c $long -L 25 -R 35
+echo Periodicity -i $a7R -a $ribocode -o $a7R_o -c $long -L 25 -R 35
+Periodicity -i $a7R -a $ribocode -o $a7R_o -c $long -L 25 -R 35
+
+#Reads distribution among different reading frames.
+RiboDensityOfDiffFrames -f /home/share/riboseq/attributes.txt -c /home/share/riboseq/RiboMiner/longest.transcripts.info.txt -o /home/share/riboseq/a6-ribo-density-diff-fram
+
+#Length distribution.
+LengthDistribution -i /home/share/riboseq/a9-STAR/7-111-R_STAR/7-111-RAligned.sortedByCoord.out.bam -o /home/share/riboseq/r111.length -f bam
+LengthDistribution -i /home/share/riboseq/a9-STAR/7-7-R_STAR/7-7-RAligned.sortedByCoord.out.bam -o /home/share/riboseq/r7.length -f bam
+
+#DNA contamination.
+gtf=/home/share/riboseq/mus_ensemble/Mus_musculus.GRCm38.87.gtf
+StatisticReadsOnDNAsContam -i  /home/share/riboseq/a9-STAR/7-111-R_STAR/7-111-RAligned.sortedByCoord.out.bam  -g $gtf -o /home/share/riboseq/a7-dna-contamination.111
+StatisticReadsOnDNAsContam -i  /home/share/riboseq/a9-STAR/7-7-R_STAR/7-7-RAligned.sortedByCoord.out.bam  -g $gtf -o /home/share/riboseq/a7-dna-contamination.7
 ```
 
-a5-periodicity.sh
+**c.metagene_analysis.sh**
 
 ```sh
+#Metagene analysis along the whole transcript region.
+MetageneAnalysisForTheWholeRegions -f /home/share/riboseq/attributes.txt -c /home/share/riboseq/RiboMiner/longest.transcripts.info.txt -o /home/share/riboseq/a8-metagene -b 15,90,60 -l 100 -n 10 -m 1 -e 5 --plot yes
+PlotMetageneAnalysisForTheWholeRegions -i /home/share/riboseq/a8-metagene_scaled_density_dataframe.txt -o /home/share/riboseq/a9-meta_gene_whole_regin -g r7,r111 -r r7__r111 -b 15,90,60 --mode all
 
-Periodicity -i /data/data/colAligned.toTranscriptome.sort.bam -a /data/reference/RiboCode_annot -o /data/data/a5-col_periodicity -c /data/reference/tair_analy/longest.transcripts.info.txt -L 25 -R 35
-Periodicity -i /data/data/d14Aligned.toTranscriptome.sort.bam -a /data/reference/RiboCode_annot -o /data/data/a5-d14_periodicity -c /data/reference/tair_analy/longest.transcripts.info.txt -L 25 -R 35
+#Metagene analysis on CDS regions.
+MetageneAnalysis -f /home/share/riboseq/attributes.txt -c /home/share/riboseq/RiboMiner/longest.transcripts.info.txt -o /home/share/riboseq/b1-meat-cds -U codon -M RPKM -u 0 -d 500 -l 100 -n 10 -m 1 -e 5 --norm yes -y 100 --CI 0.95 --type CDS
+
+#Metagene analysis on UTR regions.
+echo MetageneAnalysis -f /home/share/riboseq/attributes.txt -c /home/share/riboseq/RiboMiner/longest.transcripts.info.txt -o /home/share/riboseq/b2-meat-utr -U nt -M RPKM -u 100 -d 100 -l 100 -n 10 -m 1 -e 5 --norm yes -y 50 --CI 0.95 --type UTR
+MetageneAnalysis -f /home/share/riboseq/attributes.txt -c /home/share/riboseq/RiboMiner/longest.transcripts.info.txt -o /home/share/riboseq/b2-meat-utr -U nt -M RPKM -u 100 -d 100 -l 100 -n 10 -m 1 -e 5 --norm yes -y 50 --CI 0.95 --type UTR
+
+#Polarity calculation.
+echo PolarityCalculation -f /home/share/riboseq/attributes.txt -c /home/share/riboseq/RiboMiner/longest.transcripts.info.txt -o /home/share/riboseq/b3-polarity -n 64
+PolarityCalculation -f /home/share/riboseq/attributes.txt -c /home/share/riboseq/RiboMiner/longest.transcripts.info.txt -o /home/share/riboseq/b3-polarity -n 64
 ```
 
-attributes.txt
+**d.feature_analysis.sh**
 
-```sh
-/data/data/colAligned.toTranscriptome.sort.bam  30,31,32,33,34  12,12,13,13,13  col
-/data/data/d14Aligned.toTranscriptome.sort.bam  30,31,32,33,34  11,12,12,13,13  d14
-```
+We need tRNA file, that can be download from [GtRNAdb](http://gtrnadb.ucsc.edu/genomes/eukaryota/Mmusc10/Mmusc10-gene-list.html)
 
-### Reads distribution among different reading frames.
 
-a6-ribodensitydiffframe.sh
-```sh
-RiboDensityOfDiffFrames -f /data/data/attributes.txt -c /data/reference/tair_analy/longest.transcripts.info.txt -o /data/data/a6-ribo-density-diff-frame
-```
-
-### DNA contamination.
-
-a7-dna-contamination.sh
-
-```sh
-StatisticReadsOnDNAsContam -i  /data/data/colAligned.sortedByCoord.out.bam  -g /data/reference/tair/Arabidopsis_thaliana.TAIR10.43.gtf -o /data/data/a7-dna-contamination.col 
-StatisticReadsOnDNAsContam -i  /data/data/d14Aligned.sortedByCoord.out.bam  -g /data/reference/tair/Arabidopsis_thaliana.TAIR10.43.gtf -o /data/data/a7-dna-contamination.d14  
-```
-
-### Metagene Analysis (MA)
-
-a8-metagene.sh
-
-**Metagene analysis along the whole transcript region.**
-
-```sh
-MetageneAnalysisForTheWholeRegions -f /data/data/attributes.txt -c /data/reference/tair_analy/longest.transcripts.info.txt -o /data/data/a8-metagene -b 15,90,60 -l 100 -n 10 -m 1 -e 5 --plot yes
-```
-
-a9-PlotMetageneAnalysisForTheWholeRegions.sh
-
-```sh
-PlotMetageneAnalysisForTheWholeRegions -i /data/data/a8-metagene_scaled_density_dataframe.txt -o /data/data/a9-meta_gene_whole_regin -g group1,group2 -r group1,group2 -b 15,90,60 --mode all 
-
-```
-
-## Metagene analysis on CDS regions.
-
-**b1-metagene_cds.sh**
-
-```sh
-## the first way
-MetageneAnalysis -f /data/data/attributes.txt -c /data/reference/tair_analy/longest.transcripts.info.txt -o /data/data/b1-meat-cds -U codon -M RPKM -u 0 -d 500 -l 100 -n 10 -m 1 -e 5 --norm yes -y 100 --CI 0.95 --type CDS
-
-```
-
-b2-metagene_utr.sh
-
-```sh
-MetageneAnalysis -f /data/data/attributes.txt -c /data/reference/tair_analy/longest.transcripts.info.txt -o /data/data/b2-meat-utr -U nt -M RPKM -u 100 -d 100 -l 100 -n 10 -m 1 -e 5 --norm yes -y 50 --CI 0.95 --type UTR
-```
-
-b3-PolarityCalculation.sh
-
-```sh
-PolarityCalculation -f /data/data/attributes.txt -c /data/reference/tair_analy/longest.transcripts.info.txt -o /data/data/b3-polarity -n 64
-```
-
-b4-PlotPolarity.sh
 
 ```sh
 
-PlotPolarity -i /data/data/b3-polarity_polarity_dataframe.txt -o /data/data/b4-plotpolarity -g col,d14 -r col__d14 -y 5 
+# Pick out transcripts enriched ribosomes on specific region.
+echo "Pick out transcripts enriched ribosomes on specific region.";
+`date`
+echo RiboDensityForSpecificRegion -f /home/share/riboseq/attributes.txt -c /home/share/riboseq/RiboMiner/longest.transcripts.info.txt -o /home/share/riboseq/b5-transcript-enrich -U codon -M RPKM -L 25 -R 75
+RiboDensityForSpecificRegion -f /home/share/riboseq/attributes.txt -c /home/share/riboseq/RiboMiner/longest.transcripts.info.txt -o /home/share/riboseq/b5-transcript-enrich -U codon -M RPKM -L 25 -R 75
+echo "Finished:Pick out transcripts enriched ribosomes on specific region."
+`date`
 
-```
+echo "# Ribosome density at each kind of AA or codon."
+date
+# Ribosome density at each kind of AA or codon.
+echo RiboDensityAtEachKindAAOrCodon -f /home/share/riboseq/attributes.txt -c /home/share/riboseq/RiboMiner/longest.transcripts.info.txt -o /home/share/riboseq/b6-ribosome-aa -M counts -S /home/share/riboseq/selec_trans_longest.txt -l 100 -n 10 --table 1 -F /home/share/riboseq/RiboMiner/transcript_cds_sequences.fa
+RiboDensityAtEachKindAAOrCodon -f /home/share/riboseq/attributes.txt -c /home/share/riboseq/RiboMiner/longest.transcripts.info.txt -o /home/share/riboseq/b6-ribosome-aa -M counts -S /home/share/riboseq/selec_trans_longest.txt -l 100 -n 10 --table 1 -F /home/share/riboseq/RiboMiner/transcript_cds_sequences.fa
+echo "Finished:Ribosome density at each kind of AA or codon"
+date
 
-### Feature Analysis (FA)
+echo "# Ribosome density on amino acids with positive or negative charge"
+date
+# Ribosome density on amino acids with positive or negative charge
+echo PlotRiboDensityAtEachKindAAOrCodon -i /home/share/riboseq/b6-ribosome-aa_all_codon_density.txt -o /home/share/riboseq/b7-PlotRiboDensityAtEachKindAAOrCodon -g r7,r111 -r r7__r111 --level AA
+PlotRiboDensityAtEachKindAAOrCodon -i /home/share/riboseq/b6-ribosome-aa_all_codon_density.txt -o /home/share/riboseq/b7-PlotRiboDensityAtEachKindAAOrCodon -g r7,r111 -r r7__r111 --level AA
+echo "Finished: Ribosome density on amino acids with positive or negative charge"
+date
 
-**Pick out transcripts enriched ribosomes on specific region.**
+echo "Pausing score of each triplete amino acid.";
+date
+# Pausing score of each triplete amino acid.
+echo PausingScore -f /home/share/riboseq/attributes.txt -c /home/share/riboseq/RiboMiner/longest.transcripts.info.txt -o  /home/share/riboseq/b8-PausingScore -M counts -S /home/share/riboseq/selec_trans_longest.txt  -l 100 -n 10 --table 1 -F  /home/share/riboseq/RiboMiner/transcript_cds_sequences.fa
+PausingScore -f /home/share/riboseq/attributes.txt -c /home/share/riboseq/RiboMiner/longest.transcripts.info.txt -o  /home/share/riboseq/b8-PausingScore -M counts -S /home/share/riboseq/selec_trans_longest.txt  -l 100 -n 10 --table 1 -F  /home/share/riboseq/RiboMiner/transcript_cds_sequences.fa
 
-b5-transcript-enrich.sh
-```sh
-RiboDensityForSpecificRegion -f /data/data/attributes.txt -c /data/reference/tair_analy/longest.transcripts.info.txt -o /data/data/b5-transcript-enrich -U codon -M RPKM -L 25 -R 75
-```
+echo ProcessPausingScore -i /home/share/riboseq/b8-PausingScore_r7_pausing_score.txt,/home/share/riboseq/b8-PausingScore_r111_pausing_score.txt -o /home/share/riboseq/b9-ProcessPausingScore -g r7,r111 -r r7__r111 --mode raw --ratio_filter 2 --pausing_score_filter 0.5
+ProcessPausingScore -i /home/share/riboseq/b8-PausingScore_r7_pausing_score.txt,/home/share/riboseq/b8-PausingScore_r111_pausing_score.txt -o /home/share/riboseq/b9-ProcessPausingScore -g r7,r111 -r r7__r111 --mode raw --ratio_filter 2 --pausing_score_filter 0.5
+echo "Finshed: Pausing score of each triplete amino acid."
+date
 
-**Ribosome density at each kind of AA or codon**
-b6-ribosome-aa.sh
-```sh
-RiboDensityAtEachKindAAOrCodon -f /data/data/attributes.txt -c /data/reference/tair_analy/longest.transcripts.info.txt -o /data/data/b6-ribosome-aa -M counts -S /data/select_trans.txt -l 100 -n 10 --table 1 -F /data/reference/tair_analy/transcript_cds_sequences.fa 
-```
+echo "# Ribosome density around the triplete amino acid (tri-AA) motifs. \
+#As for a specific tri-AA motif, such as poly-proline (PPP)";
+date
 
-**Ribosome density on amino acids with positive or negative charge**
+# Ribosome density around the triplete amino acid (tri-AA) motifs.
+#As for a specific tri-AA motif, such as poly-proline (PPP)
 
-b7-PlotRiboDensityAtEachKindAAOrCodon.sh
+echo "RPFdist calculation.";
+date
+# RPFdist calculation.
+echo RPFdist -f /home/share/riboseq/attributes.txt -c /home/share/riboseq/RiboMiner/longest.transcripts.info.txt -o /home/share/riboseq/c3-RPFdist -M counts -S /home/share/riboseq/selec_trans_longest.txt -l 100 -n 10 -m 1 -e 5
+RPFdist -f /home/share/riboseq/attributes.txt -c /home/share/riboseq/RiboMiner/longest.transcripts.info.txt -o /home/share/riboseq/c3-RPFdist -M counts -S /home/share/riboseq/selec_trans_longest.txt -l 100 -n 10 -m 1 -e 5
+echo "Finshed:RPFdist calculation."
+date
 
-```sh
-PlotRiboDensityAtEachKindAAOrCodon -i /data/data/b6-ribosome-aa_all_codon_density.txt -o /data/data/b7-PlotRiboDensityAtEachKindAAOrCodon -g col,d14 -r col__d14 --level AA
-```
+echo "# GC contents for sequences with a fasta format.";
+# GC contents for sequences with a fasta format.
+date
+echo GCContent -i /home/share/riboseq/RiboMiner/transcript_cds_sequences.fa -o /home/share/riboseq/c4-GCContent-normal --mode normal
+echo GCContent -i /home/share/riboseq/RiboMiner/transcript_cds_sequences.fa -o /home/share/riboseq/c4-GCContent-frames --mode frames
+GCContent -i /home/share/riboseq/RiboMiner/transcript_cds_sequences.fa -o /home/share/riboseq/c4-GCContent-normal --mode normal
+GCContent -i /home/share/riboseq/RiboMiner/transcript_cds_sequences.fa -o /home/share/riboseq/c4-GCContent-frames --mode frames
+echo PlotGCContent -i /home/share/riboseq/c4-GCContent-normal_GC_content.txt -o /home/share/riboseq/c5-PlotGCContent-normal --mode normal
+PlotGCContent -i /home/share/riboseq/c4-GCContent-normal_GC_content.txt -o /home/share/riboseq/c5-PlotGCContent-normal --mode normal
 
-**Pausing score of each triplete amino acid.**
+echo "Finished:GC contents for sequences with a fasta format."
+date
 
-b8-PausingScore.sh
-
-```sh
-PausingScore -f /data/data/attributes.txt -c /data/reference/tair_analy/longest.transcripts.info.txt -o  /data/data/b8-PausingScore -M counts -S /data/select_trans.txt  -l 100 -n 10 --table 1 -F  /data/reference/tair_analy/transcript_cds_sequences.fa
-```
-
-b9-ProcessPausingScore.sh
-```sh
-ProcessPausingScore -i /data/data/b8-PausingScore_col_pausing_score.txt,/data/data/b8-PausingScore_d14_pausing_score.txt -o /data/data/b9-ProcessPausingScore -g col,d14 -r col__d14 --mode raw --ratio_filter 2 --pausing_score_filter 0.5
-```
-
-
-**Ribosome density around the triplete amino acid (tri-AA) motifs.**
-
-* As for a specific tri-AA motif, such as poly-proline (PPP)
-
-c0-RiboDensityAroundTripleteAAMotifs.sh
-
-```sh
-RiboDensityAroundTripleteAAMotifs -f /data/data/attributes.txt -c /data/reference/tair_analy/longest.transcripts.info.txt -o /data/data/c0-RiboDensityAroundTripleteAAMotifs_PPP -M counts -S /data/select_trans.txt -l 100 -n 10 --table 1 -F /data/reference/tair_analy/transcript_cds_sequences.fa --type2 PPP --type1 PP
-```
-
-c1-PlotRiboDensityAroundTriAAMotifs.sh
-
-```sh
-PlotRiboDensityAroundTriAAMotifs -i /data/data/c0-RiboDensityAroundTripleteAAMotifs_PPP_motifDensity_dataframe.txt -o /data/data/c1-PPP_plot -g col,d14 -r col__d14 --mode mean
-```
-
-* Using following command to do such job:
-
-c2-RiboDensityAroundTripleteAAMotifs.sh
-
-```sh
-
-RiboDensityAroundTripleteAAMotifs -f /data/data/attributes.txt -c /data/reference/tair_analy/longest.transcripts.info.txt -o  /data/data/c2-RiboDensityAroundTripleteAAMotifs -M counts -S /data/select_trans.txt -l 100 -n 10 --table 1 -F /data/reference/tair_analy/transcript_cds_sequences.fa --motifList1 /data/reference/tri_AA_motifs1.txt --motifList2 /data/reference/tri_AA_motifs2.txt
-
-```
-c2b-PlotRiboDensityAroundTriAAMotifs.sh
-```sh
-PlotRiboDensityAroundTriAAMotifs -i /data/data/c2-RiboDensityAroundTripleteAAMotifs_motifDensity_dataframe.txt -o /data/data/c2b-PPP_plot -g col,d14 -r col__d14 --mode mean
-
-
-```
-
-
-**RPFdist calculation.**
-
-c3-RPFdist.sh
-
-```sh
-RPFdist -f /data/data/attributes.txt -c /data/reference/tair_analy/longest.transcripts.info.txt -o /data/data/c3-RPFdist -M counts -S /data/select_trans.txt -l 100 -n 10 -m 1 -e 5
-```
-
-**GC contents for sequences with a fasta format.**
-
-c4-GCContent.sh
-
-```sh
-GCContent -i /data/reference/tair_analy/transcript_cds_sequences.fa -o /data/data/c4-GCContent-normal --mode normal
-GCContent -i /data/reference/tair_analy/transcript_cds_sequences.fa -o /data/data/c4-GCContent-frames --mode frames
-```
-
-c5-PlotGCContent.sh
-
-```sh
-## normal mode
-PlotGCContent -i /data/data/c4-GCContent-normal_GC_content.txt -o /data/data/c5-PlotGCContent-normal --mode normal
+echo "## frames mode"
+date
 ## frames mode
-PlotGCContent -i /data/data/c4-GCContent-frames_GC_content_frames.txt -o /data/data/c5-PlotGCContent-frames --mode frames
+echo PlotGCContent -i /home/share/riboseq/c4-GCContent-frames_GC_content_frames.txt -o /home/share/riboseq/c5-PlotGCContent-frames --mode frames
+PlotGCContent -i /home/share/riboseq/c4-GCContent-normal_GC_content.txt -o /home/share/riboseq/c5-PlotGCContent-normal --mode normal
+PlotGCContent -i /home/share/riboseq/c4-GCContent-frames_GC_content_frames.txt -o /home/share/riboseq/c5-PlotGCContent-frames --mode frames
+echo "Finished:## frames mode"
+date
+
+echo "Local tRNA adaptation index and global tRNA adaptation index"
+date
+#Local tRNA adaptation index and global tRNA adaptation index
+echo tAI -i /home/share/riboseq/RiboMiner/transcript_cds_sequences.fa -t tair -o /home/share/riboseq/c6-tAI -u 0 -d 500 --table 1 -N /home/share/riboseq/aratha/araTha1-tRNAs-confidence-set.out
+tAI -i /home/share/riboseq/RiboMiner/transcript_cds_sequences.fa -t mouse -o /home/share/riboseq/c6-tAI -u 0 -d 500 --table 1 -N /home/share/riboseq/aratha/araTha1-tRNAs-confidence-set.out
+
+echo tAIPlot -i /home/share/riboseq/c6-tAI_tAI_dataframe.txt -o /home/share/riboseq/c7-tAIPlot -u 0 -d 500 --mode all --start 5 --window 7 --step 1
+tAIPlot -i /home/share/riboseq/c6-tAI_tAI_dataframe.txt -o /home/share/riboseq/c7-tAIPlot -u 0 -d 500 --mode all --start 5 --window 7 --step 1
+
+echo "Finished: Local tRNA adaptation index and global tRNA adaptation index"
+date
+
+echo "Local codon adaptation index and global codon adaptation index"
+date
+# Local codon adaptation index and global codon adaptation index
+echo cAI -i /home/share/riboseq/RiboMiner/transcript_cds_sequences_tAI.fa -o /home/share/riboseq/c8-cAI -t tair -u 0 -d 500 --reference /home/share/riboseq/RiboMiner/reference.fa
+cAI -i /home/share/riboseq/RiboMiner/transcript_cds_sequences_tAI.fa -o /home/share/riboseq/c8-cAI -t tair -u 0 -d 500 --reference /home/share/riboseq/RiboMiner/reference.fa
+
+echo cAIPlot -i /home/share/riboseq/c8-cAI_local_cAI_dataframe.txt -o /home/share/riboseq/c9-cAIPlot -u 0 -d 500 --mode all --start 5 --window 7 --step 1
+cAIPlot -i /home/share/riboseq/c8-cAI_local_cAI_dataframe.txt -o /home/share/riboseq/c9-cAIPlot -u 0 -d 500 --mode all --start 5 --window 7 --step 1
+echo GetProteinCodingSequence -i <transcrits_sequence.fa> -c <longest.trans.info.txt> -S /home/share/riboseq/selec_trans_longest.txt -o <output_prefix> --mode whole --table 1 --id-type transcript-id
+GetProteinCodingSequence -i <transcrits_sequence.fa> -c <longest.trans.info.txt> -S /home/share/riboseq/selec_trans_longest.txt -o <output_prefix> --mode whole --table 1 --id-type transcript-id
+echo "Finished: Local codon adaptation index and global codon adaptation index"
+date
+# Hydrophobicity calculation and Charge amino acids
 ```
 
-**Local tRNA adaptation index and global tRNA adaptation index**
-
-c6-tAI.sh
+**e.Enrichment_Analysis.sh**
 
 ```sh
-tAI -i /data/reference/tair_analy/transcript_cds_sequences_tAI.fa -t tair -o /data/data/c6-tAI -u 0 -d 500 --table 1 -N /data/aratha/araTha1-tRNAs-confidence-set.out
+echo RiboDensityAtEachPosition -c /home/share/riboseq/RiboMiner/longest.transcripts.info.txt -f /home/share/riboseq/attributes.txt -o /home/share/riboseq/d5-RiboDensityAtEachPosition -U codon
+#RiboDensityAtEachPosition -c /home/share/riboseq/RiboMiner/longest.transcripts.info.txt -f /home/share/riboseq/attributes.txt -o /home/share/riboseq/d5-RiboDensityAtEachPosition -U codon
 
 
+echo enrichmentMeanDensity -i /home/share/riboseq/d5-RiboDensityAtEachPosition_r7_cds_codon_density.txt,/home/share/riboseq/d5-RiboDensityAtEachPosition_r111_cds_codon_density.txt -o /home/share/riboseq/d6-enrichmentMeanDensity
+#enrichmentMeanDensity -i /home/share/riboseq/d5-RiboDensityAtEachPosition_r7_cds_codon_density.txt,/home/share/riboseq/d5-RiboDensityAtEachPosition_r111_cds_codon_density.txt -o /home/share/riboseq/d6-enrichmentMeanDensity
+
+
+
+echo EnrichmentAnalysis --ctrl /home/share/riboseq/d5-RiboDensityAtEachPosition_r7_cds_codon_density.txt --treat /home/share/riboseq/d5-RiboDensityAtEachPosition_r111_cds_codon_density.txt -c /home/share/riboseq/RiboMiner/longest.transcripts.info.txt -o /home/share/riboseq/d7-EnrichmentAnalysis -U codon -M RPKM -l 150 -n 10 -m 1 -e 30 --CI 0.95 -u 0 -d 500
+#EnrichmentAnalysis --ctrl /home/share/riboseq/d5-RiboDensityAtEachPosition_r7_cds_codon_density.txt --treat /home/share/riboseq/d5-RiboDensityAtEachPosition_r111_cds_codon_density.txt -c /home/share/riboseq/RiboMiner/longest.transcripts.info.txt -o /home/share/riboseq/d7-EnrichmentAnalysis -U codon -M RPKM -l 150 -n 10 -m 1 -e 30 --CI 0.95 -u 0 -d 500
+
+echo PlotEnrichmentRatio -i /home/share/riboseq/d7-EnrichmentAnalysis_enrichment_dataframe.txt -o /home/share/riboseq/d8-PlotEnrichmentRatio -u 0 -d 500 --unit codon --mode all
+PlotEnrichmentRatio -i /home/share/riboseq/d7-EnrichmentAnalysis_enrichment_dataframe.txt -o /home/share/riboseq/d8-PlotEnrichmentRatio -u 0 -d 500 --unit codon --mode all
 ```
-c7-tAIPlot.sh
-
-```sh
-tAIPlot -i /data/data/c6-tAI_tAI_dataframe.txt -o /data/data/c7-tAIPlot -u 0 -d 500 --mode all --start 5 --window 7 --step 1
-```
-**Local codon adaptation index and global codon adaptation index**
-
-c8-cAI.sh
-
-```sh
-cAI -i /data/reference/tair_analy/transcript_cds_sequences_tAI.fa -o /data/data/c8-cAI -t tair -u 0 -d 500 --reference /data/reference/tair_analy/reference.fa
-
-```
-
-c9-cAIPlot.sh
-
-```sh
-cAIPlot -i /data/data/c8-cAI_local_cAI_dataframe.txt -o /data/data/c9-cAIPlot -u 0 -d 500 --mode all --start 5 --window 7 --step 1
-
-```
-
-```sh
-GetProteinCodingSequence -i <transcrits_sequence.fa> -c <longest.trans.info.txt> -S /data/select_trans.txt -o <output_prefix> --mode whole --table 1 --id-type transcript-id
-```
-
-**Hydrophobicity calculation and Charge amino acids**
-
-d1-hydropathyCharge.sh
-
-```sh
-## hydrophobicity calculation
-hydropathyCharge  -i /data/reference/tair_analy/transcript_cds_sequences_tAI.fa -o /data/data/d1-hydropathyCharge -t select_gene --index /data/reference/hydropathy_index.txt -u 0 -d 500 --table 1
-```
-
-d2-charge.sh
-
-```sh
-##
-hydropathyCharge  -i /data/reference/tair_analy/transcript_cds_sequences_tAI.fa -o /data/data/d2-charge -t select_gene --index /data/reference/AA_charge_index.txt -u 0 -d 500 --table 1
-```
-
-d3-PlotHydropathyCharge.sh
-
-```sh
-## hydrophobicity
-PlotHydropathyCharge -i /data/data/d1-hydropathyCharge_values_dataframe.txt -o /data/data/d3-PlotHydropathyCharge  -u 0 -d 500 --mode all --ylab "Average Hydrophobicity"
-```
-d4-Plotcharges.sh
-
-```sh
-## charge
-PlotHydropathyCharge -i /data/data/d2-charge_values_dataframe.txt -o /data/data/d4-Plotcharges -u 0 -d 500 --mode all --ylab "Average Charges"
-```
-### Enrichment Analysis (EA)
-
-**Step 1: Calculate ribosome density at each position for each transcript.**
-
-d5-RiboDensityAtEachPosition.sh
-
-```sh
-RiboDensityAtEachPosition -c /data/reference/tair_analy/longest.transcripts.info.txt -f /data/data/attributes.txt -o /data/data/d5-RiboDensityAtEachPosition -U codon
-```
-**Step 2: Calculate mean ribosome density for different replicates.**
-
-d6-enrichmentMeanDensity.sh
-
-```sh
-enrichmentMeanDensity -i /data/data/d5-RiboDensityAtEachPosition_col_cds_codon_density.txt,/data/data/d5-RiboDensityAtEachPosition_d14_cds_codon_density.txt -o /data/data/d6-enrichmentMeanDensity
-```
-**Step 3: Enrichment analysis.**
-
-d7-EnrichmentAnalysis.sh
-
-```sh
-## all transcripts
-EnrichmentAnalysis --ctrl /data/data/d5-RiboDensityAtEachPosition_col_cds_codon_density.txt --treat /data/data/d5-RiboDensityAtEachPosition_d14_cds_codon_density.txt -c /data/reference/tair_analy/longest.transcripts.info.txt -o /data/data/d7-EnrichmentAnalysis -U codon -M RPKM -l 150 -n 10 -m 1 -e 30 --CI 0.95 -u 0 -d 500
-
-
-```
-
-```sh
-## specific transcripts
-EnrichmentAnalysis --ctrl <total-translatome.txt> --treat <IP-translatome.txt> -c /data/reference/tair_analy/longest.transcripts.info.txt -o <output_prefix> -U codon -M RPKM -l 150 -n 10 -m 1 -e 30 --CI 0.95 -u 0 -d 500 -S /data/select_trans.txt
-```
-
-
-**Step 4: Plot the enrichment ratio.**
-
-d8-PlotEnrichmentRatio.sh
-
-```sh
-PlotEnrichmentRatio -i /data/data/d7-EnrichmentAnalysis_enrichment_dataframe.txt -o /data/data/d8-PlotEnrichmentRatio -u 0 -d 500 --unit codon --mode all
-
-```
-**Notes: if you want to see the enrichment ratio for a single transcript, the EnrichmentAnalysisForSingleTrans would be helpful.**
-
-```sh
-EnrichmentAnalysisForSingleTrans -i <output_prefix_codon_ratio.txt> -s <transcript_name> -o <output_prefix> -c <longest.trans.info.txt>  --id-type transcript_id --slide-window y --axhline 1
-```
-
 
 

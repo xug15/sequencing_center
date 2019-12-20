@@ -203,6 +203,20 @@ mkdir a8-star
 
 run with screen.
 
+build star index.
+
+```sh
+
+#!/bin/bash
+export PATH=$PATH:~/software/STAR-master/bin/Linux_x86_64_static
+
+fasta=/Share/home/tiangeng/reference_genome/tair/Arabidopsis_thaliana.TAIR10.dna.toplevel.fa
+gtf=/Share/home/tiangeng/reference_genome/tair/Arabidopsis_thaliana.TAIR10.43.gtf
+genomeout=/Share/home/tiangeng/reference_genome/tair_star
+
+nohup STAR --runThreadN 14 --runMode genomeGenerate --limitGenomeGenerateRAM 162003700778 --genomeDir ${genomeout} --genomeFastaFiles ${fasta} --sjdbGTFfile ${gtf} >log.txt 2>&1 &
+```
+
 **a1.STAR.sh**
 ```sh
 #!/bin/bash
