@@ -701,10 +701,7 @@ We need tRNA file, that can be download from [GtRNAdb](http://gtrnadb.ucsc.edu/g
 |chr6	|95	|58141949	|58141877	|Ala	|AGC	|tttctccctc	|gtttcttgtc|
 |chr6	|25	|26751918	|26751990	|Ala	|AGC	|agtgtagtgt	|gcttctttta|
 
-
 ```sh
-
-
 echo "Local tRNA adaptation index and global tRNA adaptation index"
 date
 #Local tRNA adaptation index and global tRNA adaptation index
@@ -720,17 +717,37 @@ date
 echo "Local codon adaptation index and global codon adaptation index"
 date
 # Local codon adaptation index and global codon adaptation index
-echo cAI -i /home/share/riboseq/RiboMiner/transcript_cds_sequences_tAI.fa -o /home/share/riboseq/c8-cAI -t mouse -u 0 -d 500 --reference /home/share/riboseq/RiboMiner/reference.fa
-cAI -i /home/share/riboseq/RiboMiner/transcript_cds_sequences_tAI.fa -o /home/share/riboseq/c8-cAI -t mouse -u 0 -d 500 --reference /home/share/riboseq/RiboMiner/reference.fa
+echo cAI -i /home/share/riboseq/RiboMiner/transcript_cds_sequences.fa -o /home/share/riboseq/c8-cAI -t mouse -u 0 -d 500 --reference /home/share/riboseq/RiboMiner/transcript_cds_sequences.fa
+cAI -i /home/share/riboseq/RiboMiner/transcript_cds_sequences.fa -o /home/share/riseq/c8-cAI -t mouse -u 0 -d 500 --reference /home/share/riboseq/RiboMiner/transcript_cds_sequences.fa
 
 echo cAIPlot -i /home/share/riboseq/c8-cAI_local_cAI_dataframe.txt -o /home/share/riboseq/c9-cAIPlot -u 0 -d 500 --mode all --start 5 --window 7 --step 1
 cAIPlot -i /home/share/riboseq/c8-cAI_local_cAI_dataframe.txt -o /home/share/riboseq/c9-cAIPlot -u 0 -d 500 --mode all --start 5 --window 7 --step 1
-echo GetProteinCodingSequence -i <transcrits_sequence.fa> -c <longest.trans.info.txt> -S /home/share/riboseq/selec_trans_longest.txt -o <output_prefix> --mode whole --table 1 --id-type transcript-id
-GetProteinCodingSequence -i <transcrits_sequence.fa> -c <longest.trans.info.txt> -S /home/share/riboseq/selec_trans_longest.txt -o <output_prefix> --mode whole --table 1 --id-type transcript-id
+#echo GetProteinCodingSequence -i <transcrits_sequence.fa> -c /home/share/riboseq/RiboMiner/longest.transcripts.info.txt -S /home/share/riboseq/selec_trans_longest.txt -o <output_prefix> --mode whole --table 1 --id-type transcript-id
+#GetProteinCodingSequence -i <transcrits_sequence.fa> -c /home/share/riboseq/RiboMiner/longest.transcripts.info.txt -S /home/share/riboseq/selec_trans_longest.txt -o <output_prefix> --mode whole --table 1 --id-type transcript-id
 echo "Finished: Local codon adaptation index and global codon adaptation index"
 date
 # Hydrophobicity calculation and Charge amino acids
 ```
+
+**d3.feature_analysis.sh**
+
+[A_charge_index](./AA_charge_index.txt)
+
+[hydropathy_index](./hydropathy_index.txt)
+
+```sh
+## hydrophobicity calculation
+hydropathyCharge  -i <cds_sequence_1.fa,cds_sequence_2.fa...> -o <output_prefix> -t <geneList1,geneList2...> --index <hydrophobicity_index.txt> -u 0 -d 500 --table 1
+##
+hydropathyCharge  -i <cds_sequence_1.fa,cds_sequence_2.fa...> -o <output_prefix> -t <geneList1,geneList2...> --index <charge_index.txt> -u 0 -d 500 --table 1
+
+## hydrophobicity
+PlotHydropathyCharge -i <output_prefix_hydropathy_dataframe.txt> -o <output_prefix> -u 0 -d 500 --mode all --ylab "Average Hydrophobicity"
+## charge
+PlotHydropathyCharge -i <output_prefix_charge_values_dataframe.txt> -o <output_prefix> -u 0 -d 500 --mode all --ylab "Average Charges"
+```
+
+
 
 **e.Enrichment_Analysis.sh**
 
