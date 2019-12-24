@@ -568,12 +568,14 @@ echo ""
 echo -e "metaplots -a $ribocode -r ${a7R} -o ${a7R_o}"
 metaplots -a $ribocode -r ${a7R} -o ${a7R_o}
 echo ""
+
+mkdir bqualitycontrol
 ribocode='/home/share/riboseq/Ribocode'
 long='/home/share/riboseq/RiboMiner/longest.transcripts.info.txt'
 a111R='/home/share/riboseq/a9-STAR/7-111-R_STAR/7-111-R.toTranscriptome.sort.bam'
-a111R_o='/home/share/riboseq/a5-periodicity/7111r'
+a111R_o='/home/share/riboseq/bqualitycontrol/a5-periodicity/7111r'
 a7R='/home/share/riboseq/a9-STAR/7-7-R_STAR/7-7-R.toTranscriptome.sort.bam'
-a7R_o='/home/share/riboseq/a5-periodicity/77r'
+a7R_o='/home/share/riboseq/bqualitycontrol/a5-periodicity/77r'
 [ -d /home/share/riboseq/a5-periodicity ] || mkdir /home/share/riboseq/a5-periodicity
 echo Periodicity -i $a111R -a $ribocode -o $a111R_o -c $long -L 25 -R 35
 Periodicity -i $a111R -a $ribocode -o $a111R_o -c $long -L 25 -R 35
@@ -736,15 +738,25 @@ date
 [hydropathy_index](./hydropathy_index.txt)
 
 ```sh
+mkdir /home/share/riboseq/RiboMiner/feature_analysis/
 ## hydrophobicity calculation
-hydropathyCharge  -i <cds_sequence_1.fa,cds_sequence_2.fa...> -o <output_prefix> -t <geneList1,geneList2...> --index <hydrophobicity_index.txt> -u 0 -d 500 --table 1
+hydropathyCharge  -i /home/share/riboseq/RiboMiner/transcript_cds_sequences.fa -o /home/share/riboseq/feature_analysis/d1_hydropathy -t total_cds --index hydropathy_index.txt -u 0 -d 500 --table 1
 ##
-hydropathyCharge  -i <cds_sequence_1.fa,cds_sequence_2.fa...> -o <output_prefix> -t <geneList1,geneList2...> --index <charge_index.txt> -u 0 -d 500 --table 1
+hydropathyCharge  -i /home/share/riboseq/RiboMiner/transcript_cds_sequences.fa -o /home/share/riboseq/feature_analysis/d2_charge -t total_cds --index AA_charge_index.txt -u 0 -d 500 --table 1
 
 ## hydrophobicity
 PlotHydropathyCharge -i <output_prefix_hydropathy_dataframe.txt> -o <output_prefix> -u 0 -d 500 --mode all --ylab "Average Hydrophobicity"
 ## charge
 PlotHydropathyCharge -i <output_prefix_charge_values_dataframe.txt> -o <output_prefix> -u 0 -d 500 --mode all --ylab "Average Charges"
+```
+
+* The input file seperate by ',', and the file name in the -t seperate by ','.
+
+```sh
+## hydrophobicity calculation
+hydropathyCharge  -i <cds_sequence_1.fa,cds_sequence_2.fa...> -o d1_hydropathy_dataframe.txt -t <geneList1,geneList2...> --index <hydrophobicity_index.txt> -u 0 -d 500 --table 1
+##
+hydropathyCharge  -i <cds_sequence_1.fa,cds_sequence_2.fa...> -o d2_charge_values_dataframe.txt -t <geneList1,geneList2...> --index <charge_index.txt> -u 0 -d 500 --table 1
 ```
 
 
