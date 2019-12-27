@@ -1,5 +1,8 @@
 # Zhang Rongqing miRNA result
 
+![quality](result_191226_zhangrongqing/a1_quality.png)
+
+![length](result_191226_zhangrongqing/a2_length.png)
 
 mature miRNA
 
