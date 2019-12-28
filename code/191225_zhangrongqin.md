@@ -180,6 +180,17 @@ sort -k 2,2nr new.miRNA.sum.txt > new.miRNA.sum.sort.txt
 
 ```
 
+**a9.reverse_complement.pl**
+
+```pl
+my $origin_seq=<STDIN>;
+my $revcomp = reverse $origin_seq;
+$revcomp =~ tr/ATGCatgc/TACGtacg/;
+
+print "$revcomp\n";
+
+```
+
 
 ## Tophat map to genome
 

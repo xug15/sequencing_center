@@ -27,3 +27,6 @@ tca-miR-100-5p|63389|
 isc-miR-100|53896|
 dpu-miR-100|52739|
 
+novel miRNA
+
+[novel miRNA count](result_191226_zhangrongqing/new.miRNA.sum.sort.txt)
