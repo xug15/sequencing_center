@@ -121,6 +121,66 @@ bowtie -n 0 -norc --best -l 15 -p 8 --un=$out/unmap_${name}.fastq $bowtie_index 
 
 ```
 
+**a6.read2fa.pl**
+
+```pl
+open DATA, "<$ARGV[0]";
+open OUT,  ">$ARGV[0].t.fa";
+while(<DATA>)
+{
+$seq=<DATA>;
+<DATA>;
+<DATA>;
+print OUT $seq;
+}
+close DATA;
+close OUT;
+
+```
+
+**a7.new_miRNA.sh**
+
+```sh
+#!/bin/bash
+#SBATCH -J bowtie
+#SBATCH -p CN_BIOT
+#SBATCH --nodes=1
+#SBATCH --ntasks=16
+#SBATCH --output=%j.out
+#SBATCH --error=%j.err
+source /WORK/Samples/singularity.sh
+
+
+sort /WORK/teaching/project/20191225zqr/miRNA_mapping/unmap_miRNA.fastq.t.fa | uniq -c > /WORK/teaching/project/20191225zqr/miRNA_mapping/new.txt
+```
+
+```sh
+perl -pi -e 's/^\s+//g' /WORK/teaching/project/20191225zqr/miRNA_mapping/new.txt;
+
+```
+
+**a8.blank2tab.pl**
+
+```pl
+
+open DATA, "<new.txt";
+open OUT,  ">new.miRNA.sum.txt";
+while(<DATA>)
+{
+chomp;
+@data=split / /,$_;
+print OUT "$data[1]\t$data[0]\n";
+}
+close DATA;
+close OUT;
+```
+
+```sh
+sort -k 2,2nr new.miRNA.sum.txt > new.miRNA.sum.sort.txt
+
+```
+
+
 ## Tophat map to genome
 
 **a5.tophat2017.sh**
