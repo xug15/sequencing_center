@@ -563,6 +563,7 @@ a111R='/home/share/riboseq/a9-STAR/7-111-R_STAR/7-111-RAligned.toTranscriptome.o
 a111R_o='/home/share/riboseq/bqualitycontrol/metaplot/7111r'
 a7R='/home/share/riboseq/a9-STAR/7-7-R_STAR/7-7-RAligned.toTranscriptome.out.bam'
 a7R_o='/home/share/riboseq/bqualitycontrol/metaplot/77r'
+meta_out='/home/share/riboseq/bqualitycontrol/metaplot/'
 [[ -d /home/share/riboseq/bqualitycontrol/metaplot/ ]] || mkdir /home/share/riboseq/bqualitycontrol/metaplot/
 echo -e "metaplots -a $ribocode -r ${a111R} -o ${a111R_o}"
 metaplots -a $ribocode -r ${a111R} -o ${a111R_o}
@@ -571,6 +572,33 @@ echo -e "metaplots -a $ribocode -r ${a7R} -o ${a7R_o}"
 metaplots -a $ribocode -r ${a7R} -o ${a7R_o}
 echo ""
 
+rm ${meta_out}/attributes.txt
+for i in `ls ${meta_out}|grep txt$`;do grep -v "#" >> ${meta_out}/attributes.txt;done;
+
+perl -pi -e 's/^\n//g' ${meta_out}/
+mkdir bqualitycontrol
+
+#Periodicity checking
+#Ribosome profiling data with a good quality tend to have a good 3-nt periodicity.
+ribocode='/home/share/riboseq/Ribocode'
+a111R='/home/share/riboseq/a9-STAR/7-111-R_STAR/7-111-RAligned.toTranscriptome.out.bam'
+a111R_o='/home/share/riboseq/bqualitycontrol/metaplot/7111r'
+a7R='/home/share/riboseq/a9-STAR/7-7-R_STAR/7-7-RAligned.toTranscriptome.out.bam'
+a7R_o='/home/share/riboseq/bqualitycontrol/metaplot/77r'
+meta_out='/home/share/riboseq/bqualitycontrol/metaplot/'
+[[ -d /home/share/riboseq/bqualitycontrol/metaplot/ ]] || mkdir /home/share/riboseq/bqualitycontrol/metaplot/
+echo -e "metaplots -a $ribocode -r ${a111R} -o ${a111R_o}"
+metaplots -a $ribocode -r ${a111R} -o ${a111R_o}
+echo ""
+echo -e "metaplots -a $ribocode -r ${a7R} -o ${a7R_o}"
+metaplots -a $ribocode -r ${a7R} -o ${a7R_o}
+echo ""
+
+
+echo -e "bamFiles\treadLengths\tOffsets\tbamLegends" > ${meta_out}/attributes.txt
+for i in `ls ${meta_out}|grep txt$`;do grep -v "#" >> ${meta_out}/attributes.txt;done;
+
+perl -pi -e 's/^\n//g' ${meta_out}/attributes.txt
 
 ribocode='/home/share/riboseq/Ribocode'
 long='/home/share/riboseq/RiboMiner/longest.transcripts.info.txt'
@@ -583,6 +611,36 @@ echo Periodicity -i $a111R -a $ribocode -o $a111R_o -c $long -L 25 -R 35
 Periodicity -i $a111R -a $ribocode -o $a111R_o -c $long -L 25 -R 35
 echo Periodicity -i $a7R -a $ribocode -o $a7R_o -c $long -L 25 -R 35
 Periodicity -i $a7R -a $ribocode -o $a7R_o -c $long -L 25 -R 35
+
+
+
+
+#Reads distribution among different reading frames.
+RiboDensityOfDiffFrames -f /home/share/riboseq/attributes.txt -c /home/share/riboseq/RiboMiner/longest.transcripts.info.txt -o /home/share/riboseq/bqualitycontrol/a6-ribo-density-diff-fram
+
+#Length distribution.
+LengthDistribution -i /home/share/riboseq/a9-STAR/7-111-R_STAR/7-111-RAligned.sortedByCoord.out.bam -o /home/share/riboseq/bqualitycontrol/r111.length -f bam
+LengthDistribution -i /home/share/riboseq/a9-STAR/7-7-R_STAR/7-7-RAligned.sortedByCoord.out.bam -o /home/share/riboseq/bqualitycontrol/r7.length -f bam
+
+#DNA contamination.
+gtf=/home/share/riboseq/mus_ensemble/Mus_musculus.GRCm38.87.gtf
+StatisticReadsOnDNAsContam -i  /home/share/riboseq/a9-STAR/7-111-R_STAR/7-111-RAligned.sortedByCoord.out.bam  -g $gtf -o /home/share/riboseq/bqualitycontrol/a7-dna-contamination.111
+StatisticReadsOnDNAsContam -i  /home/share/riboseq/a9-STAR/7-7-R_STAR/7-7-RAligned.sortedByCoord.out.bam  -g $gtf -o /home/share/riboseq/bqualitycontrol/a7-dna-contamination.7
+
+ribocode='/home/share/riboseq/Ribocode'
+long='/home/share/riboseq/RiboMiner/longest.transcripts.info.txt'
+a111R='/home/share/riboseq/a9-STAR/7-111-R_STAR/7-111-R.toTranscriptome.sort.bam'
+a111R_o='/home/share/riboseq/bqualitycontrol/a5-periodicity/7111r'
+a7R='/home/share/riboseq/a9-STAR/7-7-R_STAR/7-7-R.toTranscriptome.sort.bam'
+a7R_o='/home/share/riboseq/bqualitycontrol/a5-periodicity/77r'
+[ -d /home/share/riboseq/a5-periodicity ] || mkdir /home/share/riboseq/a5-periodicity
+echo Periodicity -i $a111R -a $ribocode -o $a111R_o -c $long -L 25 -R 35
+Periodicity -i $a111R -a $ribocode -o $a111R_o -c $long -L 25 -R 35
+echo Periodicity -i $a7R -a $ribocode -o $a7R_o -c $long -L 25 -R 35
+Periodicity -i $a7R -a $ribocode -o $a7R_o -c $long -L 25 -R 35
+
+
+
 
 #Reads distribution among different reading frames.
 RiboDensityOfDiffFrames -f /home/share/riboseq/attributes.txt -c /home/share/riboseq/RiboMiner/longest.transcripts.info.txt -o /home/share/riboseq/bqualitycontrol/a6-ribo-density-diff-fram
