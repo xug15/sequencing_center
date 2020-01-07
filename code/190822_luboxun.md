@@ -564,7 +564,7 @@ a111R_o='/home/share/riboseq/bqualitycontrol/metaplot/7111r'
 a7R='/home/share/riboseq/a9-STAR/7-7-R_STAR/7-7-RAligned.toTranscriptome.out.bam'
 a7R_o='/home/share/riboseq/bqualitycontrol/metaplot/77r'
 meta_out='/home/share/riboseq/bqualitycontrol/metaplot/'
-[[ -d /home/share/riboseq/bqualitycontrol/metaplot/ ]] || mkdir /home/share/riboseq/bqualitycontrol/metaplot/
+[ -d /home/share/riboseq/bqualitycontrol/metaplot/ ] || mkdir /home/share/riboseq/bqualitycontrol/metaplot/
 echo -e "metaplots -a $ribocode -r ${a111R} -o ${a111R_o}"
 metaplots -a $ribocode -r ${a111R} -o ${a111R_o}
 echo ""
@@ -616,7 +616,7 @@ Periodicity -i $a7R -a $ribocode -o $a7R_o -c $long -L 25 -R 35
 
 
 #Reads distribution among different reading frames.
-RiboDensityOfDiffFrames -f /home/share/riboseq/attributes.txt -c /home/share/riboseq/RiboMiner/longest.transcripts.info.txt -o /home/share/riboseq/bqualitycontrol/a6-ribo-density-diff-fram
+RiboDensityOfDiffFrames -f ${meta_out}/attributes.txt -c /home/share/riboseq/RiboMiner/longest.transcripts.info.txt -o /home/share/riboseq/bqualitycontrol/a6-ribo-density-diff-fram
 
 #Length distribution.
 LengthDistribution -i /home/share/riboseq/a9-STAR/7-111-R_STAR/7-111-RAligned.sortedByCoord.out.bam -o /home/share/riboseq/bqualitycontrol/r111.length -f bam
@@ -643,7 +643,7 @@ Periodicity -i $a7R -a $ribocode -o $a7R_o -c $long -L 25 -R 35
 
 
 #Reads distribution among different reading frames.
-RiboDensityOfDiffFrames -f /home/share/riboseq/attributes.txt -c /home/share/riboseq/RiboMiner/longest.transcripts.info.txt -o /home/share/riboseq/bqualitycontrol/a6-ribo-density-diff-fram
+RiboDensityOfDiffFrames -f ${meta_out}/attributes.txt -c /home/share/riboseq/RiboMiner/longest.transcripts.info.txt -o /home/share/riboseq/bqualitycontrol/a6-ribo-density-diff-fram
 
 #Length distribution.
 LengthDistribution -i /home/share/riboseq/a9-STAR/7-111-R_STAR/7-111-RAligned.sortedByCoord.out.bam -o /home/share/riboseq/bqualitycontrol/r111.length -f bam
@@ -658,6 +658,8 @@ StatisticReadsOnDNAsContam -i  /home/share/riboseq/a9-STAR/7-7-R_STAR/7-7-RAlign
 **c.metagene_analysis.sh**
 
 ```sh
+meta_out='/home/share/riboseq/bqualitycontrol/metaplot/'
+${meta_out}/attributes.txt
 mkdir c_metagene_analysis
 #Metagene analysis along the whole transcript region.
 MetageneAnalysisForTheWholeRegions -f /home/share/riboseq/attributes.txt -c /home/share/riboseq/RiboMiner/longest.transcripts.info.txt -o /home/share/riboseq/c_metagene_analysis/a8-metagene -b 15,90,60 -l 100 -n 10 -m 1 -e 5 --plot yes
@@ -678,6 +680,7 @@ PolarityCalculation -f /home/share/riboseq/attributes.txt -c /home/share/riboseq
 **d1.feature_analysis.sh**
 
 ```sh
+meta_out='/home/share/riboseq/bqualitycontrol/metaplot/'
 mkdir d_feature_analysis/
 # Pick out transcripts enriched ribosomes on specific region.
 echo "Pick out transcripts enriched ribosomes on specific region.";
@@ -766,6 +769,7 @@ We need tRNA file, that can be download from [GtRNAdb](http://gtrnadb.ucsc.edu/g
 |chr6	|25	|26751918	|26751990	|Ala	|AGC	|agtgtagtgt	|gcttctttta|
 
 ```sh
+meta_out='/home/share/riboseq/bqualitycontrol/metaplot/'
 echo "Local tRNA adaptation index and global tRNA adaptation index"
 date
 #Local tRNA adaptation index and global tRNA adaptation index
@@ -800,6 +804,7 @@ date
 [hydropathy_index](./hydropathy_index.txt)
 
 ```sh
+meta_out='/home/share/riboseq/bqualitycontrol/metaplot/'
 mkdir /home/share/riboseq/RiboMiner/feature_analysis/
 ## hydrophobicity calculation
 echo hydropathyCharge  -i /home/share/riboseq/RiboMiner/transcript_cds_sequences.fa -o /home/share/riboseq/d_feature_analysis/d1_hydropathy -t total_cds --index hydropathy_index.txt -u 0 -d 500 --table 1
@@ -830,6 +835,7 @@ hydropathyCharge  -i <cds_sequence_1.fa,cds_sequence_2.fa...> -o d2_charge_value
 **e.Enrichment_Analysis.sh**
 
 ```sh
+meta_out='/home/share/riboseq/bqualitycontrol/metaplot/'
 echo RiboDensityAtEachPosition -c /home/share/riboseq/RiboMiner/longest.transcripts.info.txt -f /home/share/riboseq/attributes.txt -o /home/share/riboseq/d5-RiboDensityAtEachPosition -U codon
 #RiboDensityAtEachPosition -c /home/share/riboseq/RiboMiner/longest.transcripts.info.txt -f /home/share/riboseq/attributes.txt -o /home/share/riboseq/d5-RiboDensityAtEachPosition -U codon
 
