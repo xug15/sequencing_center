@@ -554,207 +554,257 @@ GetUTRSequences -i $transcripts_sequence -o $utr -c $transcript_cds
 **b.qualitycontrol.sh**
 
 ```sh
-mkdir bqualitycontrol
+
+echo "bam must be sort and index."
+
 
 #Periodicity checking
 #Ribosome profiling data with a good quality tend to have a good 3-nt periodicity.
 ribocode='/home/share/riboseq/Ribocode'
-a111R='/home/share/riboseq/a9-STAR/7-111-R_STAR/7-111-RAligned.toTranscriptome.out.bam'
-a111R_o='/home/share/riboseq/bqualitycontrol/metaplot/7111r'
-a7R='/home/share/riboseq/a9-STAR/7-7-R_STAR/7-7-RAligned.toTranscriptome.out.bam'
-a7R_o='/home/share/riboseq/bqualitycontrol/metaplot/77r'
-meta_out='/home/share/riboseq/bqualitycontrol/metaplot/'
-[ -d /home/share/riboseq/bqualitycontrol/metaplot/ ] || mkdir /home/share/riboseq/bqualitycontrol/metaplot/
+
+out='/home/share/riboseq/bqualitycontrol'
+quality_out=$out
+meta_out=$quality_out'/metaplot'
+a111R='/home/share/riboseq/a9-STAR/7-111-R_STAR/7-111-R.toTranscriptome.sort.bam'
+a111Rgenome='/home/share/riboseq/a9-STAR/7-111-R_STAR/7-111-RAligned.sortedByCoord.out.bam'
+a111R_o=$meta_out'/7111r'
+a7R='/home/share/riboseq/a9-STAR/7-7-R_STAR/7-7-R.toTranscriptome.sort.bam'
+a7Rgenome='/home/share/riboseq/a9-STAR/7-7-R_STAR/7-7-RAligned.sortedByCoord.out.bam'
+a7R_o=$meta_out'/77r'
+long='/home/share/riboseq/RiboMiner/longest.transcripts.info.txt'
+periodicity_out=$quality_out'/a5-periodicity'
+a111R_periodicity_o=$periodicity_out'/7111r'
+a7R_periodicity_o=$periodicity_out'/77r'
+
+echo $meta_out
+
+gtf=/home/share/riboseq/mus_ensemble/Mus_musculus.GRCm38.87.gtf
+
+[ -d $out ] || mkdir $out
+
+[ -d $out/metaplot ] || mkdir $out/metaplot
+
+metaplot()
+{
+echo "metaplot begin `date`"
 echo -e "metaplots -a $ribocode -r ${a111R} -o ${a111R_o}"
 metaplots -a $ribocode -r ${a111R} -o ${a111R_o}
-echo ""
+echo "Begin `date`"
 echo -e "metaplots -a $ribocode -r ${a7R} -o ${a7R_o}"
 metaplots -a $ribocode -r ${a7R} -o ${a7R_o}
-echo ""
-
+echo "Finished `date`"
+echo "Begin to generate attribution`date`"
+echo rm ${meta_out}/attributes.txt
 rm ${meta_out}/attributes.txt
-for i in `ls ${meta_out}|grep txt$`;do grep -v "#" >> ${meta_out}/attributes.txt;done;
+echo "SampleName\tAlignmentFile\tStranded\tP-siteReadLength\tP-siteLocations" > ${meta_out}/attributes2.txt;
+echo -e " for i in `ls ${meta_out}|grep txt$`;do grep -v "#" ${meta_out}/${i} >> ${meta_out}/attributes2.txt;done;"
+for i in `ls ${meta_out}|grep config.txt$`;do grep -v "#" ${meta_out}/${i} >> ${meta_out}/attributes2.txt;done;
+perl -pi -e 's/^\n//g' ${meta_out}/attributes2.txt
+awk '{print $2"\t"$4"\t"$5"\t"$1}' ${meta_out}/attributes2.txt > ${meta_out}/attributes.txt
+echo "metaplot begin `end`"
+}
 
-perl -pi -e 's/^\n//g' ${meta_out}/
-mkdir bqualitycontrol
+periodicity()
+{
+echo "Periodicity start `date`"
+[ -d ${periodicity_out} ] || mkdir ${periodicity_out}
+echo -e " Periodicity -i $a111R -a $ribocode -o $a111R_periodicity_o -c $long -L 25 -R 35"
+Periodicity -i $a111R -a $ribocode -o $a111R_periodicity_o -c $long -L 25 -R 35
+echo -e " Periodicity -i $a7R -a $ribocode -o $a7R_periodicity_o -c $long -L 25 -R 35"
+Periodicity -i $a7R -a $ribocode -o $a7R_periodicity_o -c $long -L 25 -R 35
+echo "Periodicity end `date`"
+}
 
-#Periodicity checking
-#Ribosome profiling data with a good quality tend to have a good 3-nt periodicity.
-ribocode='/home/share/riboseq/Ribocode'
-a111R='/home/share/riboseq/a9-STAR/7-111-R_STAR/7-111-RAligned.toTranscriptome.out.bam'
-a111R_o='/home/share/riboseq/bqualitycontrol/metaplot/7111r'
-a7R='/home/share/riboseq/a9-STAR/7-7-R_STAR/7-7-RAligned.toTranscriptome.out.bam'
-a7R_o='/home/share/riboseq/bqualitycontrol/metaplot/77r'
-meta_out='/home/share/riboseq/bqualitycontrol/metaplot/'
-[[ -d /home/share/riboseq/bqualitycontrol/metaplot/ ]] || mkdir /home/share/riboseq/bqualitycontrol/metaplot/
-echo -e "metaplots -a $ribocode -r ${a111R} -o ${a111R_o}"
-metaplots -a $ribocode -r ${a111R} -o ${a111R_o}
-echo ""
-echo -e "metaplots -a $ribocode -r ${a7R} -o ${a7R_o}"
-metaplots -a $ribocode -r ${a7R} -o ${a7R_o}
-echo ""
-
-
-echo -e "bamFiles\treadLengths\tOffsets\tbamLegends" > ${meta_out}/attributes.txt
-for i in `ls ${meta_out}|grep txt$`;do grep -v "#" >> ${meta_out}/attributes.txt;done;
-
-perl -pi -e 's/^\n//g' ${meta_out}/attributes.txt
-
-ribocode='/home/share/riboseq/Ribocode'
-long='/home/share/riboseq/RiboMiner/longest.transcripts.info.txt'
-a111R='/home/share/riboseq/a9-STAR/7-111-R_STAR/7-111-R.toTranscriptome.sort.bam'
-a111R_o='/home/share/riboseq/bqualitycontrol/a5-periodicity/7111r'
-a7R='/home/share/riboseq/a9-STAR/7-7-R_STAR/7-7-R.toTranscriptome.sort.bam'
-a7R_o='/home/share/riboseq/bqualitycontrol/a5-periodicity/77r'
-[ -d /home/share/riboseq/a5-periodicity ] || mkdir /home/share/riboseq/a5-periodicity
-echo Periodicity -i $a111R -a $ribocode -o $a111R_o -c $long -L 25 -R 35
-Periodicity -i $a111R -a $ribocode -o $a111R_o -c $long -L 25 -R 35
-echo Periodicity -i $a7R -a $ribocode -o $a7R_o -c $long -L 25 -R 35
-Periodicity -i $a7R -a $ribocode -o $a7R_o -c $long -L 25 -R 35
-
-
-
-
+ribodensity()
+{
+echo "RiboDensityOfDiffFrames begin `date`"
 #Reads distribution among different reading frames.
-RiboDensityOfDiffFrames -f ${meta_out}/attributes.txt -c /home/share/riboseq/RiboMiner/longest.transcripts.info.txt -o /home/share/riboseq/bqualitycontrol/a6-ribo-density-diff-fram
+echo -e "RiboDensityOfDiffFrames -f ${meta_out}/attributes.txt -c $long -o $out/a6-ribo-density-diff-fram"
+RiboDensityOfDiffFrames -f ${meta_out}/attributes.txt -c $long -o $out/a6-ribo-density-diff-fram
+echo "RiboDensityOfDiffFrames end `date`"
+}
 
+length_dis()
+{
 #Length distribution.
-LengthDistribution -i /home/share/riboseq/a9-STAR/7-111-R_STAR/7-111-RAligned.sortedByCoord.out.bam -o /home/share/riboseq/bqualitycontrol/r111.length -f bam
-LengthDistribution -i /home/share/riboseq/a9-STAR/7-7-R_STAR/7-7-RAligned.sortedByCoord.out.bam -o /home/share/riboseq/bqualitycontrol/r7.length -f bam
+echo "LengthDistribution begin `date`"
+echo -e "LengthDistribution -i $a111Rgenome -o $quality_out/r111.length -f bam"
+LengthDistribution -i $a111Rgenome -o $quality_out/r111.length -f bam
+echo -e "LengthDistribution -i $a7Rgenome -o $quality_out/r7.length -f bam"
+LengthDistribution -i $a7Rgenome -o $quality_out/r7.length -f bam
+echo "LengthDistribution end `date`"
+}
 
+DNA_contam()
+{
 #DNA contamination.
-gtf=/home/share/riboseq/mus_ensemble/Mus_musculus.GRCm38.87.gtf
-StatisticReadsOnDNAsContam -i  /home/share/riboseq/a9-STAR/7-111-R_STAR/7-111-RAligned.sortedByCoord.out.bam  -g $gtf -o /home/share/riboseq/bqualitycontrol/a7-dna-contamination.111
-StatisticReadsOnDNAsContam -i  /home/share/riboseq/a9-STAR/7-7-R_STAR/7-7-RAligned.sortedByCoord.out.bam  -g $gtf -o /home/share/riboseq/bqualitycontrol/a7-dna-contamination.7
+echo "StatisticReadsOnDNAsContam begin `date`"
+echo "StatisticReadsOnDNAsContam -i $a111Rgenome  -g $gtf -o $out/a7-dna-contamination.111"
+StatisticReadsOnDNAsContam -i $a111Rgenome  -g $gtf -o $out/a7-dna-contamination.111
+echo -e "StatisticReadsOnDNAsContam -i  $a7Rgenome  -g $gtf -o $out/a7-dna-contamination.7"
+StatisticReadsOnDNAsContam -i  $a7Rgenome  -g $gtf -o $out/a7-dna-contamination.7
+echo "StatisticReadsOnDNAsContam end `date`"
 
-ribocode='/home/share/riboseq/Ribocode'
-long='/home/share/riboseq/RiboMiner/longest.transcripts.info.txt'
-a111R='/home/share/riboseq/a9-STAR/7-111-R_STAR/7-111-R.toTranscriptome.sort.bam'
-a111R_o='/home/share/riboseq/bqualitycontrol/a5-periodicity/7111r'
-a7R='/home/share/riboseq/a9-STAR/7-7-R_STAR/7-7-R.toTranscriptome.sort.bam'
-a7R_o='/home/share/riboseq/bqualitycontrol/a5-periodicity/77r'
-[ -d /home/share/riboseq/a5-periodicity ] || mkdir /home/share/riboseq/a5-periodicity
-echo Periodicity -i $a111R -a $ribocode -o $a111R_o -c $long -L 25 -R 35
-Periodicity -i $a111R -a $ribocode -o $a111R_o -c $long -L 25 -R 35
-echo Periodicity -i $a7R -a $ribocode -o $a7R_o -c $long -L 25 -R 35
-Periodicity -i $a7R -a $ribocode -o $a7R_o -c $long -L 25 -R 35
+}
 
 
+#metaplot
+#periodicity
+#ribodensity
+#length_dis
+#DNA_contam
 
-
-#Reads distribution among different reading frames.
-RiboDensityOfDiffFrames -f ${meta_out}/attributes.txt -c /home/share/riboseq/RiboMiner/longest.transcripts.info.txt -o /home/share/riboseq/bqualitycontrol/a6-ribo-density-diff-fram
-
-#Length distribution.
-LengthDistribution -i /home/share/riboseq/a9-STAR/7-111-R_STAR/7-111-RAligned.sortedByCoord.out.bam -o /home/share/riboseq/bqualitycontrol/r111.length -f bam
-LengthDistribution -i /home/share/riboseq/a9-STAR/7-7-R_STAR/7-7-RAligned.sortedByCoord.out.bam -o /home/share/riboseq/bqualitycontrol/r7.length -f bam
-
-#DNA contamination.
-gtf=/home/share/riboseq/mus_ensemble/Mus_musculus.GRCm38.87.gtf
-StatisticReadsOnDNAsContam -i  /home/share/riboseq/a9-STAR/7-111-R_STAR/7-111-RAligned.sortedByCoord.out.bam  -g $gtf -o /home/share/riboseq/bqualitycontrol/a7-dna-contamination.111
-StatisticReadsOnDNAsContam -i  /home/share/riboseq/a9-STAR/7-7-R_STAR/7-7-RAligned.sortedByCoord.out.bam  -g $gtf -o /home/share/riboseq/bqualitycontrol/a7-dna-contamination.7
 ```
 
 **c.metagene_analysis.sh**
 
+
 ```sh
-meta_out='/home/share/riboseq/bqualitycontrol/metaplot/'
-${meta_out}/attributes.txt
-mkdir c_metagene_analysis
-#Metagene analysis along the whole transcript region.
-MetageneAnalysisForTheWholeRegions -f /home/share/riboseq/attributes.txt -c /home/share/riboseq/RiboMiner/longest.transcripts.info.txt -o /home/share/riboseq/c_metagene_analysis/a8-metagene -b 15,90,60 -l 100 -n 10 -m 1 -e 5 --plot yes
-PlotMetageneAnalysisForTheWholeRegions -i /home/share/riboseq/c_metagene_analysis/a8-metagene_scaled_density_dataframe.txt -o /home/share/riboseq/c_metagene_analysis/a9-meta_gene_whole_regin -g r7,r111 -r r7__r111 -b 15,90,60 --mode all
 
+meta_out='/home/share/riboseq/bqualitycontrol/metaplot'
+ribocode='/home/share/riboseq/RiboMiner'
+long='/home/share/riboseq/RiboMiner/longest.transcripts.info.txt'
+out='/home/share/riboseq/c_metagene_analysis'
+groupinfo='R111,R7'
+replace='7-111-R.toTranscriptome.sort__7-7-R.toTranscriptome.sort'
+
+
+
+[ -d $out ] || mkdir -p $out
+
+wholeregion(){
+echo "Name must from MetageneAnalysisForTheWholeRegions output"
+echo "Start Metagene analysis along the whole transcript region. `date`"
+
+echo "MetageneAnalysisForTheWholeRegions -f ${meta_out}/attributes.txt -c $long -o $out/a8-metagene -b 15,90,60 -l 100 -n 10 -m 1 -e 5 --plot yes"
+MetageneAnalysisForTheWholeRegions -f ${meta_out}/attributes.txt -c $long -o $out/a8-metagene -b 15,90,60 -l 100 -n 10 -m 1 -e 5 --plot yes
+
+echo "PlotMetageneAnalysisForTheWholeRegions -i $out/a8-metagene_scaled_density_dataframe.txt -o $out/a9-meta_gene_whole_regin -g $groupinfo -r $replace -b 15,90,60 --mode all
+"
+PlotMetageneAnalysisForTheWholeRegions -i $out/a8-metagene_scaled_density_dataframe.txt -o $out/a9-meta_gene_whole_regin -g $groupinfo -r $replace -b 15,90,60 --mode all
+echo "End Metagene analysis along the whole transcript region. `date`"
+}
+
+cdsregion()
+{
+echo "Begin Metagene analysis on CDS regions. `date`";
 #Metagene analysis on CDS regions.
-MetageneAnalysis -f /home/share/riboseq/attributes.txt -c /home/share/riboseq/RiboMiner/longest.transcripts.info.txt -o /home/share/riboseq/c_metagene_analysis/b1-meat-cds -U codon -M RPKM -u 0 -d 500 -l 100 -n 10 -m 1 -e 5 --norm yes -y 100 --CI 0.95 --type CDS
+echo "MetageneAnalysis -f ${meta_out}/attributes.txt -c $long -o $out/b1-meat-cds -U codon -M RPKM -u 0 -d 500 -l 100 -n 10 -m 1 -e 5 --norm yes -y 100 --CI 0.95 --type CDS"
+MetageneAnalysis -f ${meta_out}/attributes.txt -c $long -o $out/b1-meat-cds -U codon -M RPKM -u 0 -d 500 -l 100 -n 10 -m 1 -e 5 --norm yes -y 100 --CI 0.95 --type CDS
+echo "End Metagene analysis on CDS regions. `date`";
 
+}
+
+utrregion(){
+
+echo "Begin Metagene analysis on UTR regions. `date`"
 #Metagene analysis on UTR regions.
-echo MetageneAnalysis -f /home/share/riboseq/attributes.txt -c /home/share/riboseq/RiboMiner/longest.transcripts.info.txt -o /home/share/riboseq/c_metagene_analysis/b2-meat-utr -U nt -M RPKM -u 100 -d 100 -l 100 -n 10 -m 1 -e 5 --norm yes -y 50 --CI 0.95 --type UTR
-MetageneAnalysis -f /home/share/riboseq/attributes.txt -c /home/share/riboseq/RiboMiner/longest.transcripts.info.txt -o /home/share/riboseq/c_metagene_analysis/b2-meat-utr -U nt -M RPKM -u 100 -d 100 -l 100 -n 10 -m 1 -e 5 --norm yes -y 50 --CI 0.95 --type UTR
+echo " MetageneAnalysis -f ${meta_out}/attributes.txt -c $long -o $out/b2-meat-utr -U nt -M RPKM -u 100 -d 100 -l 100 -n 10 -m 1 -e 5 --norm yes -y 50 --CI 0.95 --type UTR"
+MetageneAnalysis -f ${meta_out}/attributes.txt -c $long -o $out/b2-meat-utr -U nt -M RPKM -u 100 -d 100 -l 100 -n 10 -m 1 -e 5 --norm yes -y 50 --CI 0.95 --type UTR
 
+echo "End Metagene analysis on UTR regions. `date`"
+}
+
+polarity()
+{
+echo "Begin Polarity calculation. `date`"
 #Polarity calculation.
-echo PolarityCalculation -f /home/share/riboseq/attributes.txt -c /home/share/riboseq/RiboMiner/longest.transcripts.info.txt -o /home/share/riboseq/c_metagene_analysis/b3-polarity -n 64
-PolarityCalculation -f /home/share/riboseq/attributes.txt -c /home/share/riboseq/RiboMiner/longest.transcripts.info.txt -o /home/share/riboseq/c_metagene_analysis/b3-polarity -n 64
+echo "PolarityCalculation -f ${meta_out}/attributes.txt -c $long -o $out/b3-polarity -n 64"
+PolarityCalculation -f ${meta_out}/attributes.txt -c $long -o $out/b3-polarity -n 64
+echo "End Polarity calculation. `date`"
+}
+
+wholeregion
+#cdsregion
+#utrregion
+#polarity
 ```
 
 **d1.feature_analysis.sh**
 
 ```sh
-meta_out='/home/share/riboseq/bqualitycontrol/metaplot/'
-mkdir d_feature_analysis/
+out='/home/share/riboseq/d_feature_analysis'
+meta_out='/home/share/riboseq/bqualitycontrol/metaplot'
+
+RiboMiner='/home/share/riboseq/RiboMiner'
+long=$RiboMiner'/longest.transcripts.info.txt'
+select_gene='/home/share/riboseq/selec_trans_longest.txt'
+
+groupinfo='R111,R7'
+replace='7-111-R.toTranscriptome.sort__7-7-R.toTranscriptome.sort'
+
+[  -d $out ] ||  mkdir d_feature_analysis/
+
+densityspecific()
+{
+echo "Begin:Pick out transcripts enriched ribosomes on specific region `date`"
 # Pick out transcripts enriched ribosomes on specific region.
-echo "Pick out transcripts enriched ribosomes on specific region.";
-`date`
-echo RiboDensityForSpecificRegion -f /home/share/riboseq/attributes.txt -c /home/share/riboseq/RiboMiner/longest.transcripts.info.txt -o /home/share/riboseq/d_feature_analysis/b5-transcript-enrich -U codon -M RPKM -L 25 -R 75
-RiboDensityForSpecificRegion -f /home/share/riboseq/attributes.txt -c /home/share/riboseq/RiboMiner/longest.transcripts.info.txt -o /home/share/riboseq/d_feature_analysis/b5-transcript-enrich -U codon -M RPKM -L 25 -R 75
-echo "Finished:Pick out transcripts enriched ribosomes on specific region."
-`date`
+echo "RiboDensityForSpecificRegion -f $meta_out/attributes.txt -c $long -o $out/b5-transcript-enrich -U codon -M RPKM -L 25 -R 75"
+RiboDensityForSpecificRegion -f $meta_out/attributes.txt -c $long -o $out/b5-transcript-enrich -U codon -M RPKM -L 25 -R 75
+echo "End: Pick out transcripts enriched ribosomes on specific region `date`"
+}
 
-echo "# Ribosome density at each kind of AA or codon."
-date
+densitycodon()
+{
+echo "Begin: Ribosome density at each kind of AA or codon. `date`"
 # Ribosome density at each kind of AA or codon.
-echo RiboDensityAtEachKindAAOrCodon -f /home/share/riboseq/attributes.txt -c /home/share/riboseq/RiboMiner/longest.transcripts.info.txt -o /home/share/riboseq/d_feature_analysis/b6-ribosome-aa -M counts -S /home/share/riboseq/selec_trans_longest.txt -l 100 -n 10 --table 1 -F /home/share/riboseq/RiboMiner/transcript_cds_sequences.fa
-RiboDensityAtEachKindAAOrCodon -f /home/share/riboseq/attributes.txt -c /home/share/riboseq/RiboMiner/longest.transcripts.info.txt -o /home/share/riboseq/d_feature_analysis/b6-ribosome-aa -M counts -S /home/share/riboseq/selec_trans_longest.txt -l 100 -n 10 --table 1 -F /home/share/riboseq/RiboMiner/transcript_cds_sequences.fa
-echo "Finished:Ribosome density at each kind of AA or codon"
-date
+echo " RiboDensityAtEachKindAAOrCodon -f $meta_out/attributes.txt -c $long -o $out/b6-ribosome-aa -M counts -S $select_gene -l 100 -n 10 --table 1 -F $RiboMiner/transcript_cds_sequences.fa "
+RiboDensityAtEachKindAAOrCodon -f $meta_out/attributes.txt -c $long -o $out/b6-ribosome-aa -M counts -S $select_gene -l 100 -n 10 --table 1 -F $RiboMiner/transcript_cds_sequences.fa 
+echo "PlotRiboDensityAtEachKindAAOrCodon -i $out/b6-ribosome-aa_all_codon_density.txt -o $out/b7-PlotRiboDensityAtEachKindAAOrCodon -g $groupinfo -r $replace --level AA "
+PlotRiboDensityAtEachKindAAOrCodon -i $out/b6-ribosome-aa_all_codon_density.txt -o $out/b7-PlotRiboDensityAtEachKindAAOrCodon -g $groupinfo -r $replace --level AA 
+echo "End: Ribosome density at each kind of AA or codon. `date`"
+}
 
-echo "# Ribosome density on amino acids with positive or negative charge"
-date
-# Ribosome density on amino acids with positive or negative charge
-echo 
-PlotRiboDensityAtEachKindAAOrCodon -i /home/share/riboseq/d_feature_analysis/b6-ribosome-aa_all_codon_density.txt -o /home/share/riboseq/d_feature_analysis/b7-PlotRiboDensityAtEachKindAAOrCodon -g r7,r111 -r r7__r111 --level AA
-PlotRiboDensityAtEachKindAAOrCodon -i /home/share/riboseq/d_feature_analysis/b6-ribosome-aa_all_codon_density.txt -o /home/share/riboseq/d_feature_analysis/b7-PlotRiboDensityAtEachKindAAOrCodon -g r7,r111 -r r7__r111 --level AA
-echo "Finished: Ribosome density on amino acids with positive or negative charge"
-date
 
-echo "Pausing score of each triplete amino acid.";
-date
+
+triplete()
+{
+echo "Begin: Pausing score of each triplete amino acid`date`"
 # Pausing score of each triplete amino acid.
-echo PausingScore -f /home/share/riboseq/attributes.txt -c /home/share/riboseq/RiboMiner/longest.transcripts.info.txt -o  /home/share/riboseq/d_feature_analysis/b8-PausingScore -M counts -S /home/share/riboseq/selec_trans_longest.txt  -l 100 -n 10 --table 1 -F  /home/share/riboseq/RiboMiner/transcript_cds_sequences.fa
-PausingScore -f /home/share/riboseq/attributes.txt -c /home/share/riboseq/RiboMiner/longest.transcripts.info.txt -o  /home/share/riboseq/d_feature_analysis/b8-PausingScore -M counts -S /home/share/riboseq/selec_trans_longest.txt  -l 100 -n 10 --table 1 -F  /home/share/riboseq/RiboMiner/transcript_cds_sequences.fa
+echo "PausingScore -f $meta_out/attributes.txt -c $RiboMiner/longest.transcripts.info.txt -o  $out/b8-PausingScore -M counts -S $select_gene  -l 100 -n 10 --table 1 -F  $RiboMiner/transcript_cds_sequences.fa"
+PausingScore -f $meta_out/attributes.txt -c $RiboMiner/longest.transcripts.info.txt -o  $out/b8-PausingScore -M counts -S $select_gene  -l 100 -n 10 --table 1 -F  $RiboMiner/transcript_cds_sequences.fa
 
-echo ProcessPausingScore -i /home/share/riboseq/d_feature_analysis/b8-PausingScore_r7_pausing_score.txt,/home/share/riboseq/d_feature_analysis/b8-PausingScore_r111_pausing_score.txt -o /home/share/riboseq/d_feature_analysis/b9-ProcessPausingScore -g r7,r111 -r r7__r111 --mode raw --ratio_filter 2 --pausing_score_filter 0.01
-ProcessPausingScore -i /home/share/riboseq/d_feature_analysis/b8-PausingScore_r7_pausing_score.txt,/home/share/riboseq/d_feature_analysis/b8-PausingScore_r111_pausing_score.txt -o /home/share/riboseq/d_feature_analysis/b9-ProcessPausingScore -g r7,r111 -r r7__r111 --mode raw --ratio_filter 2 --pausing_score_filter 0.01
-echo "Finshed: Pausing score of each triplete amino acid."
-date
+echo "ProcessPausingScore -i $out/b8-PausingScore_7-7-R.toTranscriptome.sort_pausing_score.txt,$out/b8-PausingScore_7-111-R.toTranscriptome.sort_pausing_score.txt -o $out/b9-ProcessPausingScore -g $groupinfo -r $replace --mode raw --ratio_filter 1 --pausing_score_filter 0.01"
+ProcessPausingScore -i $out/b8-PausingScore_7-7-R.toTranscriptome.sort_pausing_score.txt,$out/b8-PausingScore_7-111-R.toTranscriptome.sort_pausing_score.txt -o $out/b9-ProcessPausingScore -g $groupinfo -r $replace --mode raw --ratio_filter 1 --pausing_score_filter 0.01
 
-echo "# Ribosome density around the triplete amino acid (tri-AA) motifs. \
-#As for a specific tri-AA motif, such as poly-proline (PPP)";
-date
+echo "End: Pausing score of each triplete amino acid`date`"
+}
 
-# Ribosome density around the triplete amino acid (tri-AA) motifs.
-#As for a specific tri-AA motif, such as poly-proline (PPP)
+RPFdistf()
+{
+echo "Begin: RPFdist calculation.`date`"
 
-echo "RPFdist calculation.";
-date
 # RPFdist calculation.
-echo RPFdist -f /home/share/riboseq/attributes.txt -c /home/share/riboseq/RiboMiner/longest.transcripts.info.txt -o /home/share/riboseq/d_feature_analysis/c3-RPFdist -M counts -S /home/share/riboseq/selec_trans_longest.txt -l 100 -n 10 -m 1 -e 5
-RPFdist -f /home/share/riboseq/attributes.txt -c /home/share/riboseq/RiboMiner/longest.transcripts.info.txt -o /home/share/riboseq/d_feature_analysis/c3-RPFdist -M counts -S /home/share/riboseq/selec_trans_longest.txt -l 100 -n 10 -m 1 -e 5
-echo "Finshed:RPFdist calculation."
-date
+echo "RPFdist -f $meta_out/attributes.txt -c $RiboMiner/longest.transcripts.info.txt -o $out/c3-RPFdist -M counts -S $select_gene -l 100 -n 10 -m 1 -e 5"
+RPFdist -f $meta_out/attributes.txt -c $RiboMiner/longest.transcripts.info.txt -o $out/c3-RPFdist -M counts -S $select_gene -l 100 -n 10 -m 1 -e 5
 
-echo "# GC contents for sequences with a fasta format.";
+echo "End: RPFdist calculation. `date`"
+}
+
+gccontents()
+{
+echo "Begin:GC contents for sequences with a fasta format `date`"
+
 # GC contents for sequences with a fasta format.
-date
-echo GCContent -i /home/share/riboseq/RiboMiner/transcript_cds_sequences.fa -o /home/share/riboseq/d_feature_analysis/c4-GCContent-normal --mode normal
-echo GCContent -i /home/share/riboseq/RiboMiner/transcript_cds_sequences.fa -o /home/share/riboseq/d_feature_analysis/c4-GCContent-frames --mode frames
-GCContent -i /home/share/riboseq/RiboMiner/transcript_cds_sequences.fa -o /home/share/riboseq/d_feature_analysis/c4-GCContent-normal --mode normal
-GCContent -i /home/share/riboseq/RiboMiner/transcript_cds_sequences.fa -o /home/share/riboseq/d_feature_analysis/c4-GCContent-frames --mode frames
-echo PlotGCContent -i /home/share/riboseq/d_feature_analysis/c4-GCContent-normal_GC_content.txt -o /home/share/riboseq/d_feature_analysis/c5-PlotGCContent-normal --mode normal
-PlotGCContent -i /home/share/riboseq/d_feature_analysis/c4-GCContent-normal_GC_content.txt -o /home/share/riboseq/d_feature_analysis/c5-PlotGCContent-normal --mode normal
 
-echo "Finished:GC contents for sequences with a fasta format."
-date
+echo "GCContent -i $RiboMiner/transcript_cds_sequences.fa -o $out/c4-GCContent-normal --mode normal"
+echo "GCContent -i $RiboMiner/transcript_cds_sequences.fa -o $out/c4-GCContent-frames --mode frames"
+GCContent -i $RiboMiner/transcript_cds_sequences.fa -o $out/c4-GCContent-normal --mode normal
+GCContent -i $RiboMiner/transcript_cds_sequences.fa -o $out/c4-GCContent-frames --mode frames
+echo "PlotGCContent -i $out/c4-GCContent-normal_GC_content.txt -o $out/c5-PlotGCContent-normal --mode normal"
+PlotGCContent -i $out/c4-GCContent-normal_GC_content.txt -o $out/c5-PlotGCContent-normal --mode normal
+echo "End: GC contents for sequences with a fasta format`date`"
+}
 
-echo "## frames mode"
-date
-## frames mode
-echo PlotGCContent -i /home/share/riboseq/d_feature_analysis/c4-GCContent-frames_GC_content_frames.txt -o /home/share/riboseq/d_feature_analysis/c5-PlotGCContent-frames --mode frames
-PlotGCContent -i /home/share/riboseq/d_feature_analysis/c4-GCContent-normal_GC_content.txt -o /home/share/riboseq/d_feature_analysis/c5-PlotGCContent-normal --mode normal
-PlotGCContent -i /home/share/riboseq/d_feature_analysis/c4-GCContent-frames_GC_content_frames.txt -o /home/share/riboseq/d_feature_analysis/c5-PlotGCContent-frames --mode frames
-echo "Finished:## frames mode"
-date
+
+
+#densityspecific
+#densitycodon
+#triplete
+#RPFdistf
+#gccontents
 ```
+triplete 有问题。
 
 **d2.feature_analysis.sh**
 
@@ -769,32 +819,48 @@ We need tRNA file, that can be download from [GtRNAdb](http://gtrnadb.ucsc.edu/g
 |chr6	|25	|26751918	|26751990	|Ala	|AGC	|agtgtagtgt	|gcttctttta|
 
 ```sh
-meta_out='/home/share/riboseq/bqualitycontrol/metaplot/'
-echo "Local tRNA adaptation index and global tRNA adaptation index"
-date
+out='/home/share/riboseq/d_feature_analysis'
+meta_out='/home/share/riboseq/bqualitycontrol/metaplot'
+
+RiboMiner='/home/share/riboseq/RiboMiner'
+long=$RiboMiner'/longest.transcripts.info.txt'
+select_gene='/home/share/riboseq/selec_trans_longest.txt'
+
+groupinfo='R111,R7'
+replace='7-111-R.toTranscriptome.sort__7-7-R.toTranscriptome.sort'
+
+tRNA_confidence='/home/share/riboseq/mouse-tRNAs-confidence.txt'
+
+tAIf()
+{
+echo "Local tRNA adaptation index and global tRNA adaptation index `date`"
 #Local tRNA adaptation index and global tRNA adaptation index
-echo tAI -i /home/share/riboseq/RiboMiner/transcript_cds_sequences.fa -t mouse -o /home/share/riboseq/d_feature_analysis/c6-tAI -u 0 -d 500 --table 1 -N /home/share/riboseq/mouse-tRNAs-confidence.txt
-tAI -i /home/share/riboseq/RiboMiner/transcript_cds_sequences.fa -t mouse -o /home/share/riboseq/d_feature_analysis/c6-tAI -u 0 -d 500 --table 1 -N /home/share/riboseq/mouse-tRNAs-confidence.txt
+echo " tAI -i $RiboMiner/transcript_cds_sequences.fa -t mouse -o $out/c6-tAI -u 0 -d 500 --table 1 -N $tRNA_confidence"
+tAI -i $RiboMiner/transcript_cds_sequences.fa -t mouse -o $out/c6-tAI -u 0 -d 500 --table 1 -N $tRNA_confidence
 
-echo tAIPlot -i /home/share/riboseq/d_feature_analysis/c6-tAI_tAI_dataframe.txt -o /home/share/riboseq/d_feature_analysis/c7-tAIPlot -u 0 -d 500 --mode all --start 5 --window 7 --step 1
-tAIPlot -i /home/share/riboseq/d_feature_analysis/c6-tAI_tAI_dataframe.txt -o /home/share/riboseq/d_feature_analysis/c7-tAIPlot -u 0 -d 500 --mode all --start 5 --window 7 --step 1
+echo " tAIPlot -i $out/c6-tAI_tAI_dataframe.txt -o $out/c7-tAIPlot -u 0 -d 500 --mode all --start 5 --window 7 --step 1"
+tAIPlot -i $out/c6-tAI_tAI_dataframe.txt -o $out/c7-tAIPlot -u 0 -d 500 --mode all --start 5 --window 7 --step 1
 
-echo "Finished: Local tRNA adaptation index and global tRNA adaptation index"
-date
+echo "Finished: Local tRNA adaptation index and global tRNA adaptation index `date`"
 
-echo "Local codon adaptation index and global codon adaptation index"
-date
+}
+
+cAIf()
+{
+echo "Local codon adaptation index and global codon adaptation index `date`"
 # Local codon adaptation index and global codon adaptation index
-echo cAI -i /home/share/riboseq/RiboMiner/transcript_cds_sequences.fa -o /home/share/riboseq/d_feature_analysis/c8-cAI -t mouse -u 0 -d 500 --reference /home/share/riboseq/RiboMiner/transcript_cds_sequences.fa
-cAI -i /home/share/riboseq/RiboMiner/transcript_cds_sequences.fa -o /home/share/riseq/d_feature_analysis/c8-cAI -t mouse -u 0 -d 500 --reference /home/share/riboseq/RiboMiner/transcript_cds_sequences.fa
+echo "cAI -i $RiboMiner/transcript_cds_sequences.fa -o $out/c8-cAI -t mouse -u 0 -d 500 --reference $RiboMiner/transcript_cds_sequences.fa"
+cAI -i $RiboMiner/transcript_cds_sequences.fa -o $out/c8-cAI -t mouse -u 0 -d 500 --reference $RiboMiner/transcript_cds_sequences.fa
 
-echo cAIPlot -i /home/share/riboseq/d_feature_analysis/c8-cAI_local_cAI_dataframe.txt -o /home/share/riboseq/d_feature_analysis/c9-cAIPlot -u 0 -d 500 --mode all --start 5 --window 7 --step 1
-cAIPlot -i /home/share/riboseq/d_feature_analysis/c8-cAI_local_cAI_dataframe.txt -o /home/share/riboseq/d_feature_analysis/c9-cAIPlot -u 0 -d 500 --mode all --start 5 --window 7 --step 1
-#echo GetProteinCodingSequence -i <transcrits_sequence.fa> -c /home/share/riboseq/RiboMiner/longest.transcripts.info.txt -S /home/share/riboseq/selec_trans_longest.txt -o <output_prefix> --mode whole --table 1 --id-type transcript-id
-#GetProteinCodingSequence -i <transcrits_sequence.fa> -c /home/share/riboseq/RiboMiner/longest.transcripts.info.txt -S /home/share/riboseq/selec_trans_longest.txt -o <output_prefix> --mode whole --table 1 --id-type transcript-id
-echo "Finished: Local codon adaptation index and global codon adaptation index"
-date
-# Hydrophobicity calculation and Charge amino acids
+echo "cAIPlot -i $out/c8-cAI_local_cAI_dataframe.txt -o $out/c9-cAIPlot -u 0 -d 500 --mode all --start 5 --window 7 --step 1"
+cAIPlot -i $out/c8-cAI_local_cAI_dataframe.txt -o $out/c9-cAIPlot -u 0 -d 500 --mode all --start 5 --window 7 --step 1 1
+echo "Finished: Local codon adaptation index and global codon adaptation index `date`"
+
+}
+
+tAIf
+cAIf
+
 ```
 
 **d3.feature_analysis.sh**
@@ -804,22 +870,51 @@ date
 [hydropathy_index](./hydropathy_index.txt)
 
 ```sh
-meta_out='/home/share/riboseq/bqualitycontrol/metaplot/'
-mkdir /home/share/riboseq/RiboMiner/feature_analysis/
-## hydrophobicity calculation
-echo hydropathyCharge  -i /home/share/riboseq/RiboMiner/transcript_cds_sequences.fa -o /home/share/riboseq/d_feature_analysis/d1_hydropathy -t total_cds --index hydropathy_index.txt -u 0 -d 500 --table 1
-hydropathyCharge  -i /home/share/riboseq/RiboMiner/transcript_cds_sequences.fa -o /home/share/riboseq/d_feature_analysis/d1_hydropathy -t total_cds --index hydropathy_index.txt -u 0 -d 500 --table 1
-##
-echo hydropathyCharge  -i /home/share/riboseq/RiboMiner/transcript_cds_sequences.fa -o /home/share/riboseq/d_feature_analysis/d2_charge -t total_cds --index AA_charge_index.txt -u 0 -d 500 --table 1
-hydropathyCharge  -i /home/share/riboseq/RiboMiner/transcript_cds_sequences.fa -o /home/share/riboseq/d_feature_analysis/d2_charge -t total_cds --index AA_charge_index.txt -u 0 -d 500 --table 1
+out='/home/share/riboseq/d_feature_analysis'
+meta_out='/home/share/riboseq/bqualitycontrol/metaplot'
 
+RiboMiner='/home/share/riboseq/RiboMiner'
+long=$RiboMiner'/longest.transcripts.info.txt'
+select_gene='/home/share/riboseq/selec_trans_longest.txt'
+
+
+hydropathy_index='/home/share/riboseq/hydropathy_index.txt'
+charge_index='/home/share/riboseq/A_charge_index.txt'
+
+hydropathycharge()
+{
+echo "Start hydrophobicity calculation `date`"
+## hydrophobicity calculation
+echo "hydropathyCharge  -i $RiboMiner/transcript_cds_sequences.fa -o $out/d1_hydropathy -t total_cds --index $hydropathy_index -u 0 -d 500 --table 1 "
+hydropathyCharge  -i $RiboMiner/transcript_cds_sequences.fa -o $out/d1_hydropathy -t total_cds --index $hydropathy_index -u 0 -d 500 --table 1
+
+cho "hydropathyCharge  -i $RiboMiner/transcript_cds_sequences.fa -o $out/d2_charge -t total_cds --index $charge_index -u 0 -d 500 --table 1 "
+hydropathyCharge  -i $RiboMiner/transcript_cds_sequences.fa -o $out/d2_charge -t total_cds --index $charge_index -u 0 -d 500 --table 1
+
+
+echo "End hydrophobicity calculation `date`"
+}
+
+hydropathplot(){
+echo "Start plot hydrophobicit `date`"
 ## hydrophobicity
-echo PlotHydropathyCharge -i /home/share/riboseq/d_feature_analysis/d1_hydropathy_values_dataframe.txt -o /home/share/riboseq/d_feature_analysis/d3_hydropathy -u 0 -d 500 --mode all --ylab "Average Hydrophobicity"
-PlotHydropathyCharge -i /home/share/riboseq/d_feature_analysis/d1_hydropathy_values_dataframe.txt -o /home/share/riboseq/d_feature_analysis/d3_hydropathy -u 0 -d 500 --mode all --ylab "Average Hydrophobicity"
+echo "PlotHydropathyCharge -i $out/d1_hydropathy_values_dataframe.txt -o $out/d3_hydropathy -u 0 -d 500 --mode all --ylab "Average Hydrophobicity" "
+PlotHydropathyCharge -i $out/d1_hydropathy_values_dataframe.txt -o $out/d3_hydropathy -u 0 -d 500 --mode all --ylab "Average Hydrophobicity"
 ## charge
-echo PlotHydropathyCharge -i /home/share/riboseq/d_feature_analysis/d2_charge_values_dataframe.txt -o /home/share/riboseq/d_feature_analysis/d4_charge -u 0 -d 500 --mode all --ylab "Average Charges"
-PlotHydropathyCharge -i /home/share/riboseq/d_feature_analysis/d2_charge_values_dataframe.txt -o /home/share/riboseq/d_feature_analysis/d4_charge -u 0 -d 500 --mode all --ylab "Average Charges"
+echo "PlotHydropathyCharge -i $out/d2_charge_values_dataframe.txt -o $out/d4_charge -u 0 -d 500 --mode all --ylab "Average Charges" "
+PlotHydropathyCharge -i $out/d2_charge_values_dataframe.txt -o $out/d4_charge -u 0 -d 500 --mode all --ylab "Average Charges" 
+
+echo "End plot hydrophobicit `date`"
+}
+
+hydropathycharge
+hydropathplot
 ```
+
+
+## charge calculation
+hydropathyCharge -i $workdir/2954_up_cds_sequences.fa,$workdir/1598_unblocked_cds_sequences.fa,$workdir/433_down_cds_sequences.fa -t 2954_up,1598_unblocked,433_down -o $workdir/featureAnalysis/test.yeast_charge -u 0 -d 500 --index $workdir/featureAnalysis/AA_charge.txt
+
 
 * The input file seperate by ',', and the file name in the -t seperate by ','.
 
@@ -835,21 +930,44 @@ hydropathyCharge  -i <cds_sequence_1.fa,cds_sequence_2.fa...> -o d2_charge_value
 **e.Enrichment_Analysis.sh**
 
 ```sh
-meta_out='/home/share/riboseq/bqualitycontrol/metaplot/'
-echo RiboDensityAtEachPosition -c /home/share/riboseq/RiboMiner/longest.transcripts.info.txt -f /home/share/riboseq/attributes.txt -o /home/share/riboseq/d5-RiboDensityAtEachPosition -U codon
-#RiboDensityAtEachPosition -c /home/share/riboseq/RiboMiner/longest.transcripts.info.txt -f /home/share/riboseq/attributes.txt -o /home/share/riboseq/d5-RiboDensityAtEachPosition -U codon
+
+out='/home/share/riboseq/e_enrichmetn'
+RiboMiner='/home/share/riboseq/RiboMiner'
+meta_out='/home/share/riboseq/bqualitycontrol/metaplot'
 
 
-echo enrichmentMeanDensity -i /home/share/riboseq/d5-RiboDensityAtEachPosition_r7_cds_codon_density.txt,/home/share/riboseq/d5-RiboDensityAtEachPosition_r111_cds_codon_density.txt -o /home/share/riboseq/d6-enrichmentMeanDensity
-#enrichmentMeanDensity -i /home/share/riboseq/d5-RiboDensityAtEachPosition_r7_cds_codon_density.txt,/home/share/riboseq/d5-RiboDensityAtEachPosition_r111_cds_codon_density.txt -o /home/share/riboseq/d6-enrichmentMeanDensity
+[ -d $out  ] || mkdir $out
 
+ribodensityeach()
+{
+echo "Start RiboDensityAtEachPosition `date`"
+echo " RiboDensityAtEachPosition -c $RiboMiner/longest.transcripts.info.txt -f $meta_out/attributes.txt -o $out/d5-RiboDensityAtEachPosition -U codon "
+ RiboDensityAtEachPosition -c $RiboMiner/longest.transcripts.info.txt -f $meta_out/attributes.txt -o $out/d5-RiboDensityAtEachPosition -U codon
+echo "End RiboDensityAtEachPosition `date`"
+}
 
+enrichmeandensity()
+{
+echo "Start enrichmentMeanDensity `date`"
+echo " enrichmentMeanDensity -i $out/d5-RiboDensityAtEachPosition_7-7-R.toTranscriptome.sort_cds_codon_density.txt,$out/d5-RiboDensityAtEachPosition_7-111-R.toTranscriptome.sort_cds_codon_density.txt -o $out/d6-enrichmentMeanDensity "
+enrichmentMeanDensity -i $out/d5-RiboDensityAtEachPosition_7-7-R.toTranscriptome.sort_cds_codon_density.txt,$out/d5-RiboDensityAtEachPosition_7-111-R.toTranscriptome.sort_cds_codon_density.txt -o $out/d6-enrichmentMeanDensity
+echo "End enrichmentMeanDensity `date`"
+}
 
-echo EnrichmentAnalysis --ctrl /home/share/riboseq/d5-RiboDensityAtEachPosition_r7_cds_codon_density.txt --treat /home/share/riboseq/d5-RiboDensityAtEachPosition_r111_cds_codon_density.txt -c /home/share/riboseq/RiboMiner/longest.transcripts.info.txt -o /home/share/riboseq/d7-EnrichmentAnalysis -U codon -M RPKM -l 150 -n 10 -m 1 -e 30 --CI 0.95 -u 0 -d 500
-#EnrichmentAnalysis --ctrl /home/share/riboseq/d5-RiboDensityAtEachPosition_r7_cds_codon_density.txt --treat /home/share/riboseq/d5-RiboDensityAtEachPosition_r111_cds_codon_density.txt -c /home/share/riboseq/RiboMiner/longest.transcripts.info.txt -o /home/share/riboseq/d7-EnrichmentAnalysis -U codon -M RPKM -l 150 -n 10 -m 1 -e 30 --CI 0.95 -u 0 -d 500
+enrichanalysis()
+{
+    echo "Start EnrichmentAnalysis `date` "    
+echo " EnrichmentAnalysis --ctrl $out/d5-RiboDensityAtEachPosition_7-7-R.toTranscriptome.sort_cds_codon_density.txt --treat $out/d5-RiboDensityAtEachPosition_7-111-R.toTranscriptome.sort_cds_codon_density.txt -c $RiboMiner/longest.transcripts.info.txt -o $out/d7-EnrichmentAnalysis -U codon -M RPKM -l 150 -n 10 -m 1 -e 30 --CI 0.95 -u 0 -d 500 "
+EnrichmentAnalysis --ctrl $out/d5-RiboDensityAtEachPosition_7-7-R.toTranscriptome.sort_cds_codon_density.txt --treat $out/d5-RiboDensityAtEachPosition_7-111-R.toTranscriptome.sort_cds_codon_density.txt -c $RiboMiner/longest.transcripts.info.txt -o $out/d7-EnrichmentAnalysis -U codon -M RPKM -l 150 -n 10 -m 1 -e 30 --CI 0.95 -u 0 -d 500
 
-echo PlotEnrichmentRatio -i /home/share/riboseq/d7-EnrichmentAnalysis_enrichment_dataframe.txt -o /home/share/riboseq/d8-PlotEnrichmentRatio -u 0 -d 500 --unit codon --mode all
-PlotEnrichmentRatio -i /home/share/riboseq/d7-EnrichmentAnalysis_enrichment_dataframe.txt -o /home/share/riboseq/d8-PlotEnrichmentRatio -u 0 -d 500 --unit codon --mode all
+echo "PlotEnrichmentRatio -i $out/d7-EnrichmentAnalysis_enrichment_dataframe.txt -o $out/d8-PlotEnrichmentRatio -u 0 -d 500 --unit codon --mode all"
+PlotEnrichmentRatio -i $out/d7-EnrichmentAnalysis_enrichment_dataframe.txt -o $out/d8-PlotEnrichmentRatio -u 0 -d 500 --unit codon --mode all
+echo "End EnrichmentAnalysis `date`"
+}
+
+ribodensityeach
+enrichmeandensity
+enrichanalysis
 ```
 
 
