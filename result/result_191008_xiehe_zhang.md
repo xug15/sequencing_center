@@ -193,7 +193,7 @@ This function is a variation on the usual multdimensional scaling (or principle 
 * |log2(Fold change)| > 1 
 * DAVID 
 
-**Up regulated genes.**
+**Non-treat Up regulated genes.**
 
 
 | Category     | Term                                                                | Count | %           | PValue      | Genes                                                                                                                 | List Total | Pop Hits | Pop Total | Fold Enrichment | Bonferroni  | Benjamini   | FDR         | 
@@ -212,7 +212,7 @@ This function is a variation on the usual multdimensional scaling (or principle 
 | KEGG_PATHWAY | hsa05120:Epithelial cell signaling in Helicobacter pylori infection | 3     | 1.310043668 | 0.096849888 | ENSG00000177606, ENSG00000169429, ENSG00000185883                                                                     | 55         | 67       | 6879      | 5.60027137      | 0.999999653 | 0.710435088 | 70.20308286 | 
 
 
-**Down regulated genes.**
+**After treat Up regulated genes.**
 
 | Category     | Term                   | Count | %           | PValue      | Genes                                                              | List Total | Pop Hits | Pop Total | Fold Enrichment | Bonferroni | Benjamini  | FDR         | 
 |--------------|------------------------|-------|-------------|-------------|--------------------------------------------------------------------|------------|----------|-----------|-----------------|------------|------------|-------------|
@@ -225,7 +225,7 @@ This function is a variation on the usual multdimensional scaling (or principle 
 * |log2(Fold change)| > 1 
 * DAVID 
 
-**Up regulated genes.**
+**Non-treat Up regulated genes.**
 
 
 
@@ -262,7 +262,7 @@ This function is a variation on the usual multdimensional scaling (or principle 
 | KEGG_PATHWAY | hsa04932:Non-alcoholic fatty liver disease (NAFLD)                  | 11    | 1.434159061 | 0.095787034 | ENSG00000115008, ENSG00000177606, ENSG00000175197, ENSG00000173327, ENSG00000067182, ENSG00000125538, ENSG00000186350, ENSG00000268173, ENSG00000169429, ENSG00000015475, ENSG00000245848                                                                                                                                                                                                                                               | 286        | 151      | 6879      | 1.752165053     | 1           | 0.608274889 | 72.78411711 | 
 
 
-**Down regulated genes.**
+**After treat Up regulated genes.**
 
 | Category     | Term                                                  | Count | %   | PValue      | Genes                                                                               | List Total | Pop Hits | Pop Total | Fold Enrichment | Bonferroni  | Benjamini   | FDR         | 
 |--------------|-------------------------------------------------------|-------|-----|-------------|-------------------------------------------------------------------------------------|------------|----------|-----------|-----------------|-------------|-------------|-------------|
@@ -288,7 +288,7 @@ This function is a variation on the usual multdimensional scaling (or principle 
 * |log2(Fold change)| > 1 
 * DAVID 
 
-**Up regulated genes.**
+**Non-treat Up regulated genes.**
 
 
 | Category         | Term                                                                                                                                             | Count | %           | PValue      | Genes                                                                                                                                                                                                                       | List Total | Pop Hits | Pop Total | Fold Enrichment | Bonferroni  | Benjamini   | FDR         | 
@@ -345,7 +345,7 @@ This function is a variation on the usual multdimensional scaling (or principle 
 | GOTERM_BP_DIRECT | GO:0071347~cellular response to interleukin-1                                                                                                    | 3     | 1.310043668 | 0.095481271 | ENSG00000276070, ENSG00000169429, ENSG00000078401                                                                                                                                                                           | 124        | 71       | 16792     | 5.721944571     | 1           | 0.840083173 | 78.68801557 | 
 
 
-**Down regulated genes.**
+**After treat Up regulated genes.**
 
 | Category         | Term                                           | Count | %           | PValue      | Genes                                                                               | List Total | Pop Hits | Pop Total | Fold Enrichment | Bonferroni  | Benjamini   | FDR         | 
 |------------------|------------------------------------------------|-------|-------------|-------------|-------------------------------------------------------------------------------------|------------|----------|-----------|-----------------|-------------|-------------|-------------| 
@@ -367,7 +367,7 @@ This function is a variation on the usual multdimensional scaling (or principle 
 * |log2(Fold change)| > 1 
 * DAVID 
 
-**Up regulated genes.**
+**Non-treat Up regulated genes.**
 
  
 | Category         | Term                                                                                                                        | Count | %           | PValue      | Genes                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   | List Total | Pop Hits | Pop Total | Fold Enrichment | Bonferroni  | Benjamini   | FDR         | 
@@ -543,7 +543,7 @@ This function is a variation on the usual multdimensional scaling (or principle 
 | GOTERM_BP_DIRECT | GO:0016236~macroautophagy                                                                                                   | 6     | 0.782268579 | 0.098862    | ENSG00000101460, ENSG00000170296, ENSG00000139112, ENSG00000177169, ENSG00000150991, ENSG00000140941                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    | 543        | 76       | 16792     | 2.441407386     | 1           | 0.903530372 | 84.14065182 | 
 
 
-**Down regulated genes.**
+**After treat Up regulated genes.**
 
 | Category         | Term                                                                                                 | Count | %   | PValue      | Genes                                                                                                                                                                                                                                                                                                                                                                                | List Total | Pop Hits | Pop Total | Fold Enrichment | Bonferroni  | Benjamini   | FDR         | 
 |------------------|------------------------------------------------------------------------------------------------------|-------|-----|-------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|------------|----------|-----------|-----------------|-------------|-------------|-------------| 
