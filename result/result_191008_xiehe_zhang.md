@@ -100,6 +100,7 @@ This function is a variation on the usual multdimensional scaling (or principle 
 [mds.pdf](result_191008_xiehe/mds.pdf)
 
 ## Bacth effect
+根据后面的结果，去除浓度对结果的影响相对结果更可靠。
 
 | Num |                         | 旧编号  | 日期         | tube | 新编号   | 浓度     |
 |-----|-------------------------|------|------------|------|-------|--------| 
@@ -158,7 +159,7 @@ This function is a variation on the usual multdimensional scaling (or principle 
 * B: log-odds that gene is DE (arguably less useful than the other columns)  
 
 ### Remove library time batch effect. [DE.remove_library.csv](result_191008_xiehe/remove_library_time.csv)
-* Cutoff: P value <0.01  (660 gene.)
+
 
 |      Gene       | logFC        | AveExpr      | t            | P.Value     | adj.P.Val   | B            |
 |-----------------|--------------|--------------|--------------|-------------|-------------|--------------| 
@@ -180,6 +181,13 @@ This function is a variation on the usual multdimensional scaling (or principle 
 * B: log-odds that gene is DE (arguably less useful than the other columns) 
 
 ### For example: (using cpm)
+![](result_191008_xiehe/autophagy_image/ENSG00000229436.png)
+![](result_191008_xiehe/autophagy_image/ENSG00000244649.png)
+![](result_191008_xiehe/autophagy_image/ENSG00000165246.png)
+![](result_191008_xiehe/autophagy_image/ENSG00000273018.png)
+![](result_191008_xiehe/autophagy_image/ENSG00000203697.png)
+![](result_191008_xiehe/autophagy_image/ENSG00000226445.png)
+![](result_191008_xiehe/autophagy_image/ENSG00000275144.png)
 ![](result_191008_xiehe/ENSG00000169429.png)
 ![](result_191008_xiehe/ENSG00000183625.png)
 ![](result_191008_xiehe/ENSG00000197013.png)
