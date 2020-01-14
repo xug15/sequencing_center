@@ -260,7 +260,23 @@ E. The change ratio of ribosome density between 7-7 sample and 7-111 sample amon
 
 Notes: all these analysis are based on total transcripts.
 
+**Ribosome density among triplete-AA motifs.** 
+
+A. Relative ribosome density on poly-proline acid. 
+![](./result_190626_lbx/aa.pp.png)
+![](./result_190626_lbx/aa.ppp.png)
 
 
+B. Relative ribosome density.
+
+![](./result_190626_lbx/aa.ddp.png) 
+
+![](./result_190626_lbx/aa.kkk.png)
+
+![](./result_190626_lbx/aa.kkp.png)
+
+![](./result_190626_lbx/aa.ppd.png)
+
+![](./result_190626_lbx/aa.rrr.png)
 
 
