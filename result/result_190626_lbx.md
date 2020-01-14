@@ -239,3 +239,28 @@ left: read density on the position away from start codon. right: read density on
 ![](./result_190626_lbx/meta_utr_3.png)
 
 left: read density on the position away from start codon. right: read density on the position away from stop codon.
+
+
+**Figure 3: Ribosome density among different amino acids and codons.**
+
+A. Relative ribosome density on different amino acids for 7-7 sample. 
+![](./result_190626_lbx/aa.77.png)
+
+B. Relative ribosome density on different codons for 7-7 sample. 
+![](./result_190626_lbx/aa.77-class.png)
+
+C. Relative ribosome density on different amino acids for 7-7 sample. 
+![](./result_190626_lbx/aa.7-111.png)
+
+D. Relative ribosome density on different codons for 7-7 sample. 
+![](./result_190626_lbx/aa.7-111.class.png)
+
+E. The change ratio of ribosome density between 7-7 sample and 7-111 sample among different amino acids. 
+![](./result_190626_lbx/aa.ratio.png)
+
+Notes: all these analysis are based on total transcripts.
+
+
+
+
+
