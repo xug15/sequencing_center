@@ -755,17 +755,43 @@ PlotRiboDensityAtEachKindAAOrCodon -i $out/b6-ribosome-aa_all_codon_density.txt 
 echo "End: Ribosome density at each kind of AA or codon. `date`"
 }
 
-
-
 triplete()
+{
+echo "Begin: Ribosome density around the triplete amino acid (tri-AA) motifs `date`"
+## ribosome density at each tri-AA motif
+echo "RiboDensityAroundTripleteAAMotifs -f $meta_out/attributes.txt -c $RiboMiner/longest.transcripts.info.txt -o $out/PPP -M RPKM -S $select_gene -l 100 -n 10 --table 1 -F $RiboMiner/transcript_cds_sequences.fa --type2 PPP --type1 PP"
+RiboDensityAroundTripleteAAMotifs -f $meta_out/attributes.txt -c $RiboMiner/longest.transcripts.info.txt -o $out/PPP -M RPKM -S $select_gene -l 100 -n 10 --table 1 -F $RiboMiner/transcript_cds_sequences.fa --type2 PPP --type1 PP
+## plot
+echo "PlotRiboDensityAroundTriAAMotifs -i $out/PPP_motifDensity_dataframe.txt -o $out/PPP_plot -g -g $groupinfo -r $replace --mode mean --ymax 0.2"
+PlotRiboDensityAroundTriAAMotifs -i $out/PPP_motifDensity_dataframe.txt -o $out/PPP_plot -g -g $groupinfo -r $replace --mode mean --ymax 0.2
+echo "motifs
+PPP
+PPD
+DDP" > $out/tri_AA_motifs1.txt;
+echo "motifs
+KKK
+KKP
+RRR" > $out/tri_AA_motifs2.txt;
+echo "RiboDensityAroundTripleteAAMotifs -f $meta_out/attributes.txt -c $RiboMiner/longest.transcripts.info.txt -o $out/triple_motif -M RPKM -S $select_gene -l 100 -n 10 --table 1 -F $RiboMiner/transcript_cds_sequences.fa --motifList1 $out/tri_AA_motifs1.txt --motifList2 $out/tri_AA_motifs2.txt"
+RiboDensityAroundTripleteAAMotifs -f $meta_out/attributes.txt -c $RiboMiner/longest.transcripts.info.txt -o $out/triple_motif -M RPKM -S $select_gene -l 100 -n 10 --table 1 -F $RiboMiner/transcript_cds_sequences.fa --motifList1 $out/tri_AA_motifs1.txt --motifList2 $out/tri_AA_motifs2.txt
+## plot
+echo "PlotRiboDensityAroundTriAAMotifs -i $out/triple_motif_motifDensity_dataframe.txt -o $out/triple_motif_plot -g -g $groupinfo -r $replace --mode mean --ymax 0.2"
+PlotRiboDensityAroundTriAAMotifs -i $out/triple_motif_motifDensity_dataframe.txt -o $out/triple_motif_plot -g -g $groupinfo -r $replace --mode mean --ymax 0.2
+
+echo "End: Ribosome density around the triplete amino acid (tri-AA) motifs `date`"
+}
+
+
+Pausingscore()
 {
 echo "Begin: Pausing score of each triplete amino acid`date`"
 # Pausing score of each triplete amino acid.
-echo "PausingScore -f $meta_out/attributes.txt -c $RiboMiner/longest.transcripts.info.txt -o  $out/b8-PausingScore -M counts -S $select_gene  -l 100 -n 10 --table 1 -F  $RiboMiner/transcript_cds_sequences.fa"
-PausingScore -f $meta_out/attributes.txt -c $RiboMiner/longest.transcripts.info.txt -o  $out/b8-PausingScore -M counts -S $select_gene  -l 100 -n 10 --table 1 -F  $RiboMiner/transcript_cds_sequences.fa
+
+echo "PausingScore -f $meta_out/attributes.txt -c $RiboMiner/longest.transcripts.info.txt -o  $out/b8-PausingScore -M counts -S $select_gene  -l 100 -n 10 --table 1 -F  $RiboMiner/transcript_cds_sequences.fa "
+PausingScore -f $meta_out/attributes.txt -c $RiboMiner/longest.transcripts.info.txt -o  $out/b8-PausingScore -M counts -S $select_gene  -l 100 -n 10 --table 1 -F  $RiboMiner/transcript_cds_sequences.fa 
 
 echo "ProcessPausingScore -i $out/b8-PausingScore_7-7-R.toTranscriptome.sort_pausing_score.txt,$out/b8-PausingScore_7-111-R.toTranscriptome.sort_pausing_score.txt -o $out/b9-ProcessPausingScore -g $groupinfo -r $replace --mode raw --ratio_filter 1 --pausing_score_filter 0.01"
-ProcessPausingScore -i $out/b8-PausingScore_7-7-R.toTranscriptome.sort_pausing_score.txt,$out/b8-PausingScore_7-111-R.toTranscriptome.sort_pausing_score.txt -o $out/b9-ProcessPausingScore -g $groupinfo -r $replace --mode raw --ratio_filter 1 --pausing_score_filter 0.01
+ProcessPausingScore -i $out/b8-PausingScore_7-7-R.toTranscriptome.sort_pausing_score.txt,$out/b8-PausingScore_7-111-R.toTranscriptome.sort_pausing_score.txt -o $out/b9-ProcessPausingScore -g $groupinfo -r $replace --mode raw --ratio_filter 0.01 --pausing_score_filter 0.01
 
 echo "End: Pausing score of each triplete amino acid`date`"
 }
@@ -800,7 +826,8 @@ echo "End: GC contents for sequences with a fasta format`date`"
 
 #densityspecific
 #densitycodon
-#triplete
+triplete
+#Pausingscore
 #RPFdistf
 #gccontents
 ```
