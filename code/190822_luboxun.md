@@ -723,12 +723,23 @@ wholeregion
 **d1.feature_analysis.sh**
 
 ```sh
+
+source /home/test/.bashrc
 out='/home/share/riboseq/d_feature_analysis'
 meta_out='/home/share/riboseq/bqualitycontrol/metaplot'
 
 RiboMiner='/home/share/riboseq/RiboMiner'
 long=$RiboMiner'/longest.transcripts.info.txt'
 select_gene='/home/share/riboseq/selec_trans_longest.txt'
+home_dir='/home/share/riboseq'
+transcript_down_translation_up='select.transcript_down_translation_up.list.gene'
+transcript_only_down='select.transcript_only_down.list.gene'
+transcript_only_up='select.transcript_only_up.list.gene'
+transcript_translation_dow='select.transcript_translation_down.list.gene'
+transcript_translation_up='select.transcript_translation_up.list.gene'
+transcript_up_translation_down='select.transcript_up_translation_down.list.gene'
+translation_only_down='select.translation_only_down.list.gene'
+translation_only_up='select.translation_only_up.list.gene'
 
 groupinfo='R111,R7'
 replace='7-111-R.toTranscriptome.sort__7-7-R.toTranscriptome.sort'
@@ -744,26 +755,26 @@ RiboDensityForSpecificRegion -f $meta_out/attributes.txt -c $long -o $out/b5-tra
 echo "End: Pick out transcripts enriched ribosomes on specific region `date`"
 }
 
-densitycodon()
+densitycodon_with_parameter()
 {
 echo "Begin: Ribosome density at each kind of AA or codon. `date`"
 # Ribosome density at each kind of AA or codon.
-echo " RiboDensityAtEachKindAAOrCodon -f $meta_out/attributes.txt -c $long -o $out/b6-ribosome-aa -M counts -S $select_gene -l 100 -n 10 --table 1 -F $RiboMiner/transcript_cds_sequences.fa "
-RiboDensityAtEachKindAAOrCodon -f $meta_out/attributes.txt -c $long -o $out/b6-ribosome-aa -M counts -S $select_gene -l 100 -n 10 --table 1 -F $RiboMiner/transcript_cds_sequences.fa 
-echo "PlotRiboDensityAtEachKindAAOrCodon -i $out/b6-ribosome-aa_all_codon_density.txt -o $out/b7-PlotRiboDensityAtEachKindAAOrCodon -g $groupinfo -r $replace --level AA "
-PlotRiboDensityAtEachKindAAOrCodon -i $out/b6-ribosome-aa_all_codon_density.txt -o $out/b7-PlotRiboDensityAtEachKindAAOrCodon -g $groupinfo -r $replace --level AA 
+echo " RiboDensityAtEachKindAAOrCodon -f $meta_out/attributes.txt -c $long -o $out/${1} -M counts -S ${home_dir}/${1} -l 100 -n 10 --table 1 -F $RiboMiner/transcript_cds_sequences.fa "
+RiboDensityAtEachKindAAOrCodon -f $meta_out/attributes.txt -c $long -o $out/${1} -M counts -S ${home_dir}/${1} -l 100 -n 10 --table 1 -F $RiboMiner/transcript_cds_sequences.fa
+echo "PlotRiboDensityAtEachKindAAOrCodon -i $out/${1}_all_codon_density.txt -o $out/b7-PlotRiboDensityAtEachKindAAOrCodon_${1} -g $groupinfo -r $replace --level AA "
+PlotRiboDensityAtEachKindAAOrCodon -i $out/${1}_all_codon_density.txt -o $out/b7-PlotRiboDensityAtEachKindAAOrCodon_${1} -g $groupinfo -r $replace --level AA 
 echo "End: Ribosome density at each kind of AA or codon. `date`"
 }
 
-triplete()
+triplete_with_parameter()
 {
 echo "Begin: Ribosome density around the triplete amino acid (tri-AA) motifs `date`"
 ## ribosome density at each tri-AA motif
-echo "RiboDensityAroundTripleteAAMotifs -f $meta_out/attributes.txt -c $RiboMiner/longest.transcripts.info.txt -o $out/PPP -M RPKM -S $select_gene -l 100 -n 10 --table 1 -F $RiboMiner/transcript_cds_sequences.fa --type2 PPP --type1 PP"
-RiboDensityAroundTripleteAAMotifs -f $meta_out/attributes.txt -c $RiboMiner/longest.transcripts.info.txt -o $out/PPP -M RPKM -S $select_gene -l 100 -n 10 --table 1 -F $RiboMiner/transcript_cds_sequences.fa --type2 PPP --type1 PP
+echo "RiboDensityAroundTripleteAAMotifs -f $meta_out/attributes.txt -c $RiboMiner/longest.transcripts.info.txt -o $out/PPP_${1} -M RPKM -S ${home_dir}/${1} -l 100 -n 10 --table 1 -F $RiboMiner/transcript_cds_sequences.fa --type2 PPP --type1 PP"
+RiboDensityAroundTripleteAAMotifs -f $meta_out/attributes.txt -c $RiboMiner/longest.transcripts.info.txt -o $out/PPP_${1} -M RPKM -S ${home_dir}/${1} -l 100 -n 10 --table 1 -F $RiboMiner/transcript_cds_sequences.fa --type2 PPP --type1 PP
 ## plot
-echo "PlotRiboDensityAroundTriAAMotifs -i $out/PPP_motifDensity_dataframe.txt -o $out/PPP_plot -g -g $groupinfo -r $replace --mode mean --ymax 0.2"
-PlotRiboDensityAroundTriAAMotifs -i $out/PPP_motifDensity_dataframe.txt -o $out/PPP_plot -g -g $groupinfo -r $replace --mode mean --ymax 0.2
+echo "PlotRiboDensityAroundTriAAMotifs -i $out/PPP_${1}_motifDensity_dataframe.txt -o $out/PPP_plot_${1} -g -g $groupinfo -r $replace --mode mean --ymax 0.2"
+PlotRiboDensityAroundTriAAMotifs -i $out/PPP_${1}_motifDensity_dataframe.txt -o $out/PPP_plot_${1} -g -g $groupinfo -r $replace --mode mean --ymax 0.2
 echo "motifs
 PPP
 PPD
@@ -772,28 +783,37 @@ echo "motifs
 KKK
 KKP
 RRR" > $out/tri_AA_motifs2.txt;
-echo "RiboDensityAroundTripleteAAMotifs -f $meta_out/attributes.txt -c $RiboMiner/longest.transcripts.info.txt -o $out/triple_motif -M RPKM -S $select_gene -l 100 -n 10 --table 1 -F $RiboMiner/transcript_cds_sequences.fa --motifList1 $out/tri_AA_motifs1.txt --motifList2 $out/tri_AA_motifs2.txt"
-RiboDensityAroundTripleteAAMotifs -f $meta_out/attributes.txt -c $RiboMiner/longest.transcripts.info.txt -o $out/triple_motif -M RPKM -S $select_gene -l 100 -n 10 --table 1 -F $RiboMiner/transcript_cds_sequences.fa --motifList1 $out/tri_AA_motifs1.txt --motifList2 $out/tri_AA_motifs2.txt
+echo "RiboDensityAroundTripleteAAMotifs -f $meta_out/attributes.txt -c $RiboMiner/longest.transcripts.info.txt -o $out/triple_motif_${1} -M RPKM -S ${home_dir}/${1} -l 100 -n 10 --table 1 -F $RiboMiner/transcript_cds_sequences.fa --motifList1 $out/tri_AA_motifs1.txt --motifList2 $out/tri_AA_motifs2.txt"
+RiboDensityAroundTripleteAAMotifs -f $meta_out/attributes.txt -c $RiboMiner/longest.transcripts.info.txt -o $out/triple_motif_${1} -M RPKM -S ${home_dir}/${1} -l 100 -n 10 --table 1 -F $RiboMiner/transcript_cds_sequences.fa --motifList1 $out/tri_AA_motifs1.txt --motifList2 $out/tri_AA_motifs2.txt
 ## plot
-echo "PlotRiboDensityAroundTriAAMotifs -i $out/triple_motif_motifDensity_dataframe.txt -o $out/triple_motif_plot -g -g $groupinfo -r $replace --mode mean --ymax 0.2"
-PlotRiboDensityAroundTriAAMotifs -i $out/triple_motif_motifDensity_dataframe.txt -o $out/triple_motif_plot -g -g $groupinfo -r $replace --mode mean --ymax 0.2
-
+echo "PlotRiboDensityAroundTriAAMotifs -i $out/triple_motif_${1}_motifDensity_dataframe.txt -o $out/triple_motif_plot_${1} -g -g $groupinfo -r $replace --mode mean --ymax 0.2"
+PlotRiboDensityAroundTriAAMotifs -i $out/triple_motif_${1}_motifDensity_dataframe.txt -o $out/triple_motif_plot_${1} -g -g $groupinfo -r $replace --mode mean --ymax 0.2
 echo "End: Ribosome density around the triplete amino acid (tri-AA) motifs `date`"
 }
 
 
-Pausingscore()
+Pausingscore_with_parameter()
 {
 echo "Begin: Pausing score of each triplete amino acid`date`"
 # Pausing score of each triplete amino acid.
 
-echo "PausingScore -f $meta_out/attributes.txt -c $RiboMiner/longest.transcripts.info.txt -o  $out/b8-PausingScore -M counts -S $select_gene  -l 100 -n 10 --table 1 -F  $RiboMiner/transcript_cds_sequences.fa "
-PausingScore -f $meta_out/attributes.txt -c $RiboMiner/longest.transcripts.info.txt -o  $out/b8-PausingScore -M counts -S $select_gene  -l 100 -n 10 --table 1 -F  $RiboMiner/transcript_cds_sequences.fa 
+echo "PausingScore -f $meta_out/attributes.txt -c $RiboMiner/longest.transcripts.info.txt -o  $out/b8-PausingScore_${1} -M counts -S ${home_dir}/${1}  -l 100 -n 10 --table 1 -F  $RiboMiner/transcript_cds_sequences.fa "
+PausingScore -f $meta_out/attributes.txt -c $RiboMiner/longest.transcripts.info.txt -o  $out/b8-PausingScore_${1} -M counts -S ${home_dir}/${1}  -l 100 -n 10 --table 1 -F  $RiboMiner/transcript_cds_sequences.fa
 
-echo "ProcessPausingScore -i $out/b8-PausingScore_7-7-R.toTranscriptome.sort_pausing_score.txt,$out/b8-PausingScore_7-111-R.toTranscriptome.sort_pausing_score.txt -o $out/b9-ProcessPausingScore -g $groupinfo -r $replace --mode raw --ratio_filter 1 --pausing_score_filter 0.01"
-ProcessPausingScore -i $out/b8-PausingScore_7-7-R.toTranscriptome.sort_pausing_score.txt,$out/b8-PausingScore_7-111-R.toTranscriptome.sort_pausing_score.txt -o $out/b9-ProcessPausingScore -g $groupinfo -r $replace --mode raw --ratio_filter 0.01 --pausing_score_filter 0.01
-
+echo "ProcessPausingScore -i $out/b8-PausingScore_${1}_7-7-R.toTranscriptome.sort_pausing_score.txt,$out/b8-PausingScore_${1}_7-111-R.toTranscriptome.sort_pausing_score.txt -o $out/b9-ProcessPausingScore_${1} -g $groupinfo -r $replace --mode raw --ratio_filter 1 --pausing_score_filter 0.01"
+ProcessPausingScore -i $out/b8-PausingScore_${1}_7-7-R.toTranscriptome.sort_pausing_score.txt,$out/b8-PausingScore_${1}_7-111-R.toTranscriptome.sort_pausing_score.txt -o $out/b9-ProcessPausingScore_${1} -g $groupinfo -r $replace --mode raw --ratio_filter 1 --pausing_score_filter 0.01
 echo "End: Pausing score of each triplete amino acid`date`"
+}
+
+RPFdistf_with_parameter()
+{
+echo "Begin: RPFdist calculation.`date`"
+
+# RPFdist calculation.
+echo "RPFdist -f $meta_out/attributes.txt -c $RiboMiner/longest.transcripts.info.txt -o $out/c3-RPFdist_${1} -M counts -S ${home_dir}/${1} -l 100 -n 10 -m 1 -e 5"
+RPFdist -f $meta_out/attributes.txt -c $RiboMiner/longest.transcripts.info.txt -o $out/c3-RPFdist_${1} -M counts -S ${home_dir}/${1} -l 100 -n 10 -m 1 -e 5
+
+echo "End: RPFdist calculation. `date`"
 }
 
 RPFdistf()
@@ -806,7 +826,7 @@ RPFdist -f $meta_out/attributes.txt -c $RiboMiner/longest.transcripts.info.txt -
 
 echo "End: RPFdist calculation. `date`"
 }
-
+1
 gccontents()
 {
 echo "Begin:GC contents for sequences with a fasta format `date`"
@@ -826,10 +846,50 @@ echo "End: GC contents for sequences with a fasta format`date`"
 
 #densityspecific
 #densitycodon
-triplete
+#triplete
 #Pausingscore
 #RPFdistf
 #gccontents
+
+
+#densitycodon_with_parameter $transcript_down_translation_up
+#densitycodon_with_parameter $transcript_only_down
+#densitycodon_with_parameter $transcript_only_up
+#densitycodon_with_parameter $transcript_translation_dow
+#densitycodon_with_parameter $transcript_translation_up
+#densitycodon_with_parameter $transcript_up_translation_down
+#densitycodon_with_parameter $translation_only_down
+#densitycodon_with_parameter $translation_only_up
+
+
+#triplete_with_parameter $transcript_down_translation_up
+#triplete_with_parameter $transcript_only_down
+#triplete_with_parameter $transcript_only_up
+#triplete_with_parameter $transcript_translation_dow
+#triplete_with_parameter $transcript_translation_up
+#triplete_with_parameter $transcript_up_translation_down
+#triplete_with_parameter $translation_only_down
+#triplete_with_parameter $translation_only_up
+
+
+#Pausingscore_with_parameter $transcript_down_translation_up
+#Pausingscore_with_parameter $transcript_only_down
+#Pausingscore_with_parameter $transcript_only_up
+#Pausingscore_with_parameter $transcript_translation_dow
+#Pausingscore_with_parameter $transcript_translation_up
+#Pausingscore_with_parameter $transcript_up_translation_down
+#Pausingscore_with_parameter $translation_only_down
+#Pausingscore_with_parameter $translation_only_up
+
+RPFdistf_with_parameter $transcript_down_translation_up
+RPFdistf_with_parameter $transcript_only_down
+RPFdistf_with_parameter $transcript_only_up
+RPFdistf_with_parameter $transcript_translation_dow
+RPFdistf_with_parameter $transcript_translation_up
+RPFdistf_with_parameter $transcript_up_translation_down
+RPFdistf_with_parameter $translation_only_down
+RPFdistf_with_parameter $translation_only_up
+
 ```
 triplete 有问题。
 
@@ -846,12 +906,28 @@ We need tRNA file, that can be download from [GtRNAdb](http://gtrnadb.ucsc.edu/g
 |chr6	|25	|26751918	|26751990	|Ala	|AGC	|agtgtagtgt	|gcttctttta|
 
 ```sh
+source /home/test/.bashrc
+
 out='/home/share/riboseq/d_feature_analysis'
 meta_out='/home/share/riboseq/bqualitycontrol/metaplot'
 
 RiboMiner='/home/share/riboseq/RiboMiner'
 long=$RiboMiner'/longest.transcripts.info.txt'
 select_gene='/home/share/riboseq/selec_trans_longest.txt'
+
+home_dir='/home/share/riboseq'
+transcript_down_translation_up_fa='select.transcript_down_translation_up.list.gene.fa'
+transcript_only_down_fa='select.transcript_only_down.list.gene.fa'
+transcript_only_up_fa='select.transcript_only_up.list.gene.fa'
+transcript_translation_down_fa='select.transcript_translation_down.list.gene.fa'
+transcript_translation_up_fa='select.transcript_translation_up.list.gene.fa'
+transcript_up_translation_down_fa='select.transcript_up_translation_down.list.gene.fa'
+translation_only_down_fa='select.translation_only_down.list.gene.fa'
+translation_only_up_fa='select.translation_only_up.list.gene.fa'
+
+fa_sum=$home_dir/$transcript_down_translation_up_fa,$home_dir/$transcript_only_down_fa,$home_dir/$transcript_only_up_fa,$home_dir/$transcript_translation_down_fa,$home_dir/$transcript_translation_up_fa,$home_dir/$transcript_up_translation_down_fa,$home_dir/$translation_only_down_fa,$home_dir/$translation_only_up_fa
+
+fa_name_sum='transcript_down_translation_up,transcript_only_down,transcript_only_up,transcript_translation_down,transcript_translation_up,transcript_up_translation_down,translation_only_down,translation_only_up'
 
 groupinfo='R111,R7'
 replace='7-111-R.toTranscriptome.sort__7-7-R.toTranscriptome.sort'
@@ -862,8 +938,8 @@ tAIf()
 {
 echo "Local tRNA adaptation index and global tRNA adaptation index `date`"
 #Local tRNA adaptation index and global tRNA adaptation index
-echo " tAI -i $RiboMiner/transcript_cds_sequences.fa -t mouse -o $out/c6-tAI -u 0 -d 500 --table 1 -N $tRNA_confidence"
-tAI -i $RiboMiner/transcript_cds_sequences.fa -t mouse -o $out/c6-tAI -u 0 -d 500 --table 1 -N $tRNA_confidence
+echo " tAI -i $fa_sum -t $fa_name_sum -o $out/c6-tAI -u 0 -d 500 --table 1 -N $tRNA_confidence"
+tAI -i $fa_sum -t $fa_name_sum -o $out/c6-tAI -u 0 -d 500 --table 1 -N $tRNA_confidence
 
 echo " tAIPlot -i $out/c6-tAI_tAI_dataframe.txt -o $out/c7-tAIPlot -u 0 -d 500 --mode all --start 5 --window 7 --step 1"
 tAIPlot -i $out/c6-tAI_tAI_dataframe.txt -o $out/c7-tAIPlot -u 0 -d 500 --mode all --start 5 --window 7 --step 1
@@ -876,8 +952,8 @@ cAIf()
 {
 echo "Local codon adaptation index and global codon adaptation index `date`"
 # Local codon adaptation index and global codon adaptation index
-echo "cAI -i $RiboMiner/transcript_cds_sequences.fa -o $out/c8-cAI -t mouse -u 0 -d 500 --reference $RiboMiner/transcript_cds_sequences.fa"
-cAI -i $RiboMiner/transcript_cds_sequences.fa -o $out/c8-cAI -t mouse -u 0 -d 500 --reference $RiboMiner/transcript_cds_sequences.fa
+echo "cAI -i $fa_sum -o $out/c8-cAI -t $fa_name_sum -u 0 -d 500 --reference $RiboMiner/transcript_cds_sequences.fa"
+cAI -i $fa_sum -o $out/c8-cAI -t $fa_name_sum -u 0 -d 500 --reference $RiboMiner/transcript_cds_sequences.fa
 
 echo "cAIPlot -i $out/c8-cAI_local_cAI_dataframe.txt -o $out/c9-cAIPlot -u 0 -d 500 --mode all --start 5 --window 7 --step 1"
 cAIPlot -i $out/c8-cAI_local_cAI_dataframe.txt -o $out/c9-cAIPlot -u 0 -d 500 --mode all --start 5 --window 7 --step 1 1
@@ -897,6 +973,8 @@ cAIf
 [hydropathy_index](./hydropathy_index.txt)
 
 ```sh
+source /home/test/.bashrc
+
 out='/home/share/riboseq/d_feature_analysis'
 meta_out='/home/share/riboseq/bqualitycontrol/metaplot'
 
@@ -904,20 +982,32 @@ RiboMiner='/home/share/riboseq/RiboMiner'
 long=$RiboMiner'/longest.transcripts.info.txt'
 select_gene='/home/share/riboseq/selec_trans_longest.txt'
 
+home_dir='/home/share/riboseq'
+transcript_down_translation_up_fa='select.transcript_down_translation_up.list.gene.fa'
+transcript_only_down_fa='select.transcript_only_down.list.gene.fa'
+transcript_only_up_fa='select.transcript_only_up.list.gene.fa'
+transcript_translation_down_fa='select.transcript_translation_down.list.gene.fa'
+transcript_translation_up_fa='select.transcript_translation_up.list.gene.fa'
+transcript_up_translation_down_fa='select.transcript_up_translation_down.list.gene.fa'
+translation_only_down_fa='select.translation_only_down.list.gene.fa'
+translation_only_up_fa='select.translation_only_up.list.gene.fa'
+
+fa_sum=$home_dir/$transcript_down_translation_up_fa,$home_dir/$transcript_only_down_fa,$home_dir/$transcript_only_up_fa,$home_dir/$transcript_translation_down_fa,$home_dir/$transcript_translation_up_fa,$home_dir/$transcript_up_translation_down_fa,$home_dir/$translation_only_down_fa,$home_dir/$translation_only_up_fa
+
+fa_name_sum='transcript_down_translation_up,transcript_only_down,transcript_only_up,transcript_translation_down,transcript_translation_up,transcript_up_translation_down,translation_only_down,translation_only_up'
 
 hydropathy_index='/home/share/riboseq/hydropathy_index.txt'
-charge_index='/home/share/riboseq/A_charge_index.txt'
+charge_index='/home/share/riboseq/AA_charge_index.txt'
 
 hydropathycharge()
 {
 echo "Start hydrophobicity calculation `date`"
 ## hydrophobicity calculation
-echo "hydropathyCharge  -i $RiboMiner/transcript_cds_sequences.fa -o $out/d1_hydropathy -t total_cds --index $hydropathy_index -u 0 -d 500 --table 1 "
-hydropathyCharge  -i $RiboMiner/transcript_cds_sequences.fa -o $out/d1_hydropathy -t total_cds --index $hydropathy_index -u 0 -d 500 --table 1
+echo "hydropathyCharge  -i $fa_sum -o $out/d1_hydropathy -t $fa_name_sum --index $hydropathy_index -u 0 -d 500 --table 1 "
+hydropathyCharge  -i $fa_sum -o $out/d1_hydropathy -t $fa_name_sum --index $hydropathy_index -u 0 -d 500 --table 1
 
-cho "hydropathyCharge  -i $RiboMiner/transcript_cds_sequences.fa -o $out/d2_charge -t total_cds --index $charge_index -u 0 -d 500 --table 1 "
-hydropathyCharge  -i $RiboMiner/transcript_cds_sequences.fa -o $out/d2_charge -t total_cds --index $charge_index -u 0 -d 500 --table 1
-
+cho "hydropathyCharge  -i $fa_sum -o $out/d2_charge -t $fa_name_sum --index $charge_index -u 0 -d 500 --table 1 "
+hydropathyCharge  -i $fa_sum -o $out/d2_charge -t $fa_name_sum --index $charge_index -u 0 -d 500 --table 1
 
 echo "End hydrophobicity calculation `date`"
 }
