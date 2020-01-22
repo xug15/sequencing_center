@@ -313,31 +313,22 @@ B. Relative ribosome density.
 
 ## 
 
-[tAIPlot_homo_average_start codon.pdf](./result_190626_lbx/d_feature_analysis/c7-tAIPlot_homo_average_start codon.pdf)
+[c7-tAIPlot_homo_average_start_codon.pdf](./result_190626_lbx/d_feature_analysis/c7-tAIPlot_homo_average_start_codon.pdf)
 
-[tAIPlot_homo_average_stop codon.pdf](./result_190626_lbx/d_feature_analysis/c7-tAIPlot_homo_average_stop codon.pdf)
+[c7-tAIPlot_homo_average_stop_codon.pdf](./result_190626_lbx/d_feature_analysis/c7-tAIPlot_homo_average_stop_codon.pdf)
 
-[tAIPlot_opposite_average_start codon.pdf](./result_190626_lbx/d_feature_analysis/c7-tAIPlot_opposite_average_start codon.pdf)
+[c7-tAIPlot_opposite_average_start_codon.pdf](./result_190626_lbx/d_feature_analysis/c7-tAIPlot_opposite_average_start_codon.pdf)
 
-[tAIPlot_opposite_average_stop codon.pdf](./result_190626_lbx/d_feature_analysis/c7-tAIPlot_opposite_average_stop codon.pdf)
+[c7-tAIPlot_opposite_average_stop_codon.pdf](./result_190626_lbx/d_feature_analysis/c7-tAIPlot_opposite_average_stop_codon.pdf)
 
-[tAIPlot_transcrpt_average_start codon.pdf](./result_190626_lbx/d_feature_analysis/c7-tAIPlot_transcrpt_average_start codon.pdf)
+[c7-tAIPlot_transcrpt_average_start_codon.pdf](./result_190626_lbx/d_feature_analysis/c7-tAIPlot_transcrpt_average_start_codon.pdf)
 
-[tAIPlot_transcrpt_average_stop codon.pdf](./result_190626_lbx/d_feature_analysis/c7-tAIPlot_transcrpt_average_stop codon.pdf)
+[c7-tAIPlot_transcrpt_average_stop_codon.pdf](./result_190626_lbx/d_feature_analysis/c7-tAIPlot_transcrpt_average_stop_codon.pdf)
 
-[tAIPlot_translation_average_start codon.pdf](./result_190626_lbx/d_feature_analysis/c7-tAIPlot_translation_average_start codon.pdf)
+[c7-tAIPlot_translation_average_start_codon.pdf](./result_190626_lbx/d_feature_analysis/c7-tAIPlot_translation_average_start_codon.pdf)
 
-[c7-tAIPlot_translation_average_stop codon.pdf](./result_190626_lbx/d_feature_analysis/c7-tAIPlot_translation_average_stop codon.pdf)
+[c7-tAIPlot_translation_average_stop_codon.pdf](./result_190626_lbx/d_feature_analysis/c7-tAIPlot_translation_average_stop_codon.pdf)
 
-
-[](./result_190626_lbx/d_feature_analysis/)
-[](./result_190626_lbx/d_feature_analysis/)
-[](./result_190626_lbx/d_feature_analysis/)
-[](./result_190626_lbx/d_feature_analysis/)
-[](./result_190626_lbx/d_feature_analysis/)
-[](./result_190626_lbx/d_feature_analysis/)
-[](./result_190626_lbx/d_feature_analysis/)
-[](./result_190626_lbx/d_feature_analysis/)
 [](./result_190626_lbx/d_feature_analysis/)
 [](./result_190626_lbx/d_feature_analysis/)
 [](./result_190626_lbx/d_feature_analysis/)
