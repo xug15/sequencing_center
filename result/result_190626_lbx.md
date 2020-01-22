@@ -311,7 +311,7 @@ B. Relative ribosome density.
 
 [translation_only_down](./result_190626_lbx/d_feature_analysis/c1-triple_motif_plot_select.translation_only_down.list.gene_mean_density_on_triAAMotifs.pdf)
 
-## 
+## Distribution of local cAI along transcripts for different gene sets.
 
 [c7-tAIPlot_homo_average_start_codon.pdf](./result_190626_lbx/d_feature_analysis/c7-tAIPlot_homo_average_start_codon.pdf)
 
@@ -329,7 +329,7 @@ B. Relative ribosome density.
 
 [c7-tAIPlot_translation_average_stop_codon.pdf](./result_190626_lbx/d_feature_analysis/c7-tAIPlot_translation_average_stop_codon.pdf)
 
-
+## Distribution of local tAI along transcripts for different gene sets. 
 
 [c9-cAIPlot_homo_average_start_codon.pdf](./result_190626_lbx/d_feature_analysis/c9-cAIPlot_homo_average_start_codon.pdf)
 
@@ -347,7 +347,7 @@ B. Relative ribosome density.
 
 [c9-cAIPlot_translation_average_stop_codon.pdf](./result_190626_lbx/d_feature_analysis/c9-cAIPlot_translation_average_stop_codon.pdf)
 
-
+## Average hydrophobicity of each position along transcripts for different gene sets. 
 
 [d3_hydropathy_homo_average_start_codon.pdf](./result_190626_lbx/d_feature_analysis/d3_hydropathy_homo_average_start_codon.pdf)
 
@@ -365,6 +365,7 @@ B. Relative ribosome density.
 
 [d3_hydropathy_translation_average_stop_codon.pdf](./result_190626_lbx/d_feature_analysis/d3_hydropathy_translation_average_stop_codon.pdf)
 
+##  Distribution of global cAI and global tAI for different gene sets.
 
 [d4_charge_homo_average_start_codon.pdf](./result_190626_lbx/d_feature_analysis/d4_charge_homo_average_start_codon.pdf)
 
