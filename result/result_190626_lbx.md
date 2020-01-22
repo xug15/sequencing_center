@@ -280,46 +280,36 @@ Notes: all these analysis are based on total transcripts.
 
 A. Relative ribosome density on poly-proline acid. 
 
-[](./result_190626_lbx/d_feature_analysis/b9-PPP_plot_select.transcript_down_translation_up.list.gene_mean_density_on_triAAMotifs.pdf)
+[transcript_down_translation_up](./result_190626_lbx/d_feature_analysis/b9-PPP_plot_select.transcript_down_translation_up.list.gene_mean_density_on_triAAMotifs.pdf)
 
-[](./result_190626_lbx/d_feature_analysis/b9-PPP_plot_select.transcript_only_down.list.gene_mean_density_on_triAAMotifs.pdf)
+[transcript_only_down](./result_190626_lbx/d_feature_analysis/b9-PPP_plot_select.transcript_only_down.list.gene_mean_density_on_triAAMotifs.pdf)
 
-[](./result_190626_lbx/d_feature_analysis/b9-PPP_plot_select.transcript_only_up.list.gene_mean_density_on_triAAMotifs.pdf)
+[transcript_only_up](./result_190626_lbx/d_feature_analysis/b9-PPP_plot_select.transcript_only_up.list.gene_mean_density_on_triAAMotifs.pdf)
 
-[](./result_190626_lbx/d_feature_analysis/b9-PPP_plot_select.transcript_translation_down.list.gene_mean_density_on_triAAMotifs.pdf)
+[transcript_translation_down](./result_190626_lbx/d_feature_analysis/b9-PPP_plot_select.transcript_translation_down.list.gene_mean_density_on_triAAMotifs.pdf)
 
-[](./result_190626_lbx/d_feature_analysis/b9-PPP_plot_select.transcript_translation_up.list.gene_mean_density_on_triAAMotifs.pdf)
+[transcript_translation_up](./result_190626_lbx/d_feature_analysis/b9-PPP_plot_select.transcript_translation_up.list.gene_mean_density_on_triAAMotifs.pdf)
 
-[](./result_190626_lbx/d_feature_analysis/b9-PPP_plot_select.transcript_up_translation_down.list.gene_mean_density_on_triAAMotifs.pdf)
+[transcript_up_translation_down](./result_190626_lbx/d_feature_analysis/b9-PPP_plot_select.transcript_up_translation_down.list.gene_mean_density_on_triAAMotifs.pdf)
 
-[](./result_190626_lbx/d_feature_analysis/b9-PPP_plot_select.translation_only_down.list.gene_mean_density_on_triAAMotifs.pdf)
+[translation_only_down](./result_190626_lbx/d_feature_analysis/b9-PPP_plot_select.translation_only_down.list.gene_mean_density_on_triAAMotifs.pdf)
 
-[](./result_190626_lbx/d_feature_analysis/b9-PPP_plot_select.translation_only_up.list.gene_mean_density_on_triAAMotifs.pdf)
+[translation_only_up](./result_190626_lbx/d_feature_analysis/b9-PPP_plot_select.translation_only_up.list.gene_mean_density_on_triAAMotifs.pdf)
 
 
 B. Relative ribosome density.
 
-[](./result_190626_lbx/d_feature_analysis/c1-triple_motif_plot_select.transcript_down_translation_up.list.gene_mean_density_on_triAAMotifs.pdf)
+[transcript_down_translation_up](./result_190626_lbx/d_feature_analysis/c1-triple_motif_plot_select.transcript_down_translation_up.list.gene_mean_density_on_triAAMotifs.pdf)
 
-[](./result_190626_lbx/d_feature_analysis/c1-triple_motif_plot_select.transcript_only_down.list.gene_mean_density_on_triAAMotifs.pdf)
+[transcript_only_down](./result_190626_lbx/d_feature_analysis/c1-triple_motif_plot_select.transcript_only_down.list.gene_mean_density_on_triAAMotifs.pdf)
 
-[](./result_190626_lbx/d_feature_analysis/c1-triple_motif_plot_select.transcript_only_up.list.gene_mean_density_on_triAAMotifs.pdf)
+[transcript_only_up](./result_190626_lbx/d_feature_analysis/c1-triple_motif_plot_select.transcript_only_up.list.gene_mean_density_on_triAAMotifs.pdf)
 
-[](./result_190626_lbx/d_feature_analysis/c1-triple_motif_plot_select.transcript_translation_down.list.gene_mean_density_on_triAAMotifs.pdf)
+[transcript_translation_down](./result_190626_lbx/d_feature_analysis/c1-triple_motif_plot_select.transcript_translation_down.list.gene_mean_density_on_triAAMotifs.pdf)
 
-[](./result_190626_lbx/d_feature_analysis/c1-triple_motif_plot_select.transcript_up_translation_down.list.gene_mean_density_on_triAAMotifs.pdf)
+[transcript_up_translation_down](./result_190626_lbx/d_feature_analysis/c1-triple_motif_plot_select.transcript_up_translation_down.list.gene_mean_density_on_triAAMotifs.pdf)
 
-[](./result_190626_lbx/d_feature_analysis/c1-triple_motif_plot_select.translation_only_down.list.gene_mean_density_on_triAAMotifs.pdf)
-
-
-
-
-
-
-
-
-
-
+[translation_only_down](./result_190626_lbx/d_feature_analysis/c1-triple_motif_plot_select.translation_only_down.list.gene_mean_density_on_triAAMotifs.pdf)
 
 
 
