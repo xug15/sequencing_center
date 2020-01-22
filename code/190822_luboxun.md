@@ -735,7 +735,7 @@ home_dir='/home/share/riboseq'
 transcript_down_translation_up='select.transcript_down_translation_up.list.gene'
 transcript_only_down='select.transcript_only_down.list.gene'
 transcript_only_up='select.transcript_only_up.list.gene'
-transcript_translation_dow='select.transcript_translation_down.list.gene'
+transcript_translation_down='select.transcript_translation_down.list.gene'
 transcript_translation_up='select.transcript_translation_up.list.gene'
 transcript_up_translation_down='select.transcript_up_translation_down.list.gene'
 translation_only_down='select.translation_only_down.list.gene'
@@ -759,10 +759,10 @@ densitycodon_with_parameter()
 {
 echo "Begin: Ribosome density at each kind of AA or codon. `date`"
 # Ribosome density at each kind of AA or codon.
-echo " RiboDensityAtEachKindAAOrCodon -f $meta_out/attributes.txt -c $long -o $out/${1} -M counts -S ${home_dir}/${1} -l 100 -n 10 --table 1 -F $RiboMiner/transcript_cds_sequences.fa "
-RiboDensityAtEachKindAAOrCodon -f $meta_out/attributes.txt -c $long -o $out/${1} -M counts -S ${home_dir}/${1} -l 100 -n 10 --table 1 -F $RiboMiner/transcript_cds_sequences.fa
-echo "PlotRiboDensityAtEachKindAAOrCodon -i $out/${1}_all_codon_density.txt -o $out/b7-PlotRiboDensityAtEachKindAAOrCodon_${1} -g $groupinfo -r $replace --level AA "
-PlotRiboDensityAtEachKindAAOrCodon -i $out/${1}_all_codon_density.txt -o $out/b7-PlotRiboDensityAtEachKindAAOrCodon_${1} -g $groupinfo -r $replace --level AA 
+echo " RiboDensityAtEachKindAAOrCodon -f $meta_out/attributes.txt -c $long -o $out/b6_${1} -M counts -S ${home_dir}/${1} -l 100 -n 10 --table 1 -F $RiboMiner/transcript_cds_sequences.fa "
+RiboDensityAtEachKindAAOrCodon -f $meta_out/attributes.txt -c $long -o $out/b6_${1} -M counts -S ${home_dir}/${1} -l 100 -n 10 --table 1 -F $RiboMiner/transcript_cds_sequences.fa
+echo "PlotRiboDensityAtEachKindAAOrCodon -i $out/b6_${1}_all_codon_density.txt -o $out/b7-PlotRiboDensityAtEachKindAAOrCodon_${1} -g $groupinfo -r $replace --level AA "
+PlotRiboDensityAtEachKindAAOrCodon -i $out/b6_${1}_all_codon_density.txt -o $out/b7-PlotRiboDensityAtEachKindAAOrCodon_${1} -g $groupinfo -r $replace --level AA 
 echo "End: Ribosome density at each kind of AA or codon. `date`"
 }
 
@@ -770,11 +770,11 @@ triplete_with_parameter()
 {
 echo "Begin: Ribosome density around the triplete amino acid (tri-AA) motifs `date`"
 ## ribosome density at each tri-AA motif
-echo "RiboDensityAroundTripleteAAMotifs -f $meta_out/attributes.txt -c $RiboMiner/longest.transcripts.info.txt -o $out/PPP_${1} -M RPKM -S ${home_dir}/${1} -l 100 -n 10 --table 1 -F $RiboMiner/transcript_cds_sequences.fa --type2 PPP --type1 PP"
-RiboDensityAroundTripleteAAMotifs -f $meta_out/attributes.txt -c $RiboMiner/longest.transcripts.info.txt -o $out/PPP_${1} -M RPKM -S ${home_dir}/${1} -l 100 -n 10 --table 1 -F $RiboMiner/transcript_cds_sequences.fa --type2 PPP --type1 PP
+echo "RiboDensityAroundTripleteAAMotifs -f $meta_out/attributes.txt -c $RiboMiner/longest.transcripts.info.txt -o $out/b8_PPP_${1} -M RPKM -S ${home_dir}/${1} -l 100 -n 10 --table 1 -F $RiboMiner/transcript_cds_sequences.fa --type2 PPP --type1 PP"
+RiboDensityAroundTripleteAAMotifs -f $meta_out/attributes.txt -c $RiboMiner/longest.transcripts.info.txt -o $out/b8_PPP_${1} -M RPKM -S ${home_dir}/${1} -l 100 -n 10 --table 1 -F $RiboMiner/transcript_cds_sequences.fa --type2 PPP --type1 PP
 ## plot
-echo "PlotRiboDensityAroundTriAAMotifs -i $out/PPP_${1}_motifDensity_dataframe.txt -o $out/PPP_plot_${1} -g -g $groupinfo -r $replace --mode mean --ymax 0.2"
-PlotRiboDensityAroundTriAAMotifs -i $out/PPP_${1}_motifDensity_dataframe.txt -o $out/PPP_plot_${1} -g -g $groupinfo -r $replace --mode mean --ymax 0.2
+echo "PlotRiboDensityAroundTriAAMotifs -i $out/b8_PPP_${1}_motifDensity_dataframe.txt -o $out/b9-PPP_plot_${1} -g $groupinfo -r $replace --mode mean --ymax 0.2"
+PlotRiboDensityAroundTriAAMotifs -i $out/b8_PPP_${1}_motifDensity_dataframe.txt -o $out/b9-PPP_plot_${1} -g $groupinfo -r $replace --mode mean --ymax 0.2
 echo "motifs
 PPP
 PPD
@@ -783,11 +783,11 @@ echo "motifs
 KKK
 KKP
 RRR" > $out/tri_AA_motifs2.txt;
-echo "RiboDensityAroundTripleteAAMotifs -f $meta_out/attributes.txt -c $RiboMiner/longest.transcripts.info.txt -o $out/triple_motif_${1} -M RPKM -S ${home_dir}/${1} -l 100 -n 10 --table 1 -F $RiboMiner/transcript_cds_sequences.fa --motifList1 $out/tri_AA_motifs1.txt --motifList2 $out/tri_AA_motifs2.txt"
-RiboDensityAroundTripleteAAMotifs -f $meta_out/attributes.txt -c $RiboMiner/longest.transcripts.info.txt -o $out/triple_motif_${1} -M RPKM -S ${home_dir}/${1} -l 100 -n 10 --table 1 -F $RiboMiner/transcript_cds_sequences.fa --motifList1 $out/tri_AA_motifs1.txt --motifList2 $out/tri_AA_motifs2.txt
+echo "RiboDensityAroundTripleteAAMotifs -f $meta_out/attributes.txt -c $RiboMiner/longest.transcripts.info.txt -o $out/b9_triple_motif_${1} -M RPKM -S ${home_dir}/${1} -l 100 -n 10 --table 1 -F $RiboMiner/transcript_cds_sequences.fa --motifList1 $out/tri_AA_motifs1.txt --motifList2 $out/tri_AA_motifs2.txt"
+RiboDensityAroundTripleteAAMotifs -f $meta_out/attributes.txt -c $RiboMiner/longest.transcripts.info.txt -o $out/b9_triple_motif_${1} -M RPKM -S ${home_dir}/${1} -l 100 -n 10 --table 1 -F $RiboMiner/transcript_cds_sequences.fa --motifList1 $out/tri_AA_motifs1.txt --motifList2 $out/tri_AA_motifs2.txt
 ## plot
-echo "PlotRiboDensityAroundTriAAMotifs -i $out/triple_motif_${1}_motifDensity_dataframe.txt -o $out/triple_motif_plot_${1} -g -g $groupinfo -r $replace --mode mean --ymax 0.2"
-PlotRiboDensityAroundTriAAMotifs -i $out/triple_motif_${1}_motifDensity_dataframe.txt -o $out/triple_motif_plot_${1} -g -g $groupinfo -r $replace --mode mean --ymax 0.2
+echo "PlotRiboDensityAroundTriAAMotifs -i $out/b9_triple_motif_${1}_motifDensity_dataframe.txt -o $out/c1-triple_motif_plot_${1} -g $groupinfo -r $replace --mode mean --ymax 0.2"
+PlotRiboDensityAroundTriAAMotifs -i $out/b9_triple_motif_${1}_motifDensity_dataframe.txt -o $out/c1-triple_motif_plot_${1} -g $groupinfo -r $replace --mode mean --ymax 0.2
 echo "End: Ribosome density around the triplete amino acid (tri-AA) motifs `date`"
 }
 
@@ -855,7 +855,7 @@ echo "End: GC contents for sequences with a fasta format`date`"
 #densitycodon_with_parameter $transcript_down_translation_up
 #densitycodon_with_parameter $transcript_only_down
 #densitycodon_with_parameter $transcript_only_up
-#densitycodon_with_parameter $transcript_translation_dow
+#densitycodon_with_parameter $transcript_translation_down
 #densitycodon_with_parameter $transcript_translation_up
 #densitycodon_with_parameter $transcript_up_translation_down
 #densitycodon_with_parameter $translation_only_down
@@ -865,30 +865,30 @@ echo "End: GC contents for sequences with a fasta format`date`"
 #triplete_with_parameter $transcript_down_translation_up
 #triplete_with_parameter $transcript_only_down
 #triplete_with_parameter $transcript_only_up
-#triplete_with_parameter $transcript_translation_dow
-#triplete_with_parameter $transcript_translation_up
+#triplete_with_parameter $transcript_translation_down
+triplete_with_parameter $transcript_translation_up
 #triplete_with_parameter $transcript_up_translation_down
 #triplete_with_parameter $translation_only_down
-#triplete_with_parameter $translation_only_up
+triplete_with_parameter $translation_only_up
 
 
 #Pausingscore_with_parameter $transcript_down_translation_up
 #Pausingscore_with_parameter $transcript_only_down
 #Pausingscore_with_parameter $transcript_only_up
-#Pausingscore_with_parameter $transcript_translation_dow
+#Pausingscore_with_parameter $transcript_translation_down
 #Pausingscore_with_parameter $transcript_translation_up
 #Pausingscore_with_parameter $transcript_up_translation_down
 #Pausingscore_with_parameter $translation_only_down
 #Pausingscore_with_parameter $translation_only_up
 
-RPFdistf_with_parameter $transcript_down_translation_up
-RPFdistf_with_parameter $transcript_only_down
-RPFdistf_with_parameter $transcript_only_up
-RPFdistf_with_parameter $transcript_translation_dow
-RPFdistf_with_parameter $transcript_translation_up
-RPFdistf_with_parameter $transcript_up_translation_down
-RPFdistf_with_parameter $translation_only_down
-RPFdistf_with_parameter $translation_only_up
+#RPFdistf_with_parameter $transcript_down_translation_up
+#RPFdistf_with_parameter $transcript_only_down
+#RPFdistf_with_parameter $transcript_only_up
+#RPFdistf_with_parameter $transcript_translation_down
+#RPFdistf_with_parameter $transcript_translation_up
+#RPFdistf_with_parameter $transcript_up_translation_down
+#RPFdistf_with_parameter $translation_only_down
+#RPFdistf_with_parameter $translation_only_up
 
 ```
 triplete 有问题。
@@ -927,42 +927,68 @@ translation_only_up_fa='select.translation_only_up.list.gene.fa'
 
 fa_sum=$home_dir/$transcript_down_translation_up_fa,$home_dir/$transcript_only_down_fa,$home_dir/$transcript_only_up_fa,$home_dir/$transcript_translation_down_fa,$home_dir/$transcript_translation_up_fa,$home_dir/$transcript_up_translation_down_fa,$home_dir/$translation_only_down_fa,$home_dir/$translation_only_up_fa
 
+fa_sum_transcript=$home_dir/$transcript_only_down_fa,$home_dir/$transcript_only_up_fa
+
+fa_sum_translation=$home_dir/$translation_only_down_fa,$home_dir/$translation_only_up_fa
+
+fa_sum_homo=$home_dir/$transcript_translation_down_fa,$home_dir/$transcript_translation_up_fa
+
+fa_sum_opposite=$home_dir/$transcript_down_translation_up_fa,$home_dir/$transcript_up_translation_down_fa
+
 fa_name_sum='transcript_down_translation_up,transcript_only_down,transcript_only_up,transcript_translation_down,transcript_translation_up,transcript_up_translation_down,translation_only_down,translation_only_up'
+
+fa_sum_transcript_name='transcript_only_down_fa,transcript_only_up_fa'
+
+fa_sum_translation_name='translation_only_down_fa,translation_only_up_fa'
+
+fa_sum_homo_name='transcript_translation_down_fa,transcript_translation_up_fa'
+
+fa_sum_opposite_name='transcript_down_translation_up_fa,transcript_up_translation_down_fa'
 
 groupinfo='R111,R7'
 replace='7-111-R.toTranscriptome.sort__7-7-R.toTranscriptome.sort'
 
 tRNA_confidence='/home/share/riboseq/mouse-tRNAs-confidence.txt'
 
+# tAIf $name $fa_sum_transcrpt $fa_sum_transcrpt_name
+
 tAIf()
 {
 echo "Local tRNA adaptation index and global tRNA adaptation index `date`"
 #Local tRNA adaptation index and global tRNA adaptation index
-echo " tAI -i $fa_sum -t $fa_name_sum -o $out/c6-tAI -u 0 -d 500 --table 1 -N $tRNA_confidence"
-tAI -i $fa_sum -t $fa_name_sum -o $out/c6-tAI -u 0 -d 500 --table 1 -N $tRNA_confidence
+echo " tAI -i ${2} -t ${3} -o $out/c6-tAI_${1} -u 0 -d 500 --table 1 -N $tRNA_confidence"
+tAI -i ${2} -t ${3} -o $out/c6-tAI_${1} -u 0 -d 500 --table 1 -N $tRNA_confidence
 
-echo " tAIPlot -i $out/c6-tAI_tAI_dataframe.txt -o $out/c7-tAIPlot -u 0 -d 500 --mode all --start 5 --window 7 --step 1"
-tAIPlot -i $out/c6-tAI_tAI_dataframe.txt -o $out/c7-tAIPlot -u 0 -d 500 --mode all --start 5 --window 7 --step 1
+echo " tAIPlot -i $out/c6-tAI_${1}_tAI_dataframe.txt -o $out/c7-tAIPlot_${1} -u 0 -d 500 --mode all --start 5 --window 7 --step 1"
+tAIPlot -i $out/c6-tAI_${1}_tAI_dataframe.txt -o $out/c7-tAIPlot_${1} -u 0 -d 500 --mode all --start 5 --window 7 --step 1
 
 echo "Finished: Local tRNA adaptation index and global tRNA adaptation index `date`"
 
 }
 
+# cAIf $name $fa_sum_transcrpt $fa_sum_transcrpt_name
 cAIf()
 {
 echo "Local codon adaptation index and global codon adaptation index `date`"
 # Local codon adaptation index and global codon adaptation index
-echo "cAI -i $fa_sum -o $out/c8-cAI -t $fa_name_sum -u 0 -d 500 --reference $RiboMiner/transcript_cds_sequences.fa"
-cAI -i $fa_sum -o $out/c8-cAI -t $fa_name_sum -u 0 -d 500 --reference $RiboMiner/transcript_cds_sequences.fa
+echo "cAI -i ${2} -o $out/c8-cAI_${1} -t ${3} -u 0 -d 500 --reference $RiboMiner/transcript_cds_sequences.fa"
+cAI -i ${2} -o $out/c8-cAI_${1} -t ${3} -u 0 -d 500 --reference $RiboMiner/transcript_cds_sequences.fa
 
-echo "cAIPlot -i $out/c8-cAI_local_cAI_dataframe.txt -o $out/c9-cAIPlot -u 0 -d 500 --mode all --start 5 --window 7 --step 1"
-cAIPlot -i $out/c8-cAI_local_cAI_dataframe.txt -o $out/c9-cAIPlot -u 0 -d 500 --mode all --start 5 --window 7 --step 1 1
+echo "cAIPlot -i $out/c8-cAI_${1}_local_cAI_dataframe.txt -o $out/c9-cAIPlot_${1} -u 0 -d 500 --mode all --start 5 --window 7 --step 1"
+cAIPlot -i $out/c8-cAI_${1}_local_cAI_dataframe.txt -o $out/c9-cAIPlot_${1} -u 0 -d 500 --mode all --start 5 --window 7 --step 1
 echo "Finished: Local codon adaptation index and global codon adaptation index `date`"
 
 }
 
-tAIf
-cAIf
+tAIf 'transcrpt' $fa_sum_transcript $fa_sum_transcript_name
+tAIf 'translation' $fa_sum_translation $fa_sum_translation_name
+tAIf 'homo' $fa_sum_homo $fa_sum_homo_name
+tAIf 'opposite' $fa_sum_opposite $fa_sum_opposite_name
+
+cAIf 'transcrpt' $fa_sum_transcript $fa_sum_transcript_name
+cAIf 'translation' $fa_sum_translation $fa_sum_translation_name
+cAIf 'homo' $fa_sum_homo $fa_sum_homo_name
+cAIf 'opposite' $fa_sum_opposite $fa_sum_opposite_name
 
 ```
 
@@ -994,7 +1020,23 @@ translation_only_up_fa='select.translation_only_up.list.gene.fa'
 
 fa_sum=$home_dir/$transcript_down_translation_up_fa,$home_dir/$transcript_only_down_fa,$home_dir/$transcript_only_up_fa,$home_dir/$transcript_translation_down_fa,$home_dir/$transcript_translation_up_fa,$home_dir/$transcript_up_translation_down_fa,$home_dir/$translation_only_down_fa,$home_dir/$translation_only_up_fa
 
+fa_sum_transcript=$home_dir/$transcript_only_down_fa,$home_dir/$transcript_only_up_fa
+
+fa_sum_translation=$home_dir/$translation_only_down_fa,$home_dir/$translation_only_up_fa
+
+fa_sum_homo=$home_dir/$transcript_translation_down_fa,$home_dir/$transcript_translation_up_fa
+
+fa_sum_opposite=$home_dir/$transcript_down_translation_up_fa,$home_dir/$transcript_up_translation_down_fa
+
 fa_name_sum='transcript_down_translation_up,transcript_only_down,transcript_only_up,transcript_translation_down,transcript_translation_up,transcript_up_translation_down,translation_only_down,translation_only_up'
+
+fa_sum_transcript_name='transcript_only_down_fa,transcript_only_up_fa'
+
+fa_sum_translation_name='translation_only_down_fa,translation_only_up_fa'
+
+fa_sum_homo_name='transcript_translation_down_fa,transcript_translation_up_fa'
+
+fa_sum_opposite_name='transcript_down_translation_up_fa,transcript_up_translation_down_fa'
 
 hydropathy_index='/home/share/riboseq/hydropathy_index.txt'
 charge_index='/home/share/riboseq/AA_charge_index.txt'
@@ -1003,11 +1045,39 @@ hydropathycharge()
 {
 echo "Start hydrophobicity calculation `date`"
 ## hydrophobicity calculation
-echo "hydropathyCharge  -i $fa_sum -o $out/d1_hydropathy -t $fa_name_sum --index $hydropathy_index -u 0 -d 500 --table 1 "
-hydropathyCharge  -i $fa_sum -o $out/d1_hydropathy -t $fa_name_sum --index $hydropathy_index -u 0 -d 500 --table 1
+#echo "hydropathyCharge  -i $fa_sum -o $out/d1_hydropathy -t $fa_name_sum --index $hydropathy_index -u 0 -d 500 --table 1 "
+#hydropathyCharge  -i $fa_sum -o $out/d1_hydropathy -t $fa_name_sum --index $hydropathy_index -u 0 -d 500 --table 1
 
-cho "hydropathyCharge  -i $fa_sum -o $out/d2_charge -t $fa_name_sum --index $charge_index -u 0 -d 500 --table 1 "
-hydropathyCharge  -i $fa_sum -o $out/d2_charge -t $fa_name_sum --index $charge_index -u 0 -d 500 --table 1
+#echo "hydropathyCharge  -i $fa_sum -o $out/d2_charge -t $fa_name_sum --index $charge_index -u 0 -d 500 --table 1 "
+#hydropathyCharge  -i $fa_sum -o $out/d2_charge -t $fa_name_sum --index $charge_index -u 0 -d 500 --table 1
+
+# transcript
+echo "hydropathyCharge  -i $fa_sum_transcript -o $out/d1_hydropathy_transcript -t $fa_sum_transcript_name --index $hydropathy_index -u 0 -d 500 --table 1 "
+hydropathyCharge  -i $fa_sum_transcript -o $out/d1_hydropathy_transcript -t $fa_sum_transcript_name --index $hydropathy_index -u 0 -d 500 --table 1
+
+echo "hydropathyCharge  -i $fa_sum_transcript -o $out/d2_charge_transcript -t $fa_sum_transcript_name --index $charge_index -u 0 -d 500 --table 1 "
+hydropathyCharge  -i $fa_sum_transcript -o $out/d2_charge_transcript -t $fa_sum_transcript_name --index $charge_index -u 0 -d 500 --table 1
+
+#translation
+echo "hydropathyCharge  -i $fa_sum_translation -o $out/d1_hydropathy_translation -t $fa_sum_translation_name --index $hydropathy_index -u 0 -d 500 --table 1 "
+hydropathyCharge  -i $fa_sum_translation -o $out/d1_hydropathy_translation -t $fa_sum_translation_name --index $hydropathy_index -u 0 -d 500 --table 1
+
+echo "hydropathyCharge  -i $fa_sum_translation -o $out/d2_charge_translation -t $fa_sum_translation_name --index $charge_index -u 0 -d 500 --table 1 "
+hydropathyCharge  -i $fa_sum_translation -o $out/d2_charge_translation -t $fa_sum_translation_name --index $charge_index -u 0 -d 500 --table 1
+
+#homo
+echo "hydropathyCharge  -i $fa_sum_homo -o $out/d1_hydropathy_homo -t $fa_sum_homo_name --index $hydropathy_index -u 0 -d 500 --table 1 "
+hydropathyCharge  -i $fa_sum_homo -o $out/d1_hydropathy_homo -t $fa_sum_homo_name --index $hydropathy_index -u 0 -d 500 --table 1 
+
+echo "hydropathyCharge  -i $fa_sum_homo -o $out/d2_charge_fa_homo -t $fa_sum_homo_name --index $charge_index -u 0 -d 500 --table 1 "
+hydropathyCharge  -i $fa_sum_homo -o $out/d2_charge_fa_sum_homo -t $fa_sum_homo_name --index $charge_index -u 0 -d 500 --table 1 
+
+#opposite
+echo "hydropathyCharge  -i $fa_sum_opposite -o $out/d1_hydropathy_opposite -t $fa_sum_opposite_name --index $hydropathy_index -u 0 -d 500 --table 1 "
+hydropathyCharge  -i $fa_sum_opposite -o $out/d1_hydropathy_opposite -t $fa_sum_opposite_name --index $hydropathy_index -u 0 -d 500 --table 1 
+
+echo "hydropathyCharge  -i $fa_sum_opposite -o $out/d2_charge_opposite -t $fa_sum_opposite_name --index $charge_index -u 0 -d 500 --table 1 "
+hydropathyCharge  -i $fa_sum_opposite -o $out/d2_charge_opposite -t $fa_sum_opposite_name --index $charge_index -u 0 -d 500 --table 1
 
 echo "End hydrophobicity calculation `date`"
 }
@@ -1015,11 +1085,43 @@ echo "End hydrophobicity calculation `date`"
 hydropathplot(){
 echo "Start plot hydrophobicit `date`"
 ## hydrophobicity
-echo "PlotHydropathyCharge -i $out/d1_hydropathy_values_dataframe.txt -o $out/d3_hydropathy -u 0 -d 500 --mode all --ylab "Average Hydrophobicity" "
-PlotHydropathyCharge -i $out/d1_hydropathy_values_dataframe.txt -o $out/d3_hydropathy -u 0 -d 500 --mode all --ylab "Average Hydrophobicity"
+#echo "PlotHydropathyCharge -i $out/d1_hydropathy_values_dataframe.txt -o $out/d3_hydropathy -u 0 -d 500 --mode all --ylab "Average Hydrophobicity" "
+#PlotHydropathyCharge -i $out/d1_hydropathy_values_dataframe.txt -o $out/d3_hydropathy -u 0 -d 500 --mode all --ylab "Average Hydrophobicity"
 ## charge
-echo "PlotHydropathyCharge -i $out/d2_charge_values_dataframe.txt -o $out/d4_charge -u 0 -d 500 --mode all --ylab "Average Charges" "
-PlotHydropathyCharge -i $out/d2_charge_values_dataframe.txt -o $out/d4_charge -u 0 -d 500 --mode all --ylab "Average Charges" 
+#echo "PlotHydropathyCharge -i $out/d2_charge_values_dataframe.txt -o $out/d4_charge -u 0 -d 500 --mode all --ylab "Average Charges" "
+#PlotHydropathyCharge -i $out/d2_charge_values_dataframe.txt -o $out/d4_charge -u 0 -d 500 --mode all --ylab "Average Charges" 
+
+# transcript
+## hydrophobicity
+echo "PlotHydropathyCharge -i $out/d1_hydropathy_transcript_values_dataframe.txt -o $out/d3_hydropathy_transcript -u 0 -d 500 --mode all --ylab "Average Hydrophobicity" "
+PlotHydropathyCharge -i $out/d1_hydropathy_transcript_values_dataframe.txt -o $out/d3_hydropathy_transcript -u 0 -d 500 --mode all --ylab "Average Hydrophobicity" 
+## charge
+echo "PlotHydropathyCharge -i $out/d2_charge_transcript_values_dataframe.txt -o $out/d4_charge_transcript -u 0 -d 500 --mode all --ylab "Average Charges" "
+PlotHydropathyCharge -i $out/d2_charge_transcript_values_dataframe.txt -o $out/d4_charge_transcript -u 0 -d 500 --mode all --ylab "Average Charges" 
+
+#translation
+## hydrophobicity
+echo "PlotHydropathyCharge -i $out/d1_hydropathy_translation_values_dataframe.txt -o $out/d3_hydropathy_translation -u 0 -d 500 --mode all --ylab "Average Hydrophobicity" "
+PlotHydropathyCharge -i $out/d1_hydropathy_translation_values_dataframe.txt -o $out/d3_hydropathy_translation -u 0 -d 500 --mode all --ylab "Average Hydrophobicity"
+## charge
+echo "PlotHydropathyCharge -i $out/d2_charge_translation_values_dataframe.txt -o $out/d4_charge_translation -u 0 -d 500 --mode all --ylab "Average Charges" "
+PlotHydropathyCharge -i $out/d2_charge_translation_values_dataframe.txt -o $out/d4_charge_translation -u 0 -d 500 --mode all --ylab "Average Charges" 
+
+#homo
+## hydrophobicity
+echo "PlotHydropathyCharge -i $out/d1_hydropathy_homo_values_dataframe.txt -o $out/d3_hydropathy_homo -u 0 -d 500 --mode all --ylab "Average Hydrophobicity" "
+PlotHydropathyCharge -i $out/d1_hydropathy_homo_values_dataframe.txt -o $out/d3_hydropathy_homo -u 0 -d 500 --mode all --ylab "Average Hydrophobicity"
+## charge
+echo "PlotHydropathyCharge -i $out/d2_charge_fa_sum_homo_values_dataframe.txt -o $out/d4_charge_homo -u 0 -d 500 --mode all --ylab "Average Charges" "
+PlotHydropathyCharge -i $out/d2_charge_fa_sum_homo_values_dataframe.txt -o $out/d4_charge_homo -u 0 -d 500 --mode all --ylab "Average Charges" 
+
+#opposite
+## hydrophobicity
+echo "PlotHydropathyCharge -i $out/d1_hydropathy_opposite_values_dataframe.txt -o $out/d3_hydropathy_opposite -u 0 -d 500 --mode all --ylab "Average Hydrophobicity" "
+PlotHydropathyCharge -i $out/d1_hydropathy_opposite_values_dataframe.txt -o $out/d3_hydropathy_opposite -u 0 -d 500 --mode all --ylab "Average Hydrophobicity"
+## charge
+echo "PlotHydropathyCharge -i $out/d2_charge_opposite_values_dataframe.txt -o $out/d4_charge_opposite -u 0 -d 500 --mode all --ylab "Average Charges" "
+PlotHydropathyCharge -i $out/d2_charge_opposite_values_dataframe.txt -o $out/d4_charge_opposite -u 0 -d 500 --mode all --ylab "Average Charges" 
 
 echo "End plot hydrophobicit `date`"
 }
