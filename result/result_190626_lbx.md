@@ -311,9 +311,45 @@ B. Relative ribosome density.
 
 [translation_only_down](./result_190626_lbx/d_feature_analysis/c1-triple_motif_plot_select.translation_only_down.list.gene_mean_density_on_triAAMotifs.pdf)
 
+## 
+
+[tAIPlot_homo_average_start codon.pdf](./result_190626_lbx/d_feature_analysis/c7-tAIPlot_homo_average_start codon.pdf)
+
+[tAIPlot_homo_average_stop codon.pdf](./result_190626_lbx/d_feature_analysis/c7-tAIPlot_homo_average_stop codon.pdf)
+
+[tAIPlot_opposite_average_start codon.pdf](./result_190626_lbx/d_feature_analysis/c7-tAIPlot_opposite_average_start codon.pdf)
+
+[tAIPlot_opposite_average_stop codon.pdf](./result_190626_lbx/d_feature_analysis/c7-tAIPlot_opposite_average_stop codon.pdf)
+
+[tAIPlot_transcrpt_average_start codon.pdf](./result_190626_lbx/d_feature_analysis/c7-tAIPlot_transcrpt_average_start codon.pdf)
+
+[tAIPlot_transcrpt_average_stop codon.pdf](./result_190626_lbx/d_feature_analysis/c7-tAIPlot_transcrpt_average_stop codon.pdf)
+
+[tAIPlot_translation_average_start codon.pdf](./result_190626_lbx/d_feature_analysis/c7-tAIPlot_translation_average_start codon.pdf)
+
+[c7-tAIPlot_translation_average_stop codon.pdf](./result_190626_lbx/d_feature_analysis/c7-tAIPlot_translation_average_stop codon.pdf)
 
 
-
-
-
-
+[](./result_190626_lbx/d_feature_analysis/)
+[](./result_190626_lbx/d_feature_analysis/)
+[](./result_190626_lbx/d_feature_analysis/)
+[](./result_190626_lbx/d_feature_analysis/)
+[](./result_190626_lbx/d_feature_analysis/)
+[](./result_190626_lbx/d_feature_analysis/)
+[](./result_190626_lbx/d_feature_analysis/)
+[](./result_190626_lbx/d_feature_analysis/)
+[](./result_190626_lbx/d_feature_analysis/)
+[](./result_190626_lbx/d_feature_analysis/)
+[](./result_190626_lbx/d_feature_analysis/)
+[](./result_190626_lbx/d_feature_analysis/)
+[](./result_190626_lbx/d_feature_analysis/)
+[](./result_190626_lbx/d_feature_analysis/)
+[](./result_190626_lbx/d_feature_analysis/)
+[](./result_190626_lbx/d_feature_analysis/)
+[](./result_190626_lbx/d_feature_analysis/)
+[](./result_190626_lbx/d_feature_analysis/)
+[](./result_190626_lbx/d_feature_analysis/)
+[](./result_190626_lbx/d_feature_analysis/)
+[](./result_190626_lbx/d_feature_analysis/)
+[](./result_190626_lbx/d_feature_analysis/)
+[](./result_190626_lbx/d_feature_analysis/)
