@@ -261,12 +261,19 @@ E. The change ratio of ribosome density between 7-7 sample and 7-111 sample amon
 Notes: all these analysis are based on total transcripts.
 
 ![transcript_down_translation_up](./result_190626_lbx/d_feature_analysis/b7-PlotRiboDensityAtEachKindAAOrCodon_select.transcript_down_translation_up.list.gene_density_on_each_kind_of_AA.pdf)
+
 ![transcript_only_down](./result_190626_lbx/d_feature_analysis/b7-PlotRiboDensityAtEachKindAAOrCodon_select.transcript_only_down.list.gene_density_on_each_kind_of_AA.pdf)
+
 ![transcript_only_up](./result_190626_lbx/d_feature_analysis/b7-PlotRiboDensityAtEachKindAAOrCodon_select.transcript_only_up.list.gene_density_on_each_kind_of_AA.pdf)
+
 ![transcript_translation_down](./result_190626_lbx/d_feature_analysis/b7-PlotRiboDensityAtEachKindAAOrCodon_select.transcript_translation_down.list.gene_density_on_each_kind_of_AA.pdf)
+
 ![transcript_translation_up](./result_190626_lbx/d_feature_analysis/b7-PlotRiboDensityAtEachKindAAOrCodon_select.transcript_translation_up.list.gene_density_on_each_kind_of_AA.pdf)
+
 ![transcript_up_translation_down](./result_190626_lbx/d_feature_analysis/b7-PlotRiboDensityAtEachKindAAOrCodon_select.transcript_up_translation_down.list.gene_density_on_each_kind_of_AA.pdf)
+
 ![translation_only_down](./result_190626_lbx/d_feature_analysis/b7-PlotRiboDensityAtEachKindAAOrCodon_select.translation_only_down.list.gene_density_on_each_kind_of_AA.pdf)
+
 ![translation_only_up](./result_190626_lbx/d_feature_analysis/b7-PlotRiboDensityAtEachKindAAOrCodon_select.translation_only_up.list.gene_density_on_each_kind_of_AA.pdf)
 
 **Ribosome density among triplete-AA motifs.** 
