@@ -233,6 +233,9 @@ Exon
 **B. Distribution of polarity scores.** 
 ![](./result_190626_lbx/polarity.png)
 
+polarity 分布如果都在0附近说明对这个转录本来说reads分布相对于转录本中心来说分布比较均匀，如果左偏，或者右偏说明有很多的转录本上的reads分布不均匀，在转录本5'端多了或者少了
+
+
 **C. Ribosome density profiles along CDS regions.** 
 ![](./result_190626_lbx/meta_cds_5.png)
 ![](./result_190626_lbx/meta_cds_3.png)
@@ -337,6 +340,8 @@ B. Relative ribosome density.
 
 ## Distribution of local cAI along transcripts for different gene sets.
 
+tAI是表示tRNA gene copy numbers对翻译影响的，值越大说明翻译相对越快，CAI是评估codon usage对翻译速率影响的，值越大，说明转录本中optimal codon越读，翻译越快
+
 [c7-tAIPlot_homo_average_start_codon.pdf](./result_190626_lbx/d_feature_analysis/c7-tAIPlot_homo_average_start_codon.pdf)
 
 [c7-tAIPlot_homo_average_stop_codon.pdf](./result_190626_lbx/d_feature_analysis/c7-tAIPlot_homo_average_stop_codon.pdf)
@@ -389,7 +394,7 @@ B. Relative ribosome density.
 
 [d3_hydropathy_translation_average_stop_codon.pdf](./result_190626_lbx/d_feature_analysis/d3_hydropathy_translation_average_stop_codon.pdf)
 
-##  Distribution of global cAI and global tAI for different gene sets.
+##  Charge amino acids of each position along transcripts for different gene sets. 
 
 [d4_charge_homo_average_start_codon.pdf](./result_190626_lbx/d_feature_analysis/d4_charge_homo_average_start_codon.pdf)
 
