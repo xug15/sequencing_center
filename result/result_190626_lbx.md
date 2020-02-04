@@ -271,11 +271,11 @@ Notes: all these analysis are based on total transcripts.
 
 |Name|Transcript|Translation|Number|
 |-|-|-|-|
-|transcript_down_translation_up:| transcript 7-111  high 7-7 transcirpt low,  |translation 7-111 low 7-7 heigh|320|
+|transcript_down_translation_up:| transcript 7-111  high 7-7 transcirpt low,  |translation 7-111 low 7-7 high|320|
 |transcript_only_down: |transcript 7-111  high 7-7 transcirpt low, | translation not change|1027|
 |transcript_only_up: |transcript 7-111  low 7-7 transcirpt high, | translation not change|316|
 |transcript_translation_down: |transcript 7-111  high 7-7 transcirpt low,|  translation 7-111 high 7-7 low|284|
-|transcript_translation_up: |transcript 7-111  low 7-7 transcirpt high,|  translation 7-111 low 7-7 heigh|85|
+|transcript_translation_up: |transcript 7-111  low 7-7 transcirpt high,|  translation 7-111 low 7-7 high|85|
 |transcript_up_translation_down:| transcript 7-111  low 7-7 transcirpt high,  |translation 7-111 high 7-7 low|124|
 |translation_only_down:| transcript not change, |  translation 7-111 high 7-7 low|64|
 |translation_only_up: |transcript not change, |translation 7-111 low 7-7 high|68|
