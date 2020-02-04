@@ -234,12 +234,16 @@ Exon
 
 left: read density on the position away from start codon. right: read density on the position away from stop codon. 
 
+
+
 **D. Ribosome density profiles along UTR regions.** 
 ![](./result_190626_lbx/meta_utr_5.png)
 ![](./result_190626_lbx/meta_utr_3.png)
 
 left: read density on the position away from start codon. right: read density on the position away from stop codon.
 
+**7_111翻译起始有点慢**
+**start codon多很多，考虑翻译起始受抑制吧**
 
 **Figure 3: Ribosome density among different amino acids and codons.**
 
@@ -251,6 +255,7 @@ B. Relative ribosome density on different codons for 7-7 sample.
 
 C. Relative ribosome density on different amino acids for 7-7 sample. 
 ![](./result_190626_lbx/aa.7-111.png)
+
 
 D. Relative ribosome density on different codons for 7-7 sample. 
 ![](./result_190626_lbx/aa.7-111.class.png)
