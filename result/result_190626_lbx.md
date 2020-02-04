@@ -4,6 +4,10 @@
 
 ## 实验设计
 
+|ID |Name |
+|-|-|
+|7-7 |野生型|  
+|7-111| 突变体|
 
 
 ## Raw data process pipeline 
