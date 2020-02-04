@@ -4,3 +4,13 @@ ENSMUSG00000038456	8	2	0	4
 
 ENSMUSG00000038456	7.27480722287617	-1.43277375224578	-8.86393974950118	0.372766606467512	2.65482447582414	-6.05278999289194	-8.9600361808685	0.297327951440615	-8.86393974950118	0.372766606467512	0.853166487189458	0.00566453085843055	opposite_change
 7-111 vs 7-7
+
+
+     320 transcript_down_translation_up.txt
+    1027 transcript_only_down.txt
+     316 transcript_only_up.txt
+     284 transcript_translation_down.txt
+      85 transcript_translation_up.txt
+     124 transcript_up_translation_down.txt
+      64 translation_only_down.txt
+      68 translation_only_up.txt
