@@ -66,9 +66,10 @@ adapt=CTGTAGGCACCATCAAT
 
 for i in ${rpf[@]}
 do
-        echo " cutadapt -m 25 -M 35 --match-read-wildcards -a $adapt -o ${out_dir}/${i}_trimmed.fastq ${data_dir}/${i}_1.fq.gz > ${out_dir}/${i}_trimmed.log ";
-        cutadapt -m 25 -M 35 --match-read-wildcards -a $adapt -o ${out_dir}/${i}_trimmed.fastq ${data_dir}/${i}_1.fq.gz > ${out_dir}/${i}_trimmed.log;
+        echo " cutadapt -m 25 -M 35 --match-read-wildcards -a $adapt -o ${out_dir}/${i}_trimmed.fastq ${data_dir}/${i}/${i}_1.fq.gz > ${out_dir}/${i}_trimmed.log ";
+        cutadapt -m 25 -M 35 --match-read-wildcards -a $adapt -o ${out_dir}/${i}_trimmed.fastq ${data_dir}/${i}/${i}_1.fq.gz > ${out_dir}/${i}_trimmed.log;
         done
+        
 ```
 
 ## a3.cutadaptTotal.sh
@@ -95,8 +96,8 @@ adapt=CTGTAGGCACCATCAAT
 
 for i in ${rpf[@]}
 do
-        echo " cutadapt -m 17 --match-read-wildcards -a $adapt -o ${out_dir}/${i}_trimmed.fastq ${data_dir}/${i}_1.fq.gz > ${out_dir}/${i}_trimmed.log ";
-        cutadapt -m 17 --match-read-wildcards -a $adapt -o ${out_dir}/${i}_trimmed.fastq ${data_dir}/${i}_1.fq.gz > ${out_dir}/${i}_trimmed.log 
+        echo " cutadapt -m 17 --match-read-wildcards -a $adapt -o ${out_dir}/${i}_trimmed.fastq ${data_dir}/${i}/${i}_1.fq.gz > ${out_dir}/${i}_trimmed.log ";
+        cutadapt -m 17 --match-read-wildcards -a $adapt -o ${out_dir}/${i}_trimmed.fastq ${data_dir}/${i}/${i}_1.fq.gz > ${out_dir}/${i}_trimmed.log 
 done
 ```
 
