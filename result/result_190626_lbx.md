@@ -411,3 +411,12 @@ tAI是表示tRNA gene copy numbers对翻译影响的，值越大说明翻译相�
 [d4_charge_translation_average_start_codon.pdf](./result_190626_lbx/d_feature_analysis/d4_charge_translation_average_start_codon.pdf)
 
 [d4_charge_translation_average_stop_codon.pdf](./result_190626_lbx/d_feature_analysis/d4_charge_translation_average_stop_codon.pdf)
+
+总结下问题: 1. tAI, cAI在start峰的意义  
+在start codon上的可以忽略不看，因为start codon上的值是相对固定的都是AUG上计算出来的值，没什么意义  
+2. global tAI，cAI纵坐标不一样，是什么意义  
+tAI是表示tRNA gene copy numbers对翻译影响的，值越大说明翻译相对越快，CAI是评估codon usage对翻译速率影响的，值越大，说明转录本中optimal codon越读，翻译越快 
+3. polarity score分布峰宽增加有什么意义?   
+polarity 分布如果都在0附近说明对这个转录本来说reads分布相对于转录本中心来说分布比较均匀，如果左偏，或者右偏说明有很多的转录本上的reads分布不均匀，在转录本5'端多了或者少了  
+4. 是否可以初步分析下QQQ是否有stalling现象。非常感谢！  
+
