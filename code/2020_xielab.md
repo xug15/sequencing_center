@@ -69,7 +69,7 @@ do
         echo " cutadapt -m 25 -M 35 --match-read-wildcards -a $adapt -o ${out_dir}/${i}_trimmed.fastq ${data_dir}/${i}/${i}_1.fq.gz > ${out_dir}/${i}_trimmed.log ";
         cutadapt -m 25 -M 35 --match-read-wildcards -a $adapt -o ${out_dir}/${i}_trimmed.fastq ${data_dir}/${i}/${i}_1.fq.gz > ${out_dir}/${i}_trimmed.log;
         done
-        
+
 ```
 
 ## a3.cutadaptTotal.sh
@@ -89,7 +89,7 @@ export PATH=/WORK/teaching/bin:$PATH
 data_dir=/WORK/teaching/project/20200205_xielab/x-ten143-roboseq
 out_dir=/WORK/teaching/project/20200205_xielab/x-ten143-roboseq/a2-cutadapter
 
-rpf=(x-ten143-CHO-1-T_FKDL202558030-1a-21_H7MMGCCX2_L1 x-ten143-CHO-2-T_FKDL202558030-1a-22_H7MMGCCX2_L1 x-ten143-COL-O-DMSO-T_FKDL202558030-1a-25_H7MMGCCX2_L1 x-ten143-COL-O-SL-T_FKDL202558030-1a-26_H7MMGCCX2_L1 x-ten143-D14-DMSO-T_FKDL202558030-1a-27_H7MMGCCX2_L1 x-ten143-D14-SL-T_FKDL202558030-1a-28_H7MMGCCX2_L1 x-ten143-FLY-B-T_FKDL202558030-1a-23_H7MMGCCX2_L1 x-ten143-FLY-WT-R_FKDL202558030-1a-32_H7MMGCCX2_L1 x-ten143-FLY-WT-T_FKDL202558030-1a-24_H7MMGCCX2_L1)
+rpf=(x-ten143-CHO-1-T_FKDL202558030-1a-21_H7MMGCCX2_L1 x-ten143-CHO-2-T_FKDL202558030-1a-22_H7MMGCCX2_L1 x-ten143-COL-O-DMSO-T_FKDL202558030-1a-25_H7MMGCCX2_L1 x-ten143-COL-O-SL-T_FKDL202558030-1a-26_H7MMGCCX2_L1 x-ten143-D14-DMSO-T_FKDL202558030-1a-27_H7MMGCCX2_L1 x-ten143-D14-SL-T_FKDL202558030-1a-28_H7MMGCCX2_L1 x-ten143-FLY-B-T_FKDL202558030-1a-23_H7MMGCCX2_L1 x-ten143-FLY-WT-T_FKDL202558030-1a-24_H7MMGCCX2_L1)
 adapt=CTGTAGGCACCATCAAT
 
 [ -d ${out_dir} ] || mkdir -p ${out_dir}
@@ -103,12 +103,19 @@ done
 
 ```sh
 
-for i in `ls|grep log$`;
+for i in `ls /WORK/teaching/project/20200205_xielab/x-ten143-roboseq/a2-cutadapter|grep log$|grep R`;
+do echo $i;
+grep -A 6 Summary $i;
+done;
+
+for i in `ls /WORK/teaching/project/20200205_xielab/x-ten143-roboseq/a2-cutadapter|grep log$|grep T`;
 do echo $i;
 grep -A 6 Summary $i;
 done;
 
 ```
+
+x-ten143-FLY-WT-R_FKDL202558030-1a-32_H7MMGCCX2_L1
 
 # Fastqc after qc
 a4.fc.after.adapter.sh
