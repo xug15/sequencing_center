@@ -1,17 +1,17 @@
 # Quality Control
 
 ## 样品信息
-|   |                        | 
-|---|------------------------| 
-| 1 | CHO-1(From Zeng lab)   | 
-| 2 | CHO-2(From Zeng lab)   | 
+|     样品名   | 来源         | 样品类型      | 实验处理|
+|--------------|------------|-------| -------|
+| CHo 1 replicate |  Zeng lab  | 细胞    |  细胞的重复1|
+| CHo 2 replicate |  Zeng lab  | 细胞    | 细胞的重复2|
+| Col-O(DMSO)  | Xie Daoxin | 拟南芥   | 野生型对照组 |
+| Col-O(SL)    | Xie Daoxin | 拟南芥   | 野生型处理组 |
+| d14(DMSO)    | Xie Daoxin | 拟南芥   | 突变体对照组 |
+| d14(SL)      | Xie Daoxin | 拟南芥   |突变体处理组 |
+| FLY-WT         | wangtao    | 果蝇的眼睛 |果蝇野生型 |
+| FLY-B      | wangtao    | 果蝇的眼睛 |果蝇处理组 |
 
-| 5 | Col-O(DMSO)            | 
-| 6 | Col-O(SL)              | 
-| 7 | d14(DMSO)              | 
-| 8 | d14(SL)                | 
-| 3 | Delta-B(From wangtao)  | 
-| 4 | WT(From wangtao)       | 
 
 ## 总结
 * 细胞 CHO-1 去完接头后，RPF建库长度分布异常。
@@ -20,8 +20,10 @@
 * 植物 col-sl 去完接头后，RPF建库长度分布正常，主峰为31nt。
 * 植物突变体 d14-dmso 去完接头后，RPF建库长度分布正常，主峰为31nt。
 * 植物突变体 d14-sl 去完接头后，RPF建库长度分布正常，主峰为31nt。
-* FLY-B 去完接头后，RPF建库长度分布出现双峰，主峰为28nt。
 * FLY-WT 去完接头后，RPF建库长度分布出现双峰，主峰为28nt。
+* FLY-B 去完接头后，RPF建库长度分布出现双峰，主峰为28nt。
+
+**由于每个样品的建库的测序结果都很少（约0.1M），去除接头后只剩下几千个reads，无法统计建库是否有周期性。**
 
 ## 结果
 
@@ -120,6 +122,19 @@
 
 ![](quality_control_200208/d14_sl.png)
 
+## FLY-WT-R_FKDL202558030-1a-32
+=== Summary ===
+|Name |Percentage |
+|-|-|
+|Total reads processed:|                 468,578|
+|Reads with adapters:|                   370,766 (79.1%)|
+|Reads that were too short:|             363,265 (77.5%)|
+|Reads that were too long:|              100,948 (21.5%)|
+|Reads written (passing filters):|        4,365 (0.9%)||
+### Read length distribution
+
+![](quality_control_200208/fly_wt_r.png)
+
 
 ## FLY-B-R_FKDL202558030-1a-31
 === Summary ===
@@ -135,18 +150,6 @@
 ![](quality_control_200208/fLy_b_r.png)
 
 
-## FLY-WT-R_FKDL202558030-1a-32
-=== Summary ===
-|Name |Percentage |
-|-|-|
-|Total reads processed:|                 468,578|
-|Reads with adapters:|                   370,766 (79.1%)|
-|Reads that were too short:|             363,265 (77.5%)|
-|Reads that were too long:|              100,948 (21.5%)|
-|Reads written (passing filters):|        4,365 (0.9%)||
-### Read length distribution
-
-![](quality_control_200208/fly_wt_r.png)
 
 
 
