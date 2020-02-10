@@ -682,6 +682,7 @@ MetageneAnalysisForTheWholeRegions -f ${meta_out}/attributes.txt -c $long -o $ou
 echo "PlotMetageneAnalysisForTheWholeRegions -i $out/a8-metagene_scaled_density_dataframe.txt -o $out/a9-meta_gene_whole_regin -g $groupinfo -r $replace -b 15,90,60 --mode all
 "
 PlotMetageneAnalysisForTheWholeRegions -i $out/a8-metagene_scaled_density_dataframe.txt -o $out/a9-meta_gene_whole_regin -g $groupinfo -r $replace -b 15,90,60 --mode all
+
 echo "End Metagene analysis along the whole transcript region. `date`"
 }
 
@@ -691,6 +692,10 @@ echo "Begin Metagene analysis on CDS regions. `date`";
 #Metagene analysis on CDS regions.
 echo "MetageneAnalysis -f ${meta_out}/attributes.txt -c $long -o $out/b1-meat-cds -U codon -M RPKM -u 0 -d 500 -l 100 -n 10 -m 1 -e 5 --norm yes -y 100 --CI 0.95 --type CDS"
 MetageneAnalysis -f ${meta_out}/attributes.txt -c $long -o $out/b1-meat-cds -U codon -M RPKM -u 0 -d 500 -l 100 -n 10 -m 1 -e 5 --norm yes -y 100 --CI 0.95 --type CDS
+
+echo "MetageneAnalysis -f ${meta_out}/attributes.txt -c $long -o $out/b1-meat-cds_noNorm -U codon -M RPKM -u 0 -d 500 -l 100 -n 10 -m 1 -e 5 --norm no -y 100 --CI 0.95 --type CDS"
+MetageneAnalysis -f ${meta_out}/attributes.txt -c $long -o $out/b1-meat-cds_noNorm -U codon -M RPKM -u 0 -d 500 -l 100 -n 10 -m 1 -e 5 --norm no -y 100 --CI 0.95 --type CDS
+
 echo "End Metagene analysis on CDS regions. `date`";
 
 }
@@ -701,6 +706,9 @@ echo "Begin Metagene analysis on UTR regions. `date`"
 #Metagene analysis on UTR regions.
 echo " MetageneAnalysis -f ${meta_out}/attributes.txt -c $long -o $out/b2-meat-utr -U nt -M RPKM -u 100 -d 100 -l 100 -n 10 -m 1 -e 5 --norm yes -y 50 --CI 0.95 --type UTR"
 MetageneAnalysis -f ${meta_out}/attributes.txt -c $long -o $out/b2-meat-utr -U nt -M RPKM -u 100 -d 100 -l 100 -n 10 -m 1 -e 5 --norm yes -y 50 --CI 0.95 --type UTR
+
+echo " MetageneAnalysis -f ${meta_out}/attributes.txt -c $long -o $out/b2-meat-utr_nonNorm -U nt -M RPKM -u 100 -d 100 -l 100 -n 10 -m 1 -e 5 --norm no -y 50 --CI 0.95 --type UTR"
+MetageneAnalysis -f ${meta_out}/attributes.txt -c $long -o $out/b2-meat-utr_noNorm -U nt -M RPKM -u 100 -d 100 -l 100 -n 10 -m 1 -e 5 --norm no -y 50 --CI 0.95 --type UTR
 
 echo "End Metagene analysis on UTR regions. `date`"
 }

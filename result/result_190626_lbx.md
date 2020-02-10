@@ -245,6 +245,9 @@ left: read density on the position away from start codon. right: read density on
 
 
 **D. Ribosome density profiles along UTR regions.** 
+
+**这种图y值=（每个位置上的RPM）/(n codon之后的density均值）**
+
 ![](./result_190626_lbx/meta_utr_5.png)
 ![](./result_190626_lbx/meta_utr_3.png)
 
