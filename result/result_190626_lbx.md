@@ -308,6 +308,10 @@ Notes: all these analysis are based on total transcripts.
 
 **Ribosome density among triplete-AA motifs.** 
 
+![triple_q.png](./result_190626_lbx/triple_q.png)
+![doule_q.png](./result_190626_lbx/doule_q.png)
+
+
 A. Relative ribosome density on poly-proline acid. 
 
 [transcript_down_translation_up](./result_190626_lbx/d_feature_analysis/b9-PPP_plot_select.transcript_down_translation_up.list.gene_mean_density_on_triAAMotifs.pdf)

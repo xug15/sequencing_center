@@ -518,6 +518,7 @@ data
 **a.datapreparation.sh**  
 
 ```sh
+source /home/test/.bashrc
 gtf=/home/share/riboseq/mus_ensemble/Mus_musculus.GRCm38.87.gtf
 fa=/home/share/riboseq/mus_ensemble/Mus_musculus.GRCm38.dna.primary_assembly.fa
 out=/home/share/riboseq/Ribocode
@@ -555,6 +556,7 @@ GetUTRSequences -i $transcripts_sequence -o $utr -c $transcript_cds
 
 ```sh
 
+source /home/test/.bashrc
 echo "bam must be sort and index."
 
 
@@ -660,6 +662,7 @@ echo "StatisticReadsOnDNAsContam end `date`"
 
 
 ```sh
+source /home/test/.bashrc
 
 meta_out='/home/share/riboseq/bqualitycontrol/metaplot'
 ribocode='/home/share/riboseq/RiboMiner'
@@ -722,9 +725,9 @@ PolarityCalculation -f ${meta_out}/attributes.txt -c $long -o $out/b3-polarity -
 echo "End Polarity calculation. `date`"
 }
 
-wholeregion
-#cdsregion
-#utrregion
+#wholeregion
+cdsregion
+utrregion
 #polarity
 ```
 
@@ -820,6 +823,11 @@ if($data[13]=~/opposite_change/)
 
 }
 ```
+
+```sh
+grep '>' /WORK/teaching/project/20200113luboxun/riboseq/RiboMiner/transcript_cds_sequences.fa | sed 's/>//g'| cut -f 1 -d ' '>/WORK/teaching/project/20200113luboxun/riboseq//total_transcript.txt
+```
+
 **d1.feature_analysis.sh**
 
 ```sh
@@ -840,6 +848,7 @@ transcript_translation_up='select.transcript_translation_up.list.gene'
 transcript_up_translation_down='select.transcript_up_translation_down.list.gene'
 translation_only_down='select.translation_only_down.list.gene'
 translation_only_up='select.translation_only_up.list.gene'
+total='total_transcript.txt'
 
 groupinfo='R111,R7'
 replace='7-111-R.toTranscriptome.sort__7-7-R.toTranscriptome.sort'
@@ -876,10 +885,12 @@ RiboDensityAroundTripleteAAMotifs -f $meta_out/attributes.txt -c $RiboMiner/long
 echo "PlotRiboDensityAroundTriAAMotifs -i $out/b8_PPP_${1}_motifDensity_dataframe.txt -o $out/b9-PPP_plot_${1} -g $groupinfo -r $replace --mode mean --ymax 0.2"
 PlotRiboDensityAroundTriAAMotifs -i $out/b8_PPP_${1}_motifDensity_dataframe.txt -o $out/b9-PPP_plot_${1} -g $groupinfo -r $replace --mode mean --ymax 0.2
 echo "motifs
+QQQ
 PPP
 PPD
 DDP" > $out/tri_AA_motifs1.txt;
 echo "motifs
+QQQ
 KKK
 KKP
 RRR" > $out/tri_AA_motifs2.txt;
@@ -888,6 +899,20 @@ RiboDensityAroundTripleteAAMotifs -f $meta_out/attributes.txt -c $RiboMiner/long
 ## plot
 echo "PlotRiboDensityAroundTriAAMotifs -i $out/b9_triple_motif_${1}_motifDensity_dataframe.txt -o $out/c1-triple_motif_plot_${1} -g $groupinfo -r $replace --mode mean --ymax 0.2"
 PlotRiboDensityAroundTriAAMotifs -i $out/b9_triple_motif_${1}_motifDensity_dataframe.txt -o $out/c1-triple_motif_plot_${1} -g $groupinfo -r $replace --mode mean --ymax 0.2
+
+echo "End: Ribosome density around the triplete amino acid (tri-AA) motifs `date`"
+}
+
+triplete_Q_with_parameter()
+{
+echo "Begin: Ribosome density around the triplete amino acid (tri-AA) motifs `date`"
+## ribosome density at each tri-AA motif
+echo "RiboDensityAroundTripleteAAMotifs -f $meta_out/attributes.txt -c $RiboMiner/longest.transcripts.info.txt -o $out/b8_QQQ_${1} -M RPKM -S ${home_dir}/${1} -l 100 -n 10 --table 1 -F $RiboMiner/transcript_cds_sequences.fa --type2 QQQ --type1 QQ"
+RiboDensityAroundTripleteAAMotifs -f $meta_out/attributes.txt -c $RiboMiner/longest.transcripts.info.txt -o $out/b8_QQQ_${1} -M RPKM -S ${home_dir}/${1} -l 100 -n 10 --table 1 -F $RiboMiner/transcript_cds_sequences.fa --type2 QQQ --type1 QQ
+## plot
+echo "PlotRiboDensityAroundTriAAMotifs -i $out/b8_QQQ_${1}_motifDensity_dataframe.txt -o $out/b9-QQQ_plot_${1} -g $groupinfo -r $replace --mode mean --ymax 0.2"
+PlotRiboDensityAroundTriAAMotifs -i $out/b8_QQQ_${1}_motifDensity_dataframe.txt -o $out/b9-QQQ_plot_${1} -g $groupinfo -r $replace --mode mean --ymax 0.2
+
 echo "End: Ribosome density around the triplete amino acid (tri-AA) motifs `date`"
 }
 
@@ -966,11 +991,20 @@ echo "End: GC contents for sequences with a fasta format`date`"
 #triplete_with_parameter $transcript_only_down
 #triplete_with_parameter $transcript_only_up
 #triplete_with_parameter $transcript_translation_down
-triplete_with_parameter $transcript_translation_up
+#triplete_with_parameter $transcript_translation_up
 #triplete_with_parameter $transcript_up_translation_down
 #triplete_with_parameter $translation_only_down
-triplete_with_parameter $translation_only_up
+#triplete_with_parameter $translation_only_up
 
+triplete_Q_with_parameter $total
+triplete_Q_with_parameter $transcript_down_translation_up
+triplete_Q_with_parameter $transcript_only_down
+triplete_Q_with_parameter $transcript_only_up
+triplete_Q_with_parameter $transcript_translation_down
+triplete_Q_with_parameter $transcript_translation_up
+triplete_Q_with_parameter $transcript_up_translation_down
+triplete_Q_with_parameter $translation_only_down
+triplete_Q_with_parameter $translation_only_up
 
 #Pausingscore_with_parameter $transcript_down_translation_up
 #Pausingscore_with_parameter $transcript_only_down
