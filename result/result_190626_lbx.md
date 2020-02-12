@@ -308,6 +308,10 @@ Notes: all these analysis are based on total transcripts.
 
 **Ribosome density among triplete-AA motifs.** 
 
+在QQQ motif 附近存一个很高的峰可能是stalling 现象。
+这个很高很高的的峰，可能是这个突变体引起的，或者是由于某个单个位置density高引起的噪音。
+需要生物学重复。
+
 ![triple_q.png](./result_190626_lbx/triple_q.png)
 ![doule_q.png](./result_190626_lbx/doule_q.png)
 
