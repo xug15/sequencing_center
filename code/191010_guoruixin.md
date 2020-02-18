@@ -1,5 +1,39 @@
 # Guo Runxin
 
+
+## download genome annotation
+```sh
+wget ftp://ftp.ensemblgenomes.org/pub/plants/release-46/fasta/arabidopsis_thaliana/dna/Arabidopsis_thaliana.TAIR10.dna.toplevel.fa.gz
+wet ftp://ftp.ensemblgenomes.org/pub/plants/release-46/gff3/arabidopsis_thaliana/Arabidopsis_thaliana.TAIR10.46.gff3.gz
+
+scp -P 11811 Arabidopsis_thaliana.TAIR10.dna.toplevel.fa.clean.fa xugang@166.111.152.116:/WORK/teaching/project/xuzhiyu/reference
+scp -P 11811 Arabidopsis_thaliana.TAIR10.46.gff3.gz xugang@166.111.152.116:/WORK/teaching/project/xuzhiyu/reference
+
+cd /Share/home/xuzhiyu/ribo-seq/CLIP_db/tair10
+for i in `find -iname *bam`;do echo $i; scp -P 11811 -r $i xugang@166.111.152.116:/WORK/teaching/project/xuzhiyu; done;
+
+open DATA, "<$ARGV[0]";
+open OUT, ">$ARGV[0].clean.fa";
+while(<DATA>)
+{
+#chmop;
+if($_=~/^>/)
+{
+@data=split / /,$_;
+print OUT "$data[0]\n";
+}else{
+print OUT $_;
+}
+}
+
+samtools fastq bam
+```
+```sh
+grep $'\t'rRNA$'\t' Arabidopsis_thaliana.TAIR10.46.gff3 > tair10.rRNA.gtf
+ bedtools getfasta -fi Arabidopsis_thaliana.TAIR10.dna.toplevel.fa.clean.fa -bed tair10.rRNA.gtf -fo tair.rRNA.fa
+ bowtie-build tair.rRNA.fa tair.rRNA.fa
+```
+
 ## 
 ```sh
 pip install --upgrade RiboMiner
@@ -841,6 +875,8 @@ PlotEnrichmentRatio -i /data/data/d7-EnrichmentAnalysis_enrichment_dataframe.txt
 ```sh
 EnrichmentAnalysisForSingleTrans -i <output_prefix_codon_ratio.txt> -s <transcript_name> -o <output_prefix> -c <longest.trans.info.txt>  --id-type transcript_id --slide-window y --axhline 1
 ```
+
+
 
 
 
