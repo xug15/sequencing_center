@@ -1,0 +1,357 @@
+version: genecontainer_0_1
+workflow:
+  starmappin3aqud:
+    tool: 'starmapping:1.0'
+    type: GCS.Job
+    resources:
+      memory: 64G
+      cpu: 8C
+    commands_iter:
+      command: |
+        mkdir -p /home/sfs/a6-map && \
+        echo ${1} begin `date` && \
+        bash /root/.bashrc && \
+         STAR --runThreadN 8 --alignEndsType EndToEnd \
+         --outFilterMismatchNmax 1 --outFilterMultimapNmax 1 \
+         --genomeDir /home/sfs/${obs_reference_genomeFile_star} \
+         --readFilesIn /home/sfs/a5-rmrRNA/nonrRNA/nocontam_${1} \
+         --outFileNamePrefix /home/sfs/a6-map/${1} \
+         --outSAMtype BAM SortedByCoordinate \
+         --quantMode TranscriptomeSAM GeneCounts
+         
+      vars_iter:
+        - '${fastq_files}'
+    metadata:
+      Designer:
+        id: ea320b33-b899-4fee-82bb-05c1849b97aa
+    depends:
+      - target: bowtie124fr5n
+        type: whole
+    description: 比对到基因组上
+  bowtie124fr5n:
+    tool: 'bowtie12:1.1'
+    type: GCS.Job
+    resources:
+      memory: 8G
+      cpu: 2C
+    commands_iter:
+      command: |
+        mkdir -p /home/sfs/a5-rmrRNA && \
+        mkdir -p /home/sfs/a5-rmrRNA/nonrRNA && \
+        echo ${1} begin `date` && \
+        bash /root/.bashrc && \
+        /home/test/bowtie-1.2.3-linux-x86_64/bowtie \
+        -n 0 -norc --best -l 15 -p 8 \
+         --un=/home/sfs/a5-rmrRNA/nonrRNA/nocontam_${1} /home/sfs/${obs_reference_rRNA_bowtie} \
+         -q /home/sfs/a3-filter/${1}_trimmedQfilter.fastq \
+         /home/sfs/a5-rmrRNA/${1}.alin > \
+         /home/sfs/a5-rmrRNA/${1}.err && \
+         rm -rf /home/sfs/a5-rmrRNA/${1}.alin 
+         
+      vars_iter:
+        - '${fastq_files}'
+    metadata:
+      Designer:
+        id: 40e61273-4d4a-45c3-ba67-1deaf688bdc4
+    depends:
+      - target: fastqc3wgoy
+        type: whole
+    description: 去除核糖体的reads
+  obs-util4asm3:
+    tool: 'obs-util:0.1.1'
+    type: GCS.Job
+    resources:
+      memory: 8G
+      cpu: 2C
+    commands:
+      - 'obsutil config -i=${gcs_id} -k=${gcs_password} -e=https://obs.cn-north-4.myhuaweicloud.com && obsutil cp -r -f /home/sfs/ obs://gene-container-xugang/gcs/output && rm -rf /home/sfs/* && echo Check sfs && ls -al /home/sfs'
+    metadata:
+      Designer:
+        id: b4713628-6c26-418d-8baf-34135bcfbb50
+    depends:
+      - target: starmappin3aqud
+        type: whole
+    description: 将结果拷贝回obsvolumn中
+  cutadapter3zaks:
+    tool: 'cutadapter:1.0'
+    type: GCS.Job
+    resources:
+      memory: 8G
+      cpu: 2C
+    commands_iter:
+      command: |
+        mkdir -p /home/sfs/a2-cutadapter && \
+        echo ${1} begin `date` /root/miniconda3/bin/cutadapt -m 18 \
+        --match-read-wildcards -a ${adapter} \
+        -o /home/sfs/a2-cutadapter/${1}_trimmed.fastq \
+        /home/sfs/a1-fastq/${1} && \
+        /root/miniconda3/bin/cutadapt -m 18 \
+        --match-read-wildcards -a ${adapter} \
+        -o /home/sfs/a2-cutadapter/${1}_trimmed.fastq \
+        /home/sfs/a1-fastq/${1}
+      vars_iter:
+        - '${fastq_files}'
+    metadata:
+      Designer:
+        id: 9f96daaf-f84f-49bd-adc1-06b43c274dd6
+    depends:
+      - target: obs-util1s0gr
+        type: whole
+    description: 将原始的下机数据去除接头
+  obs-util1s0gr:
+    tool: 'obs-util:0.1.1'
+    type: GCS.Job
+    resources:
+      memory: 8G
+      cpu: 2C
+    commands:
+      - 'obsutil config -i=${gcs_id} -k=${gcs_password} -e=${http} && obsutil cp -r -f -u ${obs_data} /home/sfs && obsutil cp -r -f -u ${obs_reference} /home/sfs && ls /home/sfs '
+    metadata:
+      Designer:
+        id: 9924ec16-9c55-4ed1-93cd-2806e878c248
+    description: '将数据拷贝到制定目录下/home/sfs'
+  fastx-tool3a3vg:
+    tool: 'fastx-toolkit:1.0'
+    type: GCS.Job
+    resources:
+      memory: 8G
+      cpu: 2C
+    commands_iter:
+      command: |
+        mkdir -p /home/sfs/a3-filter && \
+        echo ${1} begin `date` && \
+        /home/test/bin/fastq_quality_filter \
+        -Q33 -v -q 25 -p 75 \
+        -i /home/sfs/a2-cutadapter/${1}_trimmed.fastq \
+        -o /home/sfs/a3-filter/${1}_trimmedQfilter.fastq 
+      vars_iter:
+        - '${fastq_files}'
+    metadata:
+      Designer:
+        id: 9504c25b-e3e1-4c5f-906c-fa67662458d0
+    depends:
+      - target: cutadapter3zaks
+        type: whole
+    description: 去除低质量的数据
+  fastqc3wgoy:
+    tool: 'fastqc:1.0'
+    type: GCS.Job
+    resources:
+      memory: 8G
+      cpu: 2C
+    commands_iter:
+      command: |
+        mkdir -p /home/sfs/a4-qc && \
+        echo ${1} begin `date` && \
+        /home/test/FastQC/fastqc \
+        /home/sfs/a3-filter/${1}_trimmedQfilter.fastq \
+        -o /home/sfs/a4-qc
+      vars_iter:
+        - '${fastq_files}'
+    metadata:
+      Designer:
+        id: 539eb3f9-6cee-424d-8da2-68352ed8ce30
+    depends:
+      - target: fastx-tool3a3vg
+        type: whole
+    description: 对数据进行质量评估
+volumes:
+  volumes-4ndk:
+    mount_path: '/home/sfs'
+    mount_from:
+      pvc: '${GCS_SFS_PVC}'
+inputs:
+  gcs_id:
+    type: string
+    label: gcs account
+    description: ak
+    default: 5ULAGR0CWKBAEDV57Y6P
+  gcs_password:
+    type: string
+    default: gvroYZE9uUmp3igpEPAEQRfuQzUjcVQn9kBoHz02
+    label: gcs account
+    description: sk
+  http:
+    type: string
+    default: 'https://obs.cn-north-4.myhuaweicloud.com'
+    label: Sever http
+  obs_data:
+    type: string
+    default: 'obs://gene-container-xugang/gcs/huawei_file/a1-fastq/'
+    label: data source
+  obs_reference:
+    type: string
+    default: 'obs://gene-container-xugang/gcs/huawei_file/refrence/'
+    label: reference
+  obs_reference_rRNA_bowtie:
+    type: string
+    default: 'refrence/tair_rRNA_bowtie_index/tair.rRNA.fa'
+    label: reference
+  obs_reference_genomeFile_star:
+    type: string
+    default: 'refrence/tair_star/'
+    label: reference
+  fastq_files:
+    type: array
+    default:
+      - SRR3498212.fq
+      - SRR966479.fq
+  obs_output:
+    type: string
+    default: 'obs://gene-container-xugang/gcs/output'
+    label: data output
+  adapter:
+    type: string
+    default: CTGTAGGCACCATCAAT
+    label: adapter
+metadata:
+  relationships:
+    ea320b33-b899-4fee-82bb-05c1849b97aa:
+      references:
+        depends:
+          - target: bowtie124fr5n
+            type: whole
+        relateto:
+          - obs-util4asm3
+    40e61273-4d4a-45c3-ba67-1deaf688bdc4:
+      references:
+        relateto:
+          - starmappin3aqud
+        depends:
+          - target: fastqc3wgoy
+            type: whole
+    539eb3f9-6cee-424d-8da2-68352ed8ce30:
+      references:
+        relateto:
+          - bowtie124fr5n
+        depends:
+          - target: fastx-tool3a3vg
+            type: whole
+    b4713628-6c26-418d-8baf-34135bcfbb50:
+      references:
+        depends:
+          - target: starmappin3aqud
+            type: whole
+    9f96daaf-f84f-49bd-adc1-06b43c274dd6:
+      references:
+        depends:
+          - target: obs-util1s0gr
+            type: whole
+        relateto:
+          - fastx-tool3a3vg
+    9924ec16-9c55-4ed1-93cd-2806e878c248:
+      references:
+        relateto:
+          - cutadapter3zaks
+    9504c25b-e3e1-4c5f-906c-fa67662458d0:
+      references:
+        depends:
+          - target: cutadapter3zaks
+            type: whole
+        relateto:
+          - fastqc3wgoy
+  Designer:
+    9924ec16-9c55-4ed1-93cd-2806e878c248:
+      size:
+        width: 90
+        height: 60
+      position:
+        x: 30
+        y: 30
+      z: 1
+      relateto:
+        - 9f96daaf-f84f-49bd-adc1-06b43c274dd6
+    9f96daaf-f84f-49bd-adc1-06b43c274dd6:
+      size:
+        width: 90
+        height: 60
+      position:
+        x: 150
+        y: 30
+      z: 1
+      relateto:
+        - 9504c25b-e3e1-4c5f-906c-fa67662458d0
+    9504c25b-e3e1-4c5f-906c-fa67662458d0:
+      size:
+        width: 90
+        height: 60
+      position:
+        x: 270
+        y: 30
+      z: 1
+      relateto:
+        - 539eb3f9-6cee-424d-8da2-68352ed8ce30
+    539eb3f9-6cee-424d-8da2-68352ed8ce30:
+      size:
+        width: 90
+        height: 60
+      position:
+        x: 390
+        y: 30
+      z: 1
+      relateto:
+        - 40e61273-4d4a-45c3-ba67-1deaf688bdc4
+    40e61273-4d4a-45c3-ba67-1deaf688bdc4:
+      size:
+        width: 90
+        height: 60
+      position:
+        x: 510
+        y: 30
+      z: 1
+      relateto:
+        - ea320b33-b899-4fee-82bb-05c1849b97aa
+    ea320b33-b899-4fee-82bb-05c1849b97aa:
+      size:
+        width: 90
+        height: 60
+      position:
+        x: 630
+        y: 30
+      z: 1
+      relateto:
+        - b4713628-6c26-418d-8baf-34135bcfbb50
+    b4713628-6c26-418d-8baf-34135bcfbb50:
+      size:
+        width: 90
+        height: 60
+      position:
+        x: 750
+        y: 30
+      z: 1
+    3511d4b1-d34e-4132-9c3f-69e500a0675d:
+      source:
+        id: 9924ec16-9c55-4ed1-93cd-2806e878c248
+      target:
+        id: 9f96daaf-f84f-49bd-adc1-06b43c274dd6
+      z: 10
+    1bc5b6c4-71af-4a50-896b-12de1ab7793b:
+      source:
+        id: 9f96daaf-f84f-49bd-adc1-06b43c274dd6
+      target:
+        id: 9504c25b-e3e1-4c5f-906c-fa67662458d0
+      z: 10
+    fe1d4a4c-3219-4efa-bfa7-4d8fe45999af:
+      source:
+        id: 9504c25b-e3e1-4c5f-906c-fa67662458d0
+      target:
+        id: 539eb3f9-6cee-424d-8da2-68352ed8ce30
+      z: 10
+    213a9e4b-2906-47d7-9cf7-4a662e1ab8ca:
+      source:
+        id: 539eb3f9-6cee-424d-8da2-68352ed8ce30
+      target:
+        id: 40e61273-4d4a-45c3-ba67-1deaf688bdc4
+      z: 10
+    e2c2e9d1-eca9-47ce-8ecd-e3c1a3ea450e:
+      source:
+        id: 40e61273-4d4a-45c3-ba67-1deaf688bdc4
+      target:
+        id: ea320b33-b899-4fee-82bb-05c1849b97aa
+      z: 10
+    b4537e18-ff4f-4be1-acf9-0c1a19ea3b9a:
+      source:
+        id: ea320b33-b899-4fee-82bb-05c1849b97aa
+      target:
+        id: b4713628-6c26-418d-8baf-34135bcfbb50
+      z: 10
