@@ -1,16 +1,22 @@
 
-gene	7-111-R	7-7-R	7-111-T	7-7-T
-ENSMUSG00000038456	8	2	0	4
+upf2-air,upf2-ethylene	
+upf2-Air-RFP1,upf2-Air-RFP2__upf2-Ethylene-RFP1,upf2-Ethylene-RFP2
 
-ENSMUSG00000038456	7.27480722287617	-1.43277375224578	-8.86393974950118	0.372766606467512	2.65482447582414	-6.05278999289194	-8.9600361808685	0.297327951440615	-8.86393974950118	0.372766606467512	0.853166487189458	0.00566453085843055	opposite_change
-7-111 vs 7-7
+col-air,col-ethylene
+Col-Air-RFP1,Col-Air-RFP2__Col-Ethylene-RFP1,Col-Ethylene-RFP2
 
+col-ethylene,upf2-ethylene 	
+Col-Ethylene-RFP1,Col-Ethylene-RFP2__upf2-Ethylene-RFP1,upf2-Ethylene-RFP2
 
-     320 transcript_down_translation_up.txt
-    1027 transcript_only_down.txt
-     316 transcript_only_up.txt
-     284 transcript_translation_down.txt
-      85 transcript_translation_up.txt
-     124 transcript_up_translation_down.txt
-      64 translation_only_down.txt
-      68 translation_only_up.txt
+root,shoot
+riboseq_root_1,riboseq_root_2,riboseq_root_3__riboseq_shoot_1,riboseq_shoot_2,riboseq_shoot_3
+
+dark,light		
+mRNARP-Dark,mRNARP-Dark_2__mRNARP-L4h,mRNARP-L4h_2
+
+no-stress,stress		
+Total_no_stress2__Total_stress2
+
+col,d14
+col__d14
+
