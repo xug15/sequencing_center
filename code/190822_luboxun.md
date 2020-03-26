@@ -355,6 +355,7 @@ done;
 ```
 **a3.merge.sh**
 ```sh
+library(Xtail)
 name=(7-111-R 7-7-R 7-111-T 7-7-T)
 head='gene'
 for i in ${name[@]};
