@@ -355,7 +355,7 @@ done;
 ```
 **a3.merge.sh**
 ```sh
-library(Xtail)
+
 name=(7-111-R 7-7-R 7-111-T 7-7-T)
 head='gene'
 for i in ${name[@]};
@@ -390,6 +390,7 @@ mv merge.counter2 merge.counter
 mv merge.counter lbx.merge.counter
 ```
 ```R
+library(Xtail)
 lbxd=read.table('/home/lbx.merge.counter',header=T,row.name=1)
 mrna=lbxd[,c(3,4)]
 rpf=lbxd[,c(1,2)]
