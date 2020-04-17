@@ -15,19 +15,19 @@
 
 7-7-R
 
-![7-7-r](../image/190828-lbx/7-7-r-qc.png)   
+![7-7-r](./result_190626_lbx/190828-lbx/7-7-r-qc.png)   
 
 7-7-T
 
-![7-7-t](../image/190828-lbx/7-7-t-qc.png)   
+![7-7-t](./result_190626_lbx/190828-lbx/7-7-t-qc.png)   
 
 7-111-R
 
-![7-1111-r](../image/190828-lbx/7-111-R-qc.png)   
+![7-1111-r](./result_190626_lbx/190828-lbx/7-111-R-qc.png)   
 
 7-111-T
 
-![7-111-t](../image/190828-lbx/7-111-T-qc.png)  
+![7-111-t](./result_190626_lbx/190828-lbx/7-111-T-qc.png)  
 
 ### **rRNA**
 | Iterm    | 7-111-R            | 7-7-R              | 7-111-T            | 7-7-T              |
@@ -39,19 +39,19 @@
 ### Read length distribution
 7-7-R
 
-![7-7-r](../image/190828-lbx/7-7-R_nontam.png)   
+![7-7-r](./result_190626_lbx/190828-lbx/7-7-R_nontam.png)   
 
 7-7-T
 
-![7-7-t](../image/190828-lbx/7-7-T_nontam.png)   
+![7-7-t](./result_190626_lbx/190828-lbx/7-7-T_nontam.png)   
 
 7-111-R
 
-![7-1111-r](../image/190828-lbx/7-111-R_nontam.png)   
+![7-1111-r](./result_190626_lbx/190828-lbx/7-111-R_nontam.png)   
 
 7-111-T
 
-![7-111-t](../image/190828-lbx/7-111-T_nontam.png) 
+![7-111-t](./result_190626_lbx/190828-lbx/7-111-T_nontam.png) 
 
 ### read to RNA DNA and Intron (Using Tophat and readsNumCal_intron_v3)
 | Iterm                                | 7-111-R   | 7-7-R    | 7-111-T  | 7-7-T    |
@@ -88,7 +88,7 @@
 * green: for genes changing homodirectionally at both level.
 * yellow: for genes changing antidirectionally at two levels.
 
-![lbxFC](../image/190828-lbx/lbxFC.png) 
+![lbxFC](./result_190626_lbx/190828-lbx/lbxFC.png) 
 * Figure 1: Scatter plot of log2 fold changes
 
 Those genes in which the diﬀerence of mRNA_log2FC and RPF_log2FC did not exceed more than log2FC.cutoff are excluded. The points will be color-coded with the pvalue_final obtained with xtail (more signiﬁcant p values having darker color). By default the log2FC.cutoff is 1.
@@ -103,7 +103,7 @@ Those genes in which the diﬀerence of mRNA_log2FC and RPF_log2FC did not excee
 
 * yellow: for genes whoes log2R changing antidirectionally in two conditon.
 
-![lbxRS](../image/190828-lbx/lbxRS.png) 
+![lbxRS](./result_190626_lbx/190828-lbx/lbxRS.png) 
 
 * Figure 2: Scatter plot of log2 RPF-to-mRNA ratios
 
@@ -143,8 +143,8 @@ Those genes in which the diﬀerence of log2R in two conditions did not exceed m
 | # 30         | 23.45%                             | 12              | 54979  | 5055   | 8040   | 80.76%     | 0.00014652626009624466 | 0.0004229273113302267 | 4.3151740824280333e-07 |
 | # 29         | 5.06%                              | 12              | 11074  | 3784   | 1779   | 66.56%     | 0.0002995597005840259  | 0.0003563133512190236 | 7.173383508666136e-07  |
 
-![7-111-R](../image/190828-lbx/7-111-29nt-psite.png)   
-![7-111-R](../image/190828-lbx/7-111-30nt-psite.png)     
+![7-111-R](./result_190626_lbx/190828-lbx/7-111-29nt-psite.png)   
+![7-111-R](./result_190626_lbx/190828-lbx/7-111-30nt-psite.png)     
 
 ### 7-7-R
 |              |                                    |                 |        |        |        |            |                        |                        |                       | 
@@ -153,11 +153,11 @@ Those genes in which the diﬀerence of log2R in two conditions did not exceed m
 | # 28         | 22.95%                             | 12              | 51889  | 6952   | 1806   | 85.56%     | 0.00014652626009624466 | 0.00014652626009624466 | 1.516508550767744e-07 | 
 | # 29         | 43.83%                             | 12              | 78951  | 3609   | 8621   | 86.59%     | 0.00014652626009624466 | 0.00014652626009624466 | 1.516508550767744e-07 | 
 
-![7-7-R](../image/190828-lbx/7-7-R-28nt-psite.png)   
-![7-7-R](../image/190828-lbx/7-7-R-29nt-psite.png)     
+![7-7-R](./result_190626_lbx/190828-lbx/7-7-R-28nt-psite.png)   
+![7-7-R](./result_190626_lbx/190828-lbx/7-7-R-29nt-psite.png)     
 
 ### 
-![7-7-R](../image/190828-lbx/orfs_category.png)    
+![7-7-R](./result_190626_lbx/190828-lbx/orfs_category.png)    
 
 预期是111的stalling增加，您看看是否有这个现象
 
