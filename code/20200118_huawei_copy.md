@@ -141,13 +141,13 @@ obsutil chattri obs://bucket-test -r -f -acl=public-read
 ## obs example
 ```sh
 
-obsutil config -i=5ULAGR0CWKBAEDV57Y6P -k=gvroYZE9uUmp3igpEPAEQRfuQzUjcVQn9kBoHz02 -e=https://obs.cn-north-4.myhuaweicloud.com && obsutil ls && obsutil cp -r -f -u obs://gene-container-xugang/gcs/ /home/sfs && ls /home/sfs 
+obsutil config -i=5ULAGR0********8Y6P -k=gvroYZE9uUmp3i********Hz02 -e=https://obs.cn-north-4.myhuaweicloud.com && obsutil ls && obsutil cp -r -f -u obs://gene-container-xugang/gcs/ /home/sfs && ls /home/sfs 
 
 obsutil config -i=${gcs_id} -k=${gcs_password} -e=${http} && obsutil cp -r -f -u ${obs_data} /home/sfs && obsutil cp -r -f -u ${obs_reference} /home/sfs && ls /home/sfs
 
-obsutil config -i=5ULAGR0CWKBAEDV57Y6P -k=gvroYZE9uUmp3igpEPAEQRfuQzUjcVQn9kBoHz02 -e=https://obs.cn-north-4.myhuaweicloud.com && obsutil cp /home/sfs/ obs://gene-container-xugang/gcs/output -r -f && rm -rf /home/sfs && echo Check sfs && ls -alh /home/sfs 
+obsutil config -i=5ULAGR0********6P -k=gvr*************BoHz02 -e=https://obs.cn-north-4.myhuaweicloud.com && obsutil cp /home/sfs/ obs://gene-container-xugang/gcs/output -r -f && rm -rf /home/sfs && echo Check sfs && ls -alh /home/sfs 
 
-      - 'obsutil config -i=5ULAGR0CWKBAEDV57Y6P -k=gvroYZE9uUmp3igpEPAEQRfuQzUjcVQn9kBoHz02 -e=https://obs.cn-north-4.myhuaweicloud.com -e=https://obs.cn-north-4.myhuaweicloud.com && obsutil cp /home/sfs/ obs://gene-container-xugang/gcs/output -r'
+      - 'obsutil config -i=5ULA********V57Y6P -k=g*****************88oHz02 -e=https://obs.cn-north-4.myhuaweicloud.com -e=https://obs.cn-north-4.myhuaweicloud.com && obsutil cp /home/sfs/ obs://gene-container-xugang/gcs/output -r'
       - 'rm -rf /home/sfs/*' 
       - 'echo Check sfs' 
       - 'ls -al /home/sfs'
@@ -159,8 +159,9 @@ volumes:
       pvc: '${GCS_SFS_PVC}'
 
 ```
+```sh
 GCS_SFS_PVC
 GCS_DATA_PVC
 GCS_REF_PVC
-
+```
 
