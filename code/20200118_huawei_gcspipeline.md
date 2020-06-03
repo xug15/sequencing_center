@@ -1,5 +1,17 @@
 # GCS 流程设计
 
+-----------------------------
+
+## [Huawei Homepage](20200118_huawei.md)
+
+## [Huawei Docker images](20200118_huawei_dockerimage.md)
+
+## [Huawei 文件拷贝](20200118_huawei_copy.md)
+
+## [Huawei GCS 流程设计](20200118_huawei_gcspipeline.md)
+
+-----------------------------
+
 ## Content
 
 * [对字符串进行分割成数组](#对字符串进行分割成数组) 

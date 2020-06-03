@@ -1,5 +1,17 @@
 # 华为Docker image
 
+-----------------------------
+
+## [Huawei Homepage](20200118_huawei.md)
+
+## [Huawei Docker images](20200118_huawei_dockerimage.md)
+
+## [Huawei 文件拷贝](20200118_huawei_copy.md)
+
+## [Huawei GCS 流程设计](20200118_huawei_gcspipeline.md)
+
+-----------------------------
+
 ## Content
 
 * [上传镜像](#上传镜像)
