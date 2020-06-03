@@ -14,29 +14,16 @@
 
 ## Content
 
-* [对字符串进行分割成数组](#对字符串进行分割成数组) 
+
 * [进行数据拷贝](#进行数据拷贝) 
 * [GCS 流程示意原理](#GCS流程示意原理)
 * [两种流程执行的方式](#两种流程执行的方式)
 * [文件挂载](#文件挂载)
 * [流程描述](#流程描述)
-* [bash-with-parameters](#bash with parameters.)
+* [bash-with-parameters](#bash-with-parameters)
+* [对字符串进行分割成数组](#对字符串进行分割成数组) 
 
 
-## 对字符串进行分割成数组
-
-```sh
-string='["SRR3498212.fq","SRR966479.fq"]'
-string=`sed "s/\"//g" <<<"$string"`
-string=`sed "s/\[//g" <<<"$string"`
-string=`sed "s/\]//g" <<<"$string"`
-IFS=', ' read -r -a array <<< "$string"
-
-for element in "${array[@]}"
-do
-    echo "$element"
-done
-```
 
 ## 进行数据拷贝
 ```sh
@@ -133,7 +120,7 @@ obsutil config -i=5ULAGR0CWKBAEDV57Y6P -k=gvroYZE9uUmp3igpEPAEQRfuQzUjcVQn9kBoHz
 ```
 
 
-## bash with parameters.
+## bash with parameters
 
 **merge.sh**
 
@@ -302,4 +289,20 @@ dev.off()
 ```sh
 # run
 Rscript xtail.r merge2.counter 1,2 3,4 control,case ./output/
+```
+
+
+## 对字符串进行分割成数组
+
+```sh
+string='["SRR3498212.fq","SRR966479.fq"]'
+string=`sed "s/\"//g" <<<"$string"`
+string=`sed "s/\[//g" <<<"$string"`
+string=`sed "s/\]//g" <<<"$string"`
+IFS=', ' read -r -a array <<< "$string"
+
+for element in "${array[@]}"
+do
+    echo "$element"
+done
 ```
