@@ -107,6 +107,14 @@ obsutil对上传的文件或文件夹有大小限制，最小可以上传0Byte�
 ./obsutil cp file1_url,folder1_url|filelist_url obs://bucket[/prefix] 
 ```
 
+```sh
+for i in `ls|grep fq$`;
+do echo $i;
+	echo /lulab/lustre2/xugang/docker_backup/huawei/obsutil_linux_amd64_5.1.11/obsutil cp ${i} obs://hw-gcs-logo-cn-north-4-06a54be3938010610f01c00da675d700/arabidopsis/huawei_file/Ribocode
+/lulab/lustre2/xugang/docker_backup/huawei/obsutil_linux_amd64_5.1.11/obsutil cp ${i} obs://hw-gcs-logo-cn-north-4-06a54be3938010610f01c00da675d700/arabidopsis/huawei_file/Ribocode
+done
+```
+
 |参数|约束|描述|
 |-|-|-|
 |r|附加参数，上传文件夹时必选 多文件上传时可选|递归上传文件夹中的所有文件和子文件夹。|
