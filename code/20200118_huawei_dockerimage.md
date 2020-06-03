@@ -1,8 +1,9 @@
 # 华为Docker image
 
 ## Content
-* [上传镜像](#上传镜像)
 
+* [上传镜像](#上传镜像)
+* [HTSeq](#HTSeq)
 
 ## 上传镜像
 
@@ -98,7 +99,7 @@ docker stop bowtie
 docker rm bowtie
 
 ```
-## HTSeq.
+## HTSeq
 ```sh
 docker run -dt --name bowtie -v /home/xugang/singularity_image/huawei_file:/home/sfs swr.cn-north-4.myhuaweicloud.com/gangxu/bowtie12:1.1
 docker exec -it bowtie bash
