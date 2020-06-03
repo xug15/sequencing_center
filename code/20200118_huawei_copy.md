@@ -24,7 +24,7 @@ cd /Users/xugang/Desktop/sequencing_center/d-huawei
 ./obsutil config -i=5ULAG** -k=gvroYZE9uUmp3igpEPAEQ*****Qn9kBoHz02 -e=https://obs.cn-north-4.myhuaweicloud.com
 
 #配置完成后，您可以通过如下方式检查连通性，确认配置是否无误
-./obsutil ls
+./obsutil ls obs://hw-gcs-logo-cn-north-4-06a54be3938010610f01c00da675d700/
 
 ```
 
