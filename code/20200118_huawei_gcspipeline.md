@@ -102,37 +102,12 @@ support.huaweicloud.com/tr-gcs/gcs_tr_04_0004.html
     description: 比对到基因组上
     description: 将结果拷贝回obsvolumn中
 
+
+
 ## Ribo-seq Xtail
 
 ```sh
-# merge
-commands:
-      - ' ls -alh /home/sfs/${JobName}/a7-htcount && echo bash  /root/miniconda2/bin/merge.sh -a ${fastq_files_name} -b ${fastq_files_label} -c /home/sfs/${JobName}/a7-htcount  &&  bash  /root/miniconda2/bin/merge.sh -a ${fastq_files_name} -b ${fastq_files_label} -c /home/sfs/${JobName}/a7-htcount '
- 
-# cp
-commands:
-      - 'obsutil config -i=${AccessKey} -k=${SecretKey} -e=${endpoint}&& obsutil mkdir -p ${obs_location}/output/${JobName}/  && obsutil cp -r -f /home/sfs/${JobName}/ ${obs_location}/output/${JobName}/ && rm -rf /home/sfs/${JobName} && echo Check sfs && ls -al /home/sfs && ls -al /home/obs/output'
-   
-
-    # htseq
-    commands_iter:
-      command: |
-        mkdir -p /home/sfs/${JobName}/ && \
-        mkdir -p /home/sfs/${JobName}/a7-htcount && \
-        ls /root/miniconda2/bin/ && \
-        ls /home/sfs/${JobName}/a6-map/ &&\
-        echo ${1} begin `date` && \
-        echo /root/miniconda2/bin/python \
-        /root/miniconda2/bin/RPF_count_CDS.py \
-        /home/sfs/${JobName}/a6-map/${1}Aligned.sortedByCoord.out.bam \
-        /home/obs/${obs_reference_gtf} > /home/sfs/${JobName}/a7-htcount/${1}.count && \
-        /root/miniconda2/bin/python \
-        /root/miniconda2/bin/RPF_count_CDS.py \
-        /home/sfs/${JobName}/a6-map/${1}Aligned.sortedByCoord.out.bam \
-        /home/obs/${obs_reference_gtf} > /home/sfs/${JobName}/a7-htcount/${1}.count
-      vars_iter:
-        - '${fastq_files}'
-    #cutadapter
+#cutadapter
     commands_iter:
       command: |
         mkdir -p /home/sfs/${JobName}/a2-cutadapter && \
@@ -147,20 +122,27 @@ commands:
          /home/obs/${obs_data_path}/${1}
     vars_iter:
         - '${fastq_files}'
-#STAR
-            commands_iter:
+
+# fastq_quality_filter
+    commands_iter:
       command: |
-        mkdir -p /home/sfs/${JobName}/a6-map && \
+        mkdir -p /home/sfs/${JobName}/a3-filter && \
         echo ${1} begin `date` && \
-        bash /root/.bashrc && \
-         STAR --runThreadN 8 --alignEndsType EndToEnd \
-         --outFilterMismatchNmax 1 --outFilterMultimapNmax 1 \
-         --genomeDir /home/obs/${obs_reference_genomeFile_star} \
-         --readFilesIn /home/sfs/${JobName}/a5-rmrRNA/nonrRNA/nocontam_${1} \
-         --outFileNamePrefix /home/sfs/${JobName}/a6-map/${1} \
-         --outSAMtype BAM SortedByCoordinate \
-         --quantMode TranscriptomeSAM GeneCounts
-         
+        /home/test/bin/fastq_quality_filter \
+        -Q33 -v -q 25 -p 75 \
+        -i /home/sfs/${JobName}/a2-cutadapter/${1}_trimmed.fastq \
+        -o /home/sfs/${JobName}/a3-filter/${1}_trimmedQfilter.fastq 
+      vars_iter:
+        - '${fastq_files}'
+
+# fastQC
+    commands_iter:
+      command: |
+        mkdir -p /home/sfs/${JobName}/a4-qc && \
+        echo ${1} begin `date` && \
+        /home/test/FastQC/fastqc \
+        /home/sfs/${JobName}/a3-filter/${1}_trimmedQfilter.fastq \
+        -o /home/sfs/${JobName}/a4-qc
       vars_iter:
         - '${fastq_files}'
 
@@ -181,32 +163,55 @@ commands:
          
       vars_iter:
         - '${fastq_files}'
-# fastq_quality_filter
+
+#STAR
     commands_iter:
       command: |
-        mkdir -p /home/sfs/${JobName}/a3-filter && \
+        mkdir -p /home/sfs/${JobName}/a6-map && \
         echo ${1} begin `date` && \
-        /home/test/bin/fastq_quality_filter \
-        -Q33 -v -q 25 -p 75 \
-        -i /home/sfs/${JobName}/a2-cutadapter/${1}_trimmed.fastq \
-        -o /home/sfs/${JobName}/a3-filter/${1}_trimmedQfilter.fastq 
+        bash /root/.bashrc && \
+         STAR --runThreadN 8 --alignEndsType EndToEnd \
+         --outFilterMismatchNmax 1 --outFilterMultimapNmax 1 \
+         --genomeDir /home/obs/${obs_reference_genomeFile_star} \
+         --readFilesIn /home/sfs/${JobName}/a5-rmrRNA/nonrRNA/nocontam_${1} \
+         --outFileNamePrefix /home/sfs/${JobName}/a6-map/${1} \
+         --outSAMtype BAM SortedByCoordinate \
+         --quantMode TranscriptomeSAM GeneCounts
+         
       vars_iter:
         - '${fastq_files}'
-# fastQC
+
+# htseq
     commands_iter:
       command: |
-        mkdir -p /home/sfs/${JobName}/a4-qc && \
+        mkdir -p /home/sfs/${JobName}/ && \
+        mkdir -p /home/sfs/${JobName}/a7-htcount && \
+        ls /root/miniconda2/bin/ && \
+        ls /home/sfs/${JobName}/a6-map/ &&\
         echo ${1} begin `date` && \
-        /home/test/FastQC/fastqc \
-        /home/sfs/${JobName}/a3-filter/${1}_trimmedQfilter.fastq \
-        -o /home/sfs/${JobName}/a4-qc
+        echo /root/miniconda2/bin/python \
+        /root/miniconda2/bin/RPF_count_CDS.py \
+        /home/sfs/${JobName}/a6-map/${1}Aligned.sortedByCoord.out.bam \
+        /home/obs/${obs_reference_gtf} > /home/sfs/${JobName}/a7-htcount/${1}.count && \
+        /root/miniconda2/bin/python \
+        /root/miniconda2/bin/RPF_count_CDS.py \
+        /home/sfs/${JobName}/a6-map/${1}Aligned.sortedByCoord.out.bam \
+        /home/obs/${obs_reference_gtf} > /home/sfs/${JobName}/a7-htcount/${1}.count
       vars_iter:
         - '${fastq_files}'
+
+# merge
+commands:
+      - ' ls -alh /home/sfs/${JobName}/a7-htcount && echo bash  /root/miniconda2/bin/merge.sh -a ${fastq_files_name} -b ${fastq_files_label} -c /home/sfs/${JobName}/a7-htcount  &&  bash  /root/miniconda2/bin/merge.sh -a ${fastq_files_name} -b ${fastq_files_label} -c /home/sfs/${JobName}/a7-htcount '
+
 # xtail
         commands:
       - ' mkdir -p /home/sfs/${JobName}/a8-xtail && Rscript /home/test/xtail.r /home/sfs/${JobName}/a7-htcount/merge.counter ${xtail_ribo_vector} ${xtail_rna_vector} ${xtail_label} /home/sfs/${JobName}/a8-xtail '
- 
 
+# cp
+commands:
+      - 'obsutil config -i=${AccessKey} -k=${SecretKey} -e=${endpoint}&& obsutil mkdir -p ${obs_location}/output/${JobName}/  && obsutil cp -r -f /home/sfs/${JobName}/ ${obs_location}/output/${JobName}/ && rm -rf /home/sfs/${JobName} && echo Check sfs && ls -al /home/sfs && ls -al /home/obs/output'
+   
 ```
 
 ## 文件挂载
