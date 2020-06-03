@@ -589,7 +589,18 @@ commands:
  
 ```sh
 docker run --name=ribocode -dt -v /lulab/lustre2/xugang/docker_backup:/home/sfs swr.cn-north-4.myhuaweicloud.com/gangxu/ribocode_ribominer:1.0
+docker exec -it ribocode bash
+#
+# make annoatation
+mkdir -p /home/sfs/a7-ribocode_annotation && /root/miniconda3/bin/prepare_transcripts -g /home/sfs/huawei/Arabidopsis_thaliana.TAIR10.43.gtf -f Arabidopsis_thaliana.TAIR10.dna.toplevel.fa.clean.fa -o /home/sfs/a7-ribocode_annotation
+# generate bam file
+mkdir -p /home/sfs/a8-ribocode && cat "">
+# set p site
+/root/miniconda3/bin/metaplots -a /home/sfs/a7-ribocode_annotation -r <HEK293Aligned.toTranscriptome.out.bam>
+#ribocode
+/root/miniconda3/bin/RiboCode -a /home/sfs/a7-ribocode_annotation -c <config.txt> -l no -g -o <RiboCode_ORFs_result>
 
+exit
 
 ```
 
