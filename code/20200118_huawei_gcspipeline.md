@@ -20,7 +20,7 @@
 * [两种流程执行的方式](#两种流程执行的方式)
 * [文件挂载](#文件挂载)
 * [流程描述](#流程描述)
-* [bash with parameters](#bash with parameters.)
+* [bash-with-parameters](#bash with parameters.)
 
 
 ## 对字符串进行分割成数组
