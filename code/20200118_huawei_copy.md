@@ -48,6 +48,8 @@ cd /Users/xugang/Desktop/sequencing_center/d-huawei
 ```sh
 ./obsutil cp obs://bucket-test-xg/test.txt ./test1.txt
 
+./obsutil cp obs://hw-gcs-logo-cn-north-4-06a54be3938010610f01c00da675d700/test1.txt ./test1.txt
+
 ```
 
 ### 4. 运行./obsutil rm obs://bucket-test/test.txt -f命令，在bucket-test桶中删除test.txt对象。
@@ -77,6 +79,8 @@ cd /Users/xugang/Desktop/sequencing_center/d-huawei
 ./obsutil mkdir obs://bucket/folder[/subfolder1/subfolder2] [-config=xxx]
 
 ./obsutil mkdir obs://gene-container-xugang/test-xg
+
+./obsutil mkdir obs://hw-gcs-logo-cn-north-4-06a54be3938010610f01c00da675d700/arabidopsis/huawei_file/Ribocode
 
 ```
 
