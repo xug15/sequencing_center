@@ -588,6 +588,8 @@ commands:
 ### test on hub docker.
  
 ```sh
+docker run --name=ribocode -dt -v /lulab/lustre2/xugang/docker_backup:/home/sfs swr.cn-north-4.myhuaweicloud.com/gangxu/ribocode_ribominer:1.0
+
 
 ```
 
