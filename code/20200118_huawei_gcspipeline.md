@@ -188,51 +188,197 @@ support.huaweicloud.com/tr-gcs/gcs_tr_04_0004.html
 
 ## RNA-seq small 
 ```sh
-#
+# cutadapter
+    commands_iter:
+      command: |
+        mkdir -p /home/sfs/${JobName}/a2-cutadapter && \
+        echo ${1} begin `date` /root/miniconda3/bin/cutadapt -m 18 \
+        --match-read-wildcards -a ${adapter} \
+        -o /home/sfs/${JobName}/a2-cutadapter/${1}_trimmed.fastq \
+        /home/obs/${obs_data_path}/${1} && \
+        /root/miniconda3/bin/cutadapt -m 18 \
+        --match-read-wildcards -a ${adapter} \
+        -o /home/sfs/${JobName}/a2-cutadapter/${1}_trimmed.fastq \
+         /home/obs/${obs_data_path}/${1}
+      vars_iter:
+        - '${fastq_files}'
 
-#
 
-#
+# fastx
+    commands_iter:
+      command: |
+        mkdir -p /home/sfs/${JobName}/a3-filter && \
+        echo ${1} begin `date` && \
+        /home/test/bin/fastq_quality_filter \
+        -Q33 -v -q 25 -p 75 \
+        -i /home/sfs/${JobName}/a2-cutadapter/${1}_trimmed.fastq \
+        -o /home/sfs/${JobName}/a3-filter/${1}_trimmedQfilter.fastq 
+      vars_iter:
+        - '${fastq_files}'
 
-#
+# fastQC
+    commands_iter:
+      command: |
+        mkdir -p /home/sfs/${JobName}/a4-qc && \
+        echo ${1} begin `date` && \
+        /home/test/FastQC/fastqc \
+        /home/sfs/${JobName}/a3-filter/${1}_trimmedQfilter.fastq \
+        -o /home/sfs/${JobName}/a4-qc
+      vars_iter:
+        - '${fastq_files}'
 
-#
+# remove rRNA
+    commands_iter:
+      command: |
+        mkdir -p /home/sfs/${JobName}/a5-rmrRNA && \
+        mkdir -p /home/sfs/${JobName}/a5-rmrRNA/nonrRNA && \
+        echo ${1} begin `date` && \
+        bash /root/.bashrc && \
+        /home/test/bowtie-1.2.3-linux-x86_64/bowtie \
+        -n 0 -norc --best -l 15 -p 8 \
+         --un=/home/sfs/${JobName}/a5-rmrRNA/nonrRNA/nocontam_${1} /home/obs/${obs_reference_rRNA_bowtie} \
+         -q /home/sfs/${JobName}/a3-filter/${1}_trimmedQfilter.fastq \
+         /home/sfs/${JobName}/a5-rmrRNA/${1}.alin > \
+         /home/sfs/${JobName}/a5-rmrRNA/${1}.err && \
+         rm -rf /home/sfs/${JobName}/a5-rmrRNA/${1}.alin 
+         
+      vars_iter:
+        - '${fastq_files}'
 
-#
+# bowtie mature
+    commands_iter:
+      command: |
+        mkdir -p /home/sfs/${JobName}/a7-mature && \
+        echo ${1} begin `date` && \
+        bash /root/.bashrc && \
+        /home/test/bowtie-1.2.3-linux-x86_64/bowtie \
+        -n 0 -norc --best -l 15 -p 8 \
+        /home/obs/${obs_reference_mature_bowtie} \
+         -q /home/sfs/${JobName}/a3-filter/${1}_trimmedQfilter.fastq \
+         /home/sfs/${JobName}/a7-mature/${1}.alin > \
+         /home/sfs/${JobName}/a7-mature/${1}.err
 
-#
+         
+      vars_iter:
+        - '${fastq_files}'
 
-#
+# bowtie hairpin
+    commands_iter:
+      command: |
+        mkdir -p /home/sfs/${JobName}/a8-hairpin && \
+        echo ${1} begin `date` && \
+        bash /root/.bashrc && \
+        /home/test/bowtie-1.2.3-linux-x86_64/bowtie \
+        -n 0 -norc --best -l 15 -p 8 \
+         /home/obs/${obs_reference_hairpin_bowtie} \
+         -q /home/sfs/${JobName}/a3-filter/${1}_trimmedQfilter.fastq \
+         /home/sfs/${JobName}/a8-hairpin/${1}.alin > \
+         /home/sfs/${JobName}/a8-hairpin/${1}.err
+         
+      vars_iter:
+        - '${fastq_files}'
 
-#
+#  STAR
+    commands_iter:
+      command: |
+        mkdir -p /home/sfs/${JobName}/a6-map && \
+        echo ${1} begin `date` && \
+        bash /root/.bashrc && \
+         STAR --runThreadN 8 --alignEndsType EndToEnd \
+         --outFilterMismatchNmax 1 --outFilterMultimapNmax 1 \
+         --genomeDir /home/obs/${obs_reference_genomeFile_star} \
+         --readFilesIn /home/sfs/${JobName}/a5-rmrRNA/nonrRNA/nocontam_${1} \
+         --outFileNamePrefix /home/sfs/${JobName}/a6-map/${1} \
+         --outSAMtype BAM SortedByCoordinate \
+         --quantMode TranscriptomeSAM GeneCounts
+         
+      vars_iter:
+        - '${fastq_files}'
 
-#
-
+# copy
+    commands:
+      - 'obsutil config -i=${AccessKey} -k=${SecretKey} -e=${endpoint}&& obsutil mkdir -p ${obs_location}/output/${JobName}/  && obsutil cp -r -f /home/sfs/${JobName}/ ${obs_location}/output/${JobName}/ && rm -rf /home/sfs/${JobName} && echo Check sfs && ls -al /home/sfs && ls -al /home/obs/output'
 
 ```
 
 ## RNA-seq ploy A
 ```sh
-#
+# cutadapter
+    commands_iter:
+      command: |
+        mkdir -p /home/sfs/${JobName}/a2-cutadapter && \
+        echo ${1} begin `date` /root/miniconda3/bin/cutadapt -m 18 \
+        --match-read-wildcards -a ${adapter} \
+        -o /home/sfs/${JobName}/a2-cutadapter/${1}_trimmed.fastq \
+        /home/obs/${obs_data_path}/${1} && \
+        /root/miniconda3/bin/cutadapt -m 18 \
+        --match-read-wildcards -a ${adapter} \
+        -o /home/sfs/${JobName}/a2-cutadapter/${1}_trimmed.fastq \
+         /home/obs/${obs_data_path}/${1}
+      vars_iter:
+        - '${fastq_files}'
 
-#
+# fastx
+    commands_iter:
+      command: |
+        mkdir -p /home/sfs/${JobName}/a3-filter && \
+        echo ${1} begin `date` && \
+        /home/test/bin/fastq_quality_filter \
+        -Q33 -v -q 25 -p 75 \
+        -i /home/sfs/${JobName}/a2-cutadapter/${1}_trimmed.fastq \
+        -o /home/sfs/${JobName}/a3-filter/${1}_trimmedQfilter.fastq 
+      vars_iter:
+        - '${fastq_files}'
 
-#
+# fastqc
+    commands_iter:
+      command: |
+        mkdir -p /home/sfs/${JobName}/a4-qc && \
+        echo ${1} begin `date` && \
+        /home/test/FastQC/fastqc \
+        /home/sfs/${JobName}/a3-filter/${1}_trimmedQfilter.fastq \
+        -o /home/sfs/${JobName}/a4-qc
+      vars_iter:
+        - '${fastq_files}'
 
-#
+# remove rRNA
+    commands_iter:
+      command: |
+        mkdir -p /home/sfs/${JobName}/a5-rmrRNA && \
+        mkdir -p /home/sfs/${JobName}/a5-rmrRNA/nonrRNA && \
+        echo ${1} begin `date` && \
+        bash /root/.bashrc && \
+        /home/test/bowtie-1.2.3-linux-x86_64/bowtie \
+        -n 0 -norc --best -l 15 -p 8 \
+         --un=/home/sfs/${JobName}/a5-rmrRNA/nonrRNA/nocontam_${1} /home/obs/${obs_reference_rRNA_bowtie} \
+         -q /home/sfs/${JobName}/a3-filter/${1}_trimmedQfilter.fastq \
+         /home/sfs/${JobName}/a5-rmrRNA/${1}.alin > \
+         /home/sfs/${JobName}/a5-rmrRNA/${1}.err && \
+         rm -rf /home/sfs/${JobName}/a5-rmrRNA/${1}.alin 
+         
+      vars_iter:
+        - '${fastq_files}'
 
-#
+# STAR
+    commands_iter:
+      command: |
+        mkdir -p /home/sfs/${JobName}/a6-map && \
+        echo ${1} begin `date` && \
+        bash /root/.bashrc && \
+         STAR --runThreadN 8 --alignEndsType EndToEnd \
+         --outFilterMismatchNmax 1 --outFilterMultimapNmax 1 \
+         --genomeDir /home/obs/${obs_reference_genomeFile_star} \
+         --readFilesIn /home/sfs/${JobName}/a5-rmrRNA/nonrRNA/nocontam_${1} \
+         --outFileNamePrefix /home/sfs/${JobName}/a6-map/${1} \
+         --outSAMtype BAM SortedByCoordinate \
+         --quantMode TranscriptomeSAM GeneCounts
+         
+      vars_iter:
+        - '${fastq_files}'
 
-#
-
-#
-
-#
-
-#
-
-#
-
+# copy
+    commands:
+      - 'obsutil config -i=${AccessKey} -k=${SecretKey} -e=${endpoint}&& obsutil mkdir -p ${obs_location}/output/${JobName}/  && obsutil cp -r -f /home/sfs/${JobName}/ ${obs_location}/output/${JobName}/ && rm -rf /home/sfs/${JobName} && echo Check sfs && ls -al /home/sfs && ls -al /home/obs/output'
 
 ```
 
