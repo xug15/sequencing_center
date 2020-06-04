@@ -570,14 +570,13 @@ commands:
       vars_iter:
         - '${fastq_files}'
 
-
-# merge
-commands:
-      - ' ls -alh /home/sfs/${JobName}/a7-htcount && echo bash  /root/miniconda2/bin/merge.sh -a ${fastq_files_name} -b ${fastq_files_label} -c /home/sfs/${JobName}/a7-htcount  &&  bash  /root/miniconda2/bin/merge.sh -a ${fastq_files_name} -b ${fastq_files_label} -c /home/sfs/${JobName}/a7-htcount '
-
-# xtail
+# Ribocode
         commands:
-      - ' mkdir -p /home/sfs/${JobName}/a8-xtail && Rscript /home/test/xtail.r /home/sfs/${JobName}/a7-htcount/merge.counter ${xtail_ribo_vector} ${xtail_rna_vector} ${xtail_label} /home/sfs/${JobName}/a8-xtail '
+       - >-
+        mkdir -p /home/sfs/${JobName}/a7-ribocode_annotation && /root/miniconda3/bin/prepare_transcripts -g /home/obs/${obs_reference_gtf} -f  /home/obs/${obs_reference_fasta} -o /home/sfs/${JobName}/a7-ribocode_annotation && mkdir -p /home/sfs/${JobName}/a8-ribocode &&  rm -rf
+        /home/sfs/${JobName}/a8-ribocode/transcript.txt &&  IFS=";" read -ra name <<< ${fastq_files_name} && for i in ${name[@]}; do echo "/home/sfs/${JobName}/a6-map/${i}Aligned.sortedByCoord.out.bam" >> /home/sfs/${JobName}/a8-ribocode/transcript.txt;done; && /root/miniconda3/bin/metaplots -a
+        /home/sfs/${JobName}/a7-ribocode_annotation -i /home/sfs/${JobName}/a8-ribocode/transcript.txt -o /home/sfs/${JobName}/a8-ribocode && mkdir -p /home/sfs/${JobName}/a9-ribocode-result && /root/miniconda3/bin/RiboCode -a /home/sfs/${JobName}/a7-ribocode_annotation -c
+        /home/sfs/${JobName}/a8-ribocode/metaplots_pre_config.txt -l no -g -o /home/sfs/${JobName}/a9-ribocode-result
 
 # cp
 commands:
