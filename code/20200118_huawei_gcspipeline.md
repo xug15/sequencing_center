@@ -594,11 +594,11 @@ docker exec -it ribocode bash
 # make annoatation
 mkdir -p /home/sfs/a7-ribocode_annotation && /root/miniconda3/bin/prepare_transcripts -g /home/sfs/huawei/Arabidopsis_thaliana.TAIR10.43.gtf -f Arabidopsis_thaliana.TAIR10.dna.toplevel.fa.clean.fa -o /home/sfs/a7-ribocode_annotation
 # generate bam file
-mkdir -p /home/sfs/a8-ribocode && cat "">
+mkdir -p /home/sfs/a8-ribocode &&  rm -rf /home/sfs/a8-ribocode/transcript.txt &&  IFS=';' read -ra name <<< "SRR1958702;SRR1958703;SRR1958704;SRR3498206" && for i in ${name[@]}; do echo "/home/sfs/huawei/"$i".Aligned.toTranscriptome.out.bam" >> /home/sfs/a8-ribocode/transcript.txt;done;
 # set p site
-/root/miniconda3/bin/metaplots -a /home/sfs/a7-ribocode_annotation -r <HEK293Aligned.toTranscriptome.out.bam>
+/root/miniconda3/bin/metaplots -a /home/sfs/a7-ribocode_annotation -i /home/sfs/a8-ribocode/transcript.txt -o /home/sfs/a8-ribocode
 #ribocode
-/root/miniconda3/bin/RiboCode -a /home/sfs/a7-ribocode_annotation -c <config.txt> -l no -g -o <RiboCode_ORFs_result>
+mkdir -p /home/sfs/a9-ribocode-result && /root/miniconda3/bin/RiboCode -a /home/sfs/a7-ribocode_annotation -c /home/sfs/a8-ribocode/metaplots_pre_config.txt -l no -g -o /home/sfs/a9-ribocode-result
 
 exit
 
