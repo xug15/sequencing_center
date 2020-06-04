@@ -21,6 +21,7 @@
 * [bowtie](#bowtie)
 * [HTSeq](#HTSeq)
 * [Ribocode](#Ribocode)
+* [Ribominer](#Ribominer)
 * [cutadapter](#cutadapter)
 * [fastx_toolkit](#fastx_toolkit)
 * [bedtools](#bedtools)
@@ -42,6 +43,7 @@ $ sudo docker push swr.cn-north-4.myhuaweicloud.com/{组织名称}/{镜像名称
 $ sudo docker push swr.cn-north-4.myhuaweicloud.com/gangxu/base:1.0
 docker push swr.cn-north-4.myhuaweicloud.com/gangxu/ribocode_ribominer:1.0
 docker push swr.cn-north-4.myhuaweicloud.com/gangxu/htseq:1.0
+docker push swr.cn-north-4.myhuaweicloud.com/gangxu/ribominer:1.0
 docker tag swr.cn-north-4.myhuaweicloud.com/gangxu/htseq:1.0 gangxu/htseq:1.0
 
 docker push gangxu/htseq:1.0
@@ -188,8 +190,18 @@ pip install ribocode
 pip install RiboMiner
 exit
 docker commit ce6a6eeece26  swr.cn-north-4.myhuaweicloud.com/gangxu/ribocode_ribominer:1.0
+docker run -dt --name ribocode -v /home/xugang/singularity_image/huawei_file:/home/sfs swr.cn-north-4.myhuaweicloud.com/gangxu/ribocode_ribominer:1.0
 ```
 
+## Ribominer
+```sh
+docker run -dt --name ribominer -v ~/Downloads/data/:/home/sfs swr.cn-north-4.myhuaweicloud.com/gangxu/ribocode_ribominer:1.0
+docker exec -it ribominer bash
+
+pip install ribominer --upgrade
+exit
+docker commit 6b77c3f83799  swr.cn-north-4.myhuaweicloud.com/gangxu/ribominer:1.0
+```
 
 ## cutadapter
 ```sh
@@ -296,5 +308,6 @@ docker save swr.cn-north-4.myhuaweicloud.com/gangxu/fastx_toolkit:1.0 | gzip > /
 docker save swr.cn-north-4.myhuaweicloud.com/gangxu/cutadapter:1.0 | gzip > /home/xugang/singularity_image/huawei_file/images/cutadapter.tar.gz
 docker save swr.cn-north-4.myhuaweicloud.com/gangxu/fastqc:1.0 | gzip > /home/xugang/singularity_image/huawei_file/images/fastqc.tar.gz
 docker save swr.cn-north-4.myhuaweicloud.com/gangxu/base:1.0 | gzip > /home/xugang/singularity_image/huawei_file/images/base.tar.gz
+docker save swr.cn-north-4.myhuaweicloud.com/gangxu/ribominer:1.0 | gzip > /Users/xugang/Downloads/data/ribominer.tar.gz
 ```
 
