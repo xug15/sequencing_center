@@ -10,11 +10,59 @@ workflow:
       - 'obsutil config -i=${AccessKey} -k=${SecretKey} -e=${endpoint}&& obsutil mkdir -p ${obs_location}/output/${JobName}/  && obsutil cp -r -f /home/sfs/${JobName}/ ${obs_location}/output/${JobName}/ && rm -rf /home/sfs/${JobName} && echo Check sfs && ls -al /home/sfs && ls -al /home/obs/output'
     metadata:
       Designer:
-        id: dd0d635e-b626-440d-885c-26eb20e8b63c
+        id: 99e5860c-7882-4284-9e55-a19406af432c
     depends:
       - target: ribocode-r3in1s
         type: whole
     description: 灏嗙粨鏋滅Щ鍔ㄥ洖obsvolumn涓�
+  ribocode-r3in1s:
+    tool: 'ribocode-ribominer:1.0'
+    type: GCS.Job
+    resources:
+      memory: 16G
+      cpu: 2C
+    commands:
+      - >-
+        cat /home/sfs/${JobName}/a8-ribocode/ltrans.*.txt > /home/sfs/${JobName}/a8-ribocode/transcript.txt && rm -rf /home/sfs/${JobName}/a8-ribocode/ltrans.*.txt && cat /home/sfs/${JobName}/a8-ribocode/transcript.txt && /root/miniconda3/bin/metaplots -a /home/sfs/${JobName}/a7-ribocode_annotation
+        -i /home/sfs/${JobName}/a8-ribocode/transcript.txt -o /home/sfs/${JobName}/a8-ribocode/a && mkdir -p /home/sfs/${JobName}/a9-ribocode-result && /root/miniconda3/bin/RiboCode -a /home/sfs/${JobName}/a7-ribocode_annotation -c /home/sfs/${JobName}/a8-ribocode/a_pre_config.txt -l no -g -o
+        /home/sfs/${JobName}/a9-ribocode-result/   
+    metadata:
+      Designer:
+        id: 9ce25d2b-334c-4860-8b74-0c980ce0ef25
+    depends:
+      - target: ribocode-r2244f
+        type: whole
+  ribocode-r2244f:
+    tool: 'ribocode-ribominer:1.0'
+    type: GCS.Job
+    resources:
+      memory: 8G
+      cpu: 2C
+    commands_iter:
+      command: |
+        head /home/sfs/${JobName}/a6-map/${1}Aligned.toTranscriptome.out.bam && echo "/home/sfs/${JobName}/a6-map/${1}Aligned.toTranscriptome.out.bam" > /home/sfs/${JobName}/a8-ribocode/ltrans.${1}.txt;
+      vars_iter:
+        - '${fastq_files}'
+    metadata:
+      Designer:
+        id: a7d3dbdb-5343-4514-830d-f4f8aa087bc3
+    depends:
+      - target: ribocode-r1yp5m
+        type: whole
+  ribocode-r1yp5m:
+    tool: 'ribocode-ribominer:1.0'
+    type: GCS.Job
+    resources:
+      memory: 8G
+      cpu: 2C
+    commands:
+      - 'mkdir -p /home/sfs/${JobName}/a7-ribocode_annotation && /root/miniconda3/bin/prepare_transcripts -g /home/obs/${obs_reference_gtf} -f  /home/obs/${obs_reference_fasta} -o /home/sfs/${JobName}/a7-ribocode_annotation && mkdir -p /home/sfs/${JobName}/a8-ribocode  '
+    metadata:
+      Designer:
+        id: f9996b74-1c67-482e-9338-0568ce8e6412
+    depends:
+      - target: starmappin3aqud
+        type: whole
   cutadapter3zaks:
     tool: 'cutadapter:1.0'
     type: GCS.Job
@@ -37,7 +85,7 @@ workflow:
         - '${fastq_files}'
     metadata:
       Designer:
-        id: f15dc2cd-2915-46b6-9053-70fd353a5726
+        id: f53a398d-ad23-4e55-a206-897d05effee7
     depends: []
     description: 灏嗗師濮嬬殑涓嬫満鏁版嵁鍘婚櫎鎺ュご
   starmappin3aqud:
@@ -57,13 +105,14 @@ workflow:
          --readFilesIn /home/sfs/${JobName}/a5-rmrRNA/nonrRNA/nocontam_${1} \
          --outFileNamePrefix /home/sfs/${JobName}/a6-map/${1} \
          --outSAMtype BAM SortedByCoordinate \
-         --quantMode TranscriptomeSAM GeneCounts
+         --quantMode TranscriptomeSAM GeneCounts \
+         --limitBAMsortRAM 7110037687
          
       vars_iter:
         - '${fastq_files}'
     metadata:
       Designer:
-        id: e47c92c6-c9dc-423f-8e84-b306ea75a4c8
+        id: f6730ee8-6b2e-48a4-9d97-55c671405635
     depends:
       - target: bowtie124fr5n
         type: whole
@@ -92,7 +141,7 @@ workflow:
         - '${fastq_files}'
     metadata:
       Designer:
-        id: aa1d19bf-ae3a-4484-8f33-5f0ecb01b2af
+        id: f292b73d-d383-4a9e-93b1-402b9e8d2333
     depends:
       - target: fastqc3wgoy
         type: whole
@@ -115,7 +164,7 @@ workflow:
         - '${fastq_files}'
     metadata:
       Designer:
-        id: e673503a-f30b-41b8-b15c-cdf4c73ab496
+        id: cd609db0-f7ee-4d31-8111-1bb8344d1bd8
     depends:
       - target: cutadapter3zaks
         type: whole
@@ -137,29 +186,11 @@ workflow:
         - '${fastq_files}'
     metadata:
       Designer:
-        id: 229cbb78-5af0-4c92-bbee-37a22eebfded
+        id: 26fb736b-fecf-4a6b-a047-ac3effb0d316
     depends:
       - target: fastx-tool3a3vg
         type: whole
     description: 瀵规暟鎹繘琛岃川閲忚瘎浼�
-  ribocode-r3in1s:
-    tool: 'ribocode-ribominer:1.0'
-    type: GCS.Job
-    resources:
-      memory: 16G
-      cpu: 2C
-    commands:
-      - >-
-        mkdir -p /home/sfs/${JobName}/a7-ribocode_annotation && /root/miniconda3/bin/prepare_transcripts -g /home/obs/${obs_reference_gtf} -f  /home/obs/${obs_reference_fasta} -o /home/sfs/${JobName}/a7-ribocode_annotation && mkdir -p /home/sfs/${JobName}/a8-ribocode &&  rm -rf
-        /home/sfs/${JobName}/a8-ribocode/transcript.txt &&  IFS=";" read -ra name <<< ${fastq_files_name} && for i in ${name[@]}; do echo "/home/sfs/${JobName}/a6-map/${i}Aligned.sortedByCoord.out.bam" >> /home/sfs/${JobName}/a8-ribocode/transcript.txt;done; && /root/miniconda3/bin/metaplots -a
-        /home/sfs/${JobName}/a7-ribocode_annotation -i /home/sfs/${JobName}/a8-ribocode/transcript.txt -o /home/sfs/${JobName}/a8-ribocode && mkdir -p /home/sfs/${JobName}/a9-ribocode-result && /root/miniconda3/bin/RiboCode -a /home/sfs/${JobName}/a7-ribocode_annotation -c
-        /home/sfs/${JobName}/a8-ribocode/metaplots_pre_config.txt -l no -g -o /home/sfs/${JobName}/a9-ribocode-result
-    metadata:
-      Designer:
-        id: 7b38a7b0-6287-4e1f-88b4-6ce81197ad1b
-    depends:
-      - target: starmappin3aqud
-        type: whole
 volumes:
   volumes-4ndk:
     mount_path: '/home/sfs'
@@ -218,62 +249,72 @@ inputs:
       - SRR1958704.fq
       - SRR3498206.fq
     description: 原始数据文件名称
-  fastq_files_name:
-    type: string
-    default: '"SRR1958702.fq;SRR1958703.fq;SRR1958704.fq;SRR3498206.fq"'
-    description: '原始数据文件名称,用分号隔开'
   adapter:
     type: string
     default: CTGTAGGCACCATCAAT
     description: read的接头序列
 metadata:
   relationships:
-    dd0d635e-b626-440d-885c-26eb20e8b63c:
+    99e5860c-7882-4284-9e55-a19406af432c:
       references:
         depends:
           - target: ribocode-r3in1s
             type: whole
-    7b38a7b0-6287-4e1f-88b4-6ce81197ad1b:
+    9ce25d2b-334c-4860-8b74-0c980ce0ef25:
       references:
         relateto:
           - obs-util4asm3
         depends:
+          - target: ribocode-r2244f
+            type: whole
+    a7d3dbdb-5343-4514-830d-f4f8aa087bc3:
+      references:
+        relateto:
+          - ribocode-r3in1s
+        depends:
+          - target: ribocode-r1yp5m
+            type: whole
+    f9996b74-1c67-482e-9338-0568ce8e6412:
+      references:
+        relateto:
+          - ribocode-r2244f
+        depends:
           - target: starmappin3aqud
             type: whole
-    e47c92c6-c9dc-423f-8e84-b306ea75a4c8:
+    f6730ee8-6b2e-48a4-9d97-55c671405635:
       references:
+        relateto:
+          - ribocode-r1yp5m
         depends:
           - target: bowtie124fr5n
             type: whole
-        relateto:
-          - ribocode-r3in1s
-    aa1d19bf-ae3a-4484-8f33-5f0ecb01b2af:
+    f292b73d-d383-4a9e-93b1-402b9e8d2333:
       references:
         relateto:
           - starmappin3aqud
         depends:
           - target: fastqc3wgoy
             type: whole
-    229cbb78-5af0-4c92-bbee-37a22eebfded:
+    26fb736b-fecf-4a6b-a047-ac3effb0d316:
       references:
         relateto:
           - bowtie124fr5n
         depends:
           - target: fastx-tool3a3vg
             type: whole
-    e673503a-f30b-41b8-b15c-cdf4c73ab496:
+    cd609db0-f7ee-4d31-8111-1bb8344d1bd8:
       references:
         depends:
           - target: cutadapter3zaks
             type: whole
         relateto:
           - fastqc3wgoy
-    f15dc2cd-2915-46b6-9053-70fd353a5726:
+    f53a398d-ad23-4e55-a206-897d05effee7:
       references:
         relateto:
           - fastx-tool3a3vg
   Designer:
-    f15dc2cd-2915-46b6-9053-70fd353a5726:
+    f53a398d-ad23-4e55-a206-897d05effee7:
       size:
         width: 90
         height: 60
@@ -282,8 +323,8 @@ metadata:
         y: 30
       z: 1
       relateto:
-        - e673503a-f30b-41b8-b15c-cdf4c73ab496
-    e673503a-f30b-41b8-b15c-cdf4c73ab496:
+        - cd609db0-f7ee-4d31-8111-1bb8344d1bd8
+    cd609db0-f7ee-4d31-8111-1bb8344d1bd8:
       size:
         width: 90
         height: 60
@@ -292,8 +333,8 @@ metadata:
         y: 30
       z: 1
       relateto:
-        - 229cbb78-5af0-4c92-bbee-37a22eebfded
-    229cbb78-5af0-4c92-bbee-37a22eebfded:
+        - 26fb736b-fecf-4a6b-a047-ac3effb0d316
+    26fb736b-fecf-4a6b-a047-ac3effb0d316:
       size:
         width: 90
         height: 60
@@ -302,8 +343,8 @@ metadata:
         y: 30
       z: 1
       relateto:
-        - aa1d19bf-ae3a-4484-8f33-5f0ecb01b2af
-    aa1d19bf-ae3a-4484-8f33-5f0ecb01b2af:
+        - f292b73d-d383-4a9e-93b1-402b9e8d2333
+    f292b73d-d383-4a9e-93b1-402b9e8d2333:
       size:
         width: 90
         height: 60
@@ -312,8 +353,8 @@ metadata:
         y: 30
       z: 1
       relateto:
-        - e47c92c6-c9dc-423f-8e84-b306ea75a4c8
-    e47c92c6-c9dc-423f-8e84-b306ea75a4c8:
+        - f6730ee8-6b2e-48a4-9d97-55c671405635
+    f6730ee8-6b2e-48a4-9d97-55c671405635:
       size:
         width: 90
         height: 60
@@ -322,8 +363,8 @@ metadata:
         y: 30
       z: 1
       relateto:
-        - 7b38a7b0-6287-4e1f-88b4-6ce81197ad1b
-    7b38a7b0-6287-4e1f-88b4-6ce81197ad1b:
+        - f9996b74-1c67-482e-9338-0568ce8e6412
+    f9996b74-1c67-482e-9338-0568ce8e6412:
       size:
         width: 90
         height: 60
@@ -332,8 +373,8 @@ metadata:
         y: 30
       z: 1
       relateto:
-        - dd0d635e-b626-440d-885c-26eb20e8b63c
-    dd0d635e-b626-440d-885c-26eb20e8b63c:
+        - a7d3dbdb-5343-4514-830d-f4f8aa087bc3
+    a7d3dbdb-5343-4514-830d-f4f8aa087bc3:
       size:
         width: 90
         height: 60
@@ -341,39 +382,71 @@ metadata:
         x: 750
         y: 30
       z: 1
-    5f1941df-6b9e-4ae8-88f3-2a6e8e6ba5ae:
+      relateto:
+        - 9ce25d2b-334c-4860-8b74-0c980ce0ef25
+    9ce25d2b-334c-4860-8b74-0c980ce0ef25:
+      size:
+        width: 90
+        height: 60
+      position:
+        x: 870
+        y: 30
+      z: 1
+      relateto:
+        - 99e5860c-7882-4284-9e55-a19406af432c
+    99e5860c-7882-4284-9e55-a19406af432c:
+      size:
+        width: 90
+        height: 60
+      position:
+        x: 990
+        y: 30
+      z: 1
+    14a72ef2-8833-42ad-8bb9-8d515d0b0a21:
       source:
-        id: f15dc2cd-2915-46b6-9053-70fd353a5726
+        id: f53a398d-ad23-4e55-a206-897d05effee7
       target:
-        id: e673503a-f30b-41b8-b15c-cdf4c73ab496
+        id: cd609db0-f7ee-4d31-8111-1bb8344d1bd8
       z: 10
-    6c0bbd9c-d9c6-40f8-9bf7-e826029ca61a:
+    df63edfd-2a1a-4933-b651-4a19fd06d220:
       source:
-        id: e673503a-f30b-41b8-b15c-cdf4c73ab496
+        id: cd609db0-f7ee-4d31-8111-1bb8344d1bd8
       target:
-        id: 229cbb78-5af0-4c92-bbee-37a22eebfded
+        id: 26fb736b-fecf-4a6b-a047-ac3effb0d316
       z: 10
-    f6e0ffd3-8086-406a-b5bb-5cdfa409245f:
+    fe64456a-4ea8-42ba-ae6e-c42e47ede6ce:
       source:
-        id: 229cbb78-5af0-4c92-bbee-37a22eebfded
+        id: 26fb736b-fecf-4a6b-a047-ac3effb0d316
       target:
-        id: aa1d19bf-ae3a-4484-8f33-5f0ecb01b2af
+        id: f292b73d-d383-4a9e-93b1-402b9e8d2333
       z: 10
-    44fab028-3b7e-43a9-a55d-855223989546:
+    554060e5-1fb4-472d-86bf-58b95b0a9479:
       source:
-        id: aa1d19bf-ae3a-4484-8f33-5f0ecb01b2af
+        id: f292b73d-d383-4a9e-93b1-402b9e8d2333
       target:
-        id: e47c92c6-c9dc-423f-8e84-b306ea75a4c8
+        id: f6730ee8-6b2e-48a4-9d97-55c671405635
       z: 10
-    68caeec6-1e10-420d-8293-025248970ff0:
+    b0fe8d1a-6986-423d-98c3-28ac4a48c14a:
       source:
-        id: e47c92c6-c9dc-423f-8e84-b306ea75a4c8
+        id: f6730ee8-6b2e-48a4-9d97-55c671405635
       target:
-        id: 7b38a7b0-6287-4e1f-88b4-6ce81197ad1b
+        id: f9996b74-1c67-482e-9338-0568ce8e6412
       z: 10
-    1d5700e1-9a2b-4e18-8aaf-291764d07cff:
+    16556982-8e82-4868-9cdf-8fdb9e7ae9b1:
       source:
-        id: 7b38a7b0-6287-4e1f-88b4-6ce81197ad1b
+        id: f9996b74-1c67-482e-9338-0568ce8e6412
       target:
-        id: dd0d635e-b626-440d-885c-26eb20e8b63c
+        id: a7d3dbdb-5343-4514-830d-f4f8aa087bc3
+      z: 10
+    6c137b49-a02d-4291-8a80-00cd161469ae:
+      source:
+        id: a7d3dbdb-5343-4514-830d-f4f8aa087bc3
+      target:
+        id: 9ce25d2b-334c-4860-8b74-0c980ce0ef25
+      z: 10
+    f90c3b65-b186-42ef-9839-426e4ed537c8:
+      source:
+        id: 9ce25d2b-334c-4860-8b74-0c980ce0ef25
+      target:
+        id: 99e5860c-7882-4284-9e55-a19406af432c
       z: 10

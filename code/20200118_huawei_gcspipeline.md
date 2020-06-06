@@ -623,6 +623,19 @@ volumes:
 ```
 
 ## Ribo-seq RiboMiner
+
+```sh
+# annotation.
+    commands:
+      - >-
+      mkdir -p /home/sfs/${JobName}/a7-RiboCode_annot &&  /root/miniconda3/bin/prepare_transcripts -g /home/obs/${obs_reference_gtf} -f /home/obs/${obs_reference_fasta} -o /home/sfs/${JobName}/a7-RiboCode_annot
+#a1 annotation
+    commands:
+      - >-
+      mkdir -p /home/sfs/${JobName}/a8-Ribominer_annot &&   /root/miniconda3/bin/OutputTranscriptInfo -c /home/sfs/${JobName}/a7-RiboCode_annot/transcripts_cds.txt -g /data/reference/tair/Arabidopsis_thaliana.TAIR10.43.gtf -f /home/sfs/${JobName}/a7-RiboCode_annot/transcripts_sequence.fa -o /home/sfs/${JobName}/a8-Ribominer_annot/longest.transcripts.info.txt -O /home/sfs/${JobName}/a8-Ribominer_annot/all.transcripts.info.txt
+
+```
+
 ```sh
 #ao ribocode
 prepare_transcripts -g /data/reference/tair/Arabidopsis_thaliana.TAIR10.43.gtf -f /data/reference/tair/Arabidopsis_thaliana.TAIR10.dna.toplevel.fa -o /data/reference/RiboCode_annot
@@ -748,10 +761,17 @@ EnrichmentAnalysis --ctrl /data/data/d5-RiboDensityAtEachPosition_col_cds_codon_
 
 #d8 plot enrichment raito.
 PlotEnrichmentRatio -i /data/data/d7-EnrichmentAnalysis_enrichment_dataframe.txt -o /data/data/d8-PlotEnrichmentRatio -u 0 -d 500 --unit codon --mode all
+```
+```sh
+docker run -dt --name ribominer -v ~/Downloads/data/:/home/sfs swr.cn-north-4.myhuaweicloud.com/gangxu/ribominer:1.0
 
+docker exec -it ribominer bash
+
+exit
+docker stop ribominer
+docker rm ribominer
 
 ```
-
 ## 
 
 ```sh
