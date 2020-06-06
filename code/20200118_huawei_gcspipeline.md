@@ -641,6 +641,7 @@ metaplots -a /data/reference/RiboCode_annot -r /data/data/colAligned.toTranscrip
 metaplots -a /data/reference/RiboCode_annot -r /data/data/d14Aligned.toTranscriptome.out.bam -o /data/data/a4-d14
 
 #a5 periodicity
+# 是的是的，需要index bam
 Periodicity -i /data/data/colAligned.toTranscriptome.sort.bam -a /data/reference/RiboCode_annot -o /data/data/a5-col_periodicity -c /data/reference/tair_analy/longest.transcripts.info.txt -L 25 -R 35
 Periodicity -i /data/data/d14Aligned.toTranscriptome.sort.bam -a /data/reference/RiboCode_annot -o /data/data/a5-d14_periodicity -c /data/reference/tair_analy/longest.transcripts.info.txt -L 25 -R 35
 
@@ -674,6 +675,7 @@ PlotPolarity -i /data/data/b3-polarity_polarity_dataframe.txt -o /data/data/b4-p
 RiboDensityForSpecificRegion -f /data/data/attributes.txt -c /data/reference/tair_analy/longest.transcripts.info.txt -o /data/data/b5-transcript-enrich -U codon -M RPKM -L 25 -R 75
 
 #b6 ribosome aa
+## select_trans.txt是转录本ID么师兄 如果没有的话应该会先和longest做交集的
 RiboDensityAtEachKindAAOrCodon -f /data/data/attributes.txt -c /data/reference/tair_analy/longest.transcripts.info.txt -o /data/data/b6-ribosome-aa -M counts -S /data/select_trans.txt -l 100 -n 10 --table 1 -F /data/reference/tair_analy/transcript_cds_sequences.fa 
 
 #b7 plot ribodensity at each aa or codon
@@ -692,6 +694,7 @@ RiboDensityAroundTripleteAAMotifs -f /data/data/attributes.txt -c /data/referenc
 PlotRiboDensityAroundTriAAMotifs -i /data/data/c0-RiboDensityAroundTripleteAAMotifs_PPP_motifDensity_dataframe.txt -o /data/data/c1-PPP_plot -g col,d14 -r col__d14 --mode mean
 
 # c2 ribodensity around aa motifssh
+## 这个是用户自己提供的，比如说之前你找到的那些可能富集更多核糖体的motif，需要自己构建
 RiboDensityAroundTripleteAAMotifs -f /data/data/attributes.txt -c /data/reference/tair_analy/longest.transcripts.info.txt -o  /data/data/c2-RiboDensityAroundTripleteAAMotifs -M counts -S /data/select_trans.txt -l 100 -n 10 --table 1 -F /data/reference/tair_analy/transcript_cds_sequences.fa --motifList1 /data/reference/tri_AA_motifs1.txt --motifList2 /data/reference/tri_AA_motifs2.txt
 
 #c2b plot ribo density around aa motifs
@@ -725,6 +728,7 @@ cAI -i /data/reference/tair_analy/transcript_cds_sequences_tAI.fa -o /data/data/
 cAIPlot -i /data/data/c8-cAI_local_cAI_dataframe.txt -o /data/data/c9-cAIPlot -u 0 -d 500 --mode all --start 5 --window 7 --step 1
 
 # d1 hydropath charge
+## 用户提供：hydropathy_index.txt AA_charge.txt 
 hydropathyCharge  -i /data/reference/tair_analy/transcript_cds_sequences_tAI.fa -o /data/data/d1-hydropathyCharge -t select_gene --index /data/reference/hydropathy_index.txt -u 0 -d 500 --table 1
 
 # d3 plot hydropath charge
