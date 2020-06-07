@@ -669,21 +669,46 @@ volumes:
       vars_iter:
         - '${fastq_files}'
 
-          commands:
-      - >-
+#ribominer-part2
 #a6 ribodensitydiffrance
     commands:
       - >-
         cd ${home_dir}/a9-metaplots/ && echo -e "#SampleName\tAlignmentFile\tStranded\tReadLength\tP-site" > attributes.txt && for i in `ls |grep _pre_config.txt`;do echo $i;grep -v "#" ${i}|grep .>> attributes.txt ;done && awk 'BEGIN {FS="\t"; OFS="\t"} {print $2, $4, $5, $1}' attributes.txt > 
-        attributes2.txt && mv  attributes2.txt  attributes.txt;
-
+        attributes2.txt && mv  attributes2.txt  attributes.txt && sed -i 's/Aligned.toTranscriptome.out.bam/Aligned.toTranscriptome.out.sorted.bam/g' attributes.txt ;
+#ribominer-part3
+# ribodensityofdiffframes.
     commands:
-      - >-
-        mkdir -p ${home_dir}/a11-ribodensity && RiboDensityOfDiffFrames -f ${home_dir}/a9-metaplots/attributes.txt -c /home/sfs/${JobName}/a8-Ribominer_annot/longest.transcripts.info.txt -o ${home_dir}/a11-ribodensity/a6-ribo-density-diff-frame
+      - 'mkdir -p ${home_dir}/a11-ribodensity && /root/miniconda3/bin/RiboDensityOfDiffFrames -f ${home_dir}/a9-metaplots/attributes.txt -c ${home_dir}/a8-Ribominer_annot/longest.transcripts.info.txt -o ${home_dir}/a11-ribodensity/a6-ribo-density-diff-frame'
+    
+#ribominer-part4
+#a8 dan contamination
+    commands_iter:
+      command: |
+        mkdir -p ${home_dir}/a12-dna-contamination && /root/miniconda3/bin/StatisticReadsOnDNAsContam -i  ${bam_files}/${1}Aligned.sortedByCoord.out.bam  -g /home/obs/${obs_reference_gtf} -o  ${home_dir}/a12-dna-contamination/${1}
+      vars_iter:
+        - '${fastq_files}'
+
+#ribominer-part5
+# a8 metagene
+    commands:
+          - >-
+            mkdir -p  ${home_dir}/a13-metagene && /root/miniconda3/bin/MetageneAnalysisForTheWholeRegions -f ${home_dir}/a9-metaplots/attributes.txt -c ${home_dir}/a8-Ribominer_annot/longest.transcripts.info.txt -o ${home_dir}/a13-metagene/a8-metagene -b 15,90,60 -l 100 -n 10 -m 1 -e 5 --plot yes && /root/miniconda3/bin/PlotMetageneAnalysisForTheWholeRegions -i ${home_dir}/a13-metagene/a8-metagene_scaled_density_dataframe.txt -o ${home_dir}/a13-metagene/a9-meta_gene_whole_regin -g ${gname} -r ${rname} -b 15,90,60 --mode all 
+
+#ribominer-part6
+#b1 meatgene
+#b2 metagene utr
+    commands:
+        - >-
+          mkdir -p ${home_dir}/a14-metageneAnalysis && /root/miniconda3/bin/MetageneAnalysis -f ${home_dir}/a9-metaplots/attributes.txt -c ${home_dir}/a8-Ribominer_annot/longest.transcripts.info.txt -o ${home_dir}/a14-metageneAnalysis/b1-meat-cds -U codon -M RPKM -u 0 -d 500 -l 100 -n 10 -m 1 -e 5 --norm yes -y 100 --CI 0.95 --type CDS && /root/miniconda3/bin/MetageneAnalysis -f ${home_dir}/a9-metaplots/attributes.txt -c ${home_dir}/a8-Ribominer_annot/longest.transcripts.info.txt -o ${home_dir}/a14-metageneAnalysis/b2-meat-utr -U nt -M RPKM -u 100 -d 100 -l 100 -n 10 -m 1 -e 5 --norm yes -y 50 --CI 0.95 --type UTR
 
 
-          commands:
-      - >-
+
+# ribominer-part7
+# b3 polarity calculation
+    commands:
+        - >-      
+        mkdir -p ${home_dir}/a15-polarity && /root/miniconda3/bin/PolarityCalculation -f ${home_dir}/a9-metaplots/attributes.txt -c ${home_dir}/a8-Ribominer_annot/longest.transcripts.info.txt -o ${home_dir}/a15-polarity/b3-polarity -n 64 && 
+        /root/miniconda3/bin/PlotPolarity -i ${home_dir}/a15-polarity/b3-polarity_polarity_dataframe.txt -o ${home_dir}/a15-polarity/b4-plotpolarity -g ${gname} -r ${rname} -y 5 
 
 
           commands:
