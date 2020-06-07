@@ -632,7 +632,55 @@ volumes:
 #a1 annotation
     commands:
       - >-
-      mkdir -p /home/sfs/${JobName}/a8-Ribominer_annot &&   /root/miniconda3/bin/OutputTranscriptInfo -c /home/sfs/${JobName}/a7-RiboCode_annot/transcripts_cds.txt -g /data/reference/tair/Arabidopsis_thaliana.TAIR10.43.gtf -f /home/sfs/${JobName}/a7-RiboCode_annot/transcripts_sequence.fa -o /home/sfs/${JobName}/a8-Ribominer_annot/longest.transcripts.info.txt -O /home/sfs/${JobName}/a8-Ribominer_annot/all.transcripts.info.txt
+      mkdir -p /home/sfs/${JobName}/a8-Ribominer_annot &&   /root/miniconda3/bin/OutputTranscriptInfo -c /home/sfs/${JobName}/a7-RiboCode_annot/transcripts_cds.txt -g /home/obs/${obs_reference_gtf} -f /home/sfs/${JobName}/a7-RiboCode_annot/transcripts_sequence.fa -o /home/sfs/${JobName}/a8-Ribominer_annot/longest.transcripts.info.txt -O /home/sfs/${JobName}/a8-Ribominer_annot/all.transcripts.info.txt
+
+#a2 transcript
+    commands:
+      - >-
+/root/miniconda3/bin/GetProteinCodingSequence -i /home/sfs/${JobName}/a7-RiboCode_annot/transcripts_sequence.fa  -c /home/sfs/${JobName}/a8-Ribominer_annot/longest.transcripts.info.txt -o /home/sfs/${JobName}/a8-Ribominer_annot/transcript --mode whole --table 1 
+          commands:
+      - >-
+
+#a3 utr
+    commands:
+      - >-
+/root/miniconda3/bin/GetUTRSequences -i /home/sfs/${JobName}/a8-Ribominer_annot/transcript_transcript_sequences.fa -o /home/sfs/${JobName}/a8-Ribominer_annot/utr -c /home/sfs/${JobName}/a7-RiboCode_annot/transcripts_cds.txt
+
+#a4 metaplot
+    commands_iter:
+      command: |
+        mkdir -p /home/sfs/${JobName}/a9-metaplots && /root/miniconda3/bin/metaplots -a /home/sfs/${JobName}/a7-RiboCode_annot -r ${bam_files}/${1}Aligned.toTranscriptome.out.bam -o /home/sfs/${JobName}/a9-metaplots/${1}
+      vars_iter:
+        - '${fastq_files}'
+
+# sort and index.
+    commands_iter:
+      command: |
+        samtools sort -T ${bam_files}/${1}Aligned.toTranscriptome.tmp.bam -o ${bam_files}/${1}Aligned.toTranscriptome.out.sorted.bam ${bam_files}/${1}Aligned.toTranscriptome.out.bam && samtools index ${bam_files}/${1}Aligned.toTranscriptome.out.sorted.bam && samtools index ${bam_files}/${1}Aligned.sortedByCoord.out.bam 
+      vars_iter:
+        - '${fastq_files}'     
+
+
+#a5 periodicity
+# 是的是的，需要index bam
+    commands_iter:
+      command: |
+        mkdir -p /home/sfs/${JobName}/a10-periodicity && /root/miniconda3/bin/Periodicity -i ${bam_files}/${1}Aligned.toTranscriptome.out.sorted.bam -a /home/sfs/${JobName}/a7-RiboCode_annot -o /home/sfs/${JobName}/a10-periodicity/${1}_periodicity -c /home/sfs/${JobName}/a8-Ribominer_annot/longest.transcripts.info.txt -L 25 -R 35
+      vars_iter:
+        - '${fastq_files}'
+
+          commands:
+      - >-
+#a6 ribodensitydiffrance
+RiboDensityOfDiffFrames -f /data/data/attributes.txt -c /data/reference/tair_analy/longest.transcripts.info.txt -o /data/data/a6-ribo-density-diff-frame
+
+
+          commands:
+      - >-
+
+
+          commands:
+      - >-
 
 ```
 
