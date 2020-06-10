@@ -25,6 +25,10 @@
 * [Ribo-seq-Xtail](#Ribo-seq-Xtail) 
 * [Ribo-seq Ribocode](#Ribo-seq-Ribocode) 
 * [Ribo-seq RiboMiner](#Ribo-seq-RiboMiner) 
+* [blastn](#blastn)  
+* [blastp](#blastp)   
+* [alternative splicing](#alternative-splicing)  
+* [Chip-seq](#Chip-seq)  
 * [bash-with-parameters](#bash-with-parameters)
 * [对字符串进行分割成数组](#对字符串进行分割成数组) 
 
@@ -961,6 +965,35 @@ mkdir -p /home/sfs/a5-rmrRNA && \ mkdir -p /home/sfs/a5-rmrRNA/nonrRNA && \ echo
 obsutil config -i=5ULAGR0CWKBAEDV57Y6P -k=gvroYZE9uUmp3igpEPAEQRfuQzUjcVQn9kBoHz02 -e=https://obs.cn-north-4.myhuaweicloud.com&& obsutil mkdir -p obs://hw-gcs-logo-cn-north-4-06a54be3938010610f01c00da675d700/output/arabidopsis-smallrnaseq/ && obsutil cp -r -f /home/sfs/arabidopsis-smallrnaseq/ obs://hw-gcs-logo-cn-north-4-06a54be3938010610f01c00da675d700/output/arabidopsis-smallrnaseq/ && rm -rf /home/sfs/arabidopsis-smallrnaseq && echo Check sfs && ls -al /home/sfs && ls -al /home/obs/output
 ```
 
+## blastn
+```sh
+blastn  -query dna/H1N1-HA.fasta  -subject   dna/H7N9-HA.fasta   -out output/blastn
+```
+
+## blastp
+```sh
+blastp  -query protein/VIM.fasta  -subject   protein/NMD.fasta   -out output/blastp
+```
+
+## alternative splicing
+```sh
+echo "input/SRR065544_chrX.bam" > input/b1.txt
+echo "input/SRR065545_chrX.bam" > input/b2.txt
+python2 /usr/local/rMATS-turbo-Linux-UCS4/rmats.py \
+    --b1 input/b1.txt --b2 input/b2.txt --gtf input/Mus_musculus_chrX.gtf --od output \
+    -t paired --readLength 35
+```
+
+## Chip-seq
+```sh
+makeTagDirectory input/ip    input/ip.part.bam
+makeTagDirectory input/input input/input.part.bam
+After this step, input/ip & input/input will contain several .tags.tsv files, as well as a file named tagInfo.txt. This file contains information about your sequencing run, including the total number of tags considered. This file is used by later peak-calling programs to quickly reference information about the experiment. Then we call peak by using these tag file:
+
+findPeaks input/ip/ -style factor -o output/part.peak -i input/input/
+
+findMotifsGenome.pl output/part.peak sacCer2 output/part.motif.output -len 8
+```
 
 ## bash with parameters
 
