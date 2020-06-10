@@ -45,6 +45,7 @@ docker push swr.cn-north-4.myhuaweicloud.com/gangxu/ribocode_ribominer:1.0
 docker push swr.cn-north-4.myhuaweicloud.com/gangxu/htseq:1.0
 docker push swr.cn-north-4.myhuaweicloud.com/gangxu/ribominer:1.0
 docker tag swr.cn-north-4.myhuaweicloud.com/gangxu/htseq:1.0 gangxu/htseq:1.0
+docker push swr.cn-north-4.myhuaweicloud.com/gangxu/blast:1.0
 
 docker push gangxu/htseq:1.0
 
@@ -297,6 +298,26 @@ docker rm base
 docker run -dt --name samtools -v /home/xugang/singularity_image:/home/sfs swr.cn-north-4.myhuaweicloud.com/gangxu/samtools2bcftools:1.0
 samtools exec -it samtools bash
 ```
+
+## blast
+```sh
+docker tag bioinfo_tsinghua:latest swr.cn-north-4.myhuaweicloud.com/gangxu/blast:1.0
+
+docker push swr.cn-north-4.myhuaweicloud.com/gangxu/blast:1.0
+
+sudo apt-get install ncbi-blast+
+docker exec -it 
+
+```
+
+## Chip-seq
+```sh
+docker tag bioinfo_tsinghua:latest swr.cn-north-4.myhuaweicloud.com/gangxu/chip-seq:1.0
+ 
+docker push swr.cn-north-4.myhuaweicloud.com/gangxu/chip-seq:1.0
+```
+
+## 
 
 ## 镜像的导出
 
