@@ -711,8 +711,109 @@ volumes:
         /root/miniconda3/bin/PlotPolarity -i ${home_dir}/a15-polarity/b3-polarity_polarity_dataframe.txt -o ${home_dir}/a15-polarity/b4-plotpolarity -g ${gname} -r ${rname} -y 5 
 
 
+
+
+
+# ribominer-part8
+#b5 transcript enrich 
+#b6 ribosome aa
+#b7 plot ribodensity at each aa or codon
           commands:
       - >-
+      mkdir -p ${home_dir}/a16-ribodensitycodon &&  
+      /root/miniconda3/bin/RiboDensityForSpecificRegion -f ${home_dir}/a9-metaplots/attributes.txt -c ${home_dir}/a8-Ribominer_annot/longest.transcripts.info.txt -o ${home_dir}/a16-ribodensitycodon/b5-transcript-enrich -U codon -M RPKM -L 25 -R 75 && 
+      cut -f 1 ${home_dir}/a8-Ribominer_annot/longest.transcripts.info.txt |sed '1d'  > ${home_dir}/a8-Ribominer_annot/select_trans.txt && /root/miniconda3/bin/RiboDensityAtEachKindAAOrCodon -f ${home_dir}/a9-metaplots/attributes.txt -c ${home_dir}/a8-Ribominer_annot/longest.transcripts.info.txt -o ${home_dir}/a16-ribodensitycodon/b6-ribosome-aa -M counts -S ${home_dir}/a8-Ribominer_annot/select_trans.txt  -l 100 -n 10 --table 1 -F ${home_dir}/a8-Ribominer_annot/transcript_cds_sequences.fa && 
+      /root/miniconda3/bin/PlotRiboDensityAtEachKindAAOrCodon -i ${home_dir}/a16-ribodensitycodon/b6-ribosome-aa_all_codon_density.txt -o ${home_dir}/a16-ribodensitycodon/b7-PlotRiboDensityAtEachKindAAOrCodon -g ${gname} -r ${rname} --level AA
+
+# ribominer-part9
+#b8 pausingscore
+#b9 processing pausingscore
+
+          commands:
+      - >-
+       mkdir -p ${home_dir}/a17-PausingScore && 
+      /root/miniconda3/bin/PausingScore -f ${home_dir}/a9-metaplots/attributes.txt -c ${home_dir}/a8-Ribominer_annot/longest.transcripts.info.txt -o  ${home_dir}/a17-PausingScore/b8-PausingScore -M counts -S ${home_dir}/a8-Ribominer_annot/select_trans.txt  -l 100 -n 10 --table 1 -F  ${home_dir}/a8-Ribominer_annot/transcript_cds_sequences.fa && 
+      /root/miniconda3/bin/ProcessPausingScore -i ${pause_name} -o ${home_dir}/a17-PausingScore/b9-ProcessPausingScore -g ${gname} -r ${rname} --mode raw --ratio_filter 2 --pausing_score_filter 0.5
+
+# ribominer-part10
+# c0 ribodenstiy around tripleaamotif
+# c1 plotribodensity around tria motifs.
+          commands:
+      - >-
+      mkdir -p ${home_dir}/a18-AroundTriplete/ && 
+      /root/miniconda3/bin/RiboDensityAroundTripleteAAMotifs -f ${home_dir}/a9-metaplots/attributes.txt -c ${home_dir}/a8-Ribominer_annot/longest.transcripts.info.txt -o ${home_dir}/a18-AroundTriplete/c0-RiboDensityAroundTripleteAAMotifs_PPP -M counts -S ${home_dir}/a8-Ribominer_annot/select_trans.txt -l 100 -n 10 --table 1 -F ${home_dir}/a8-Ribominer_annot/transcript_cds_sequences.fa --type2 PPP --type1 PP && 
+      /root/miniconda3/bin/PlotRiboDensityAroundTriAAMotifs -i ${home_dir}/a18-AroundTriplete/c0-RiboDensityAroundTripleteAAMotifs_PPP_motifDensity_dataframe.txt -o ${home_dir}/a18-AroundTriplete/c1-PPP_plot -g ${gname} -r ${rname} --mode mean
+
+# ribominer-part11
+# c2 ribodensity around aa motifssh
+# /Users/xugang/Documents/data/reference/
+## 这个是用户自己提供的，比如说之前你找到的那些可能富集更多核糖体的motif，需要自己构建
+#c2b plot ribo density around aa motifs
+          commands:
+      - >-
+      mkdir -p ${home_dir}/a19-AroundTripleteAAMotifs/ && 
+      /root/miniconda3/bin/RiboDensityAroundTripleteAAMotifs -f ${home_dir}/a9-metaplots/attributes.txt -c ${home_dir}/a8-Ribominer_annot/longest.transcripts.info.txt -o  ${home_dir}/a19-AroundTripleteAAMotifs/c2-RiboDensityAroundTripleteAAMotifs -M counts -S ${home_dir}/a8-Ribominer_annot/select_trans.txt -l 100 -n 10 --table 1 -F ${home_dir}/a8-Ribominer_annot/transcript_cds_sequences.fa --motifList1 ${home_dir}/ribominer-index/tri_AA_motifs1.txt --motifList2 ${home_dir}/ribominer-index/tri_AA_motifs2.txt && 
+      /root/miniconda3/bin/PlotRiboDensityAroundTriAAMotifs -i ${home_dir}/a19-AroundTripleteAAMotifs/c2-RiboDensityAroundTripleteAAMotifs_motifDensity_dataframe.txt -o ${home_dir}/a19-AroundTripleteAAMotifs/c2b-PPP_plot -g -g ${gname} -r ${rname} --mode mean
+
+
+# ribominer-part12
+#c3 rpf dist
+# c4 gcc
+# c5 plot gcc
+## normal mode
+## frames mode
+          commands:
+      - >-
+      mkdir -p ${home_dir}/a20-RPFdist-GCContent/ && 
+          /root/miniconda3/bin/RPFdist -f ${home_dir}/a9-metaplots/attributes.txt -c ${home_dir}/a8-Ribominer_annot/longest.transcripts.info.txt -o ${home_dir}/a20-RPFdist-GCContent/c3-RPFdist -M counts -S ${home_dir}/a8-Ribominer_annot/select_trans.txt -l 100 -n 10 -m 1 -e 5 &&
+          /root/miniconda3/bin/GCContent -i ${home_dir}/a8-Ribominer_annot/transcript_cds_sequences.fa -o ${home_dir}/a20-RPFdist-GCContent/c4-GCContent-normal --mode normal &&
+          /root/miniconda3/bin/GCContent -i ${home_dir}/a8-Ribominer_annot/transcript_cds_sequences.fa -o ${home_dir}/a20-RPFdist-GCContent/c4-GCContent-frames --mode frames &&
+          /root/miniconda3/bin/PlotGCContent -i ${home_dir}/a20-RPFdist-GCContent/c4-GCContent-normal_GC_content.txt -o ${home_dir}/a20-RPFdist-GCContent/c5-PlotGCContent-normal --mode normal &&
+          /root/miniconda3/bin/PlotGCContent -i ${home_dir}/a20-RPFdist-GCContent/c4-GCContent-frames_GC_content_frames.txt -o ${home_dir}/a20-RPFdist-GCContent/c5-PlotGCContent-frames --mode frames
+
+
+# ribominer-part13
+# c6 tAI
+#c7 plot tAI
+#c8 cAI
+#c9 cAI plot
+
+          commands:
+      - >-
+      mkdir -p ${home_dir}/a21-tAI-cAI/ && /root/miniconda3/bin/tAI -i ${home_dir}/a8-Ribominer_annot/transcript_cds_sequences.fa -t species -o ${home_dir}/a21-tAI-cAI/c6-tAI -u 0 -d 500 --table 1 -N /home/obs/${obs_reference_tRNA_confidence}  &&
+       /root/miniconda3/bin/tAIPlot -i ${home_dir}/a21-tAI-cAI/c6-tAI_tAI_dataframe.txt -o ${home_dir}/a21-tAI-cAI/c7-tAIPlot -u 0 -d 500 --mode all --start 5 --window 7 --step 1 &&
+       /root/miniconda3/bin/cAI -i ${home_dir}/a8-Ribominer_annot/transcript_cds_sequences.fa -o ${home_dir}/a21-tAI-cAI//c8-cAI -t tair -u 0 -d 500 --reference ${home_dir}/a8-Ribominer_annot/longest.transcripts.info.txt  && 
+       /root/miniconda3/bin/cAIPlot -i ${home_dir}/a21-tAI-cAI/c8-cAI_local_cAI_dataframe.txt -o ${home_dir}/a21-tAI-cAI/c9-cAIPlot -u 0 -d 500 --mode all --start 5 --window 7 --step 1
+
+# ribominer-part14
+# d1 hydropath charge
+## 用户提供：hydropathy_index.txt AA_charge.txt 
+# d3 plot hydropath charge
+# d4 plot charges
+          commands:
+      - >-
+      mkdir -p ${home_dir}/a22-hydropath/ && \
+      /root/miniconda3/bin/hydropathyCharge  -i ${home_dir}/a8-Ribominer_annot/transcript_cds_sequences.fa -o ${home_dir}/a22-hydropath/d1-hydropathyCharge -t select_gene --index /home/obs/${obs_reference_hydropath} -u 0 -d 500 --table 1 && \
+      /root/miniconda3/bin/PlotHydropathyCharge -i ${home_dir}/a22-hydropath/d1-hydropathyCharge_values_dataframe.txt -o ${home_dir}/a22-hydropath/d3-PlotHydropathyCharge  -u 0 -d 500 --mode all --ylab "Average Hydrophobicity" && \
+      /root/miniconda3/bin/PlotHydropathyCharge -i ${home_dir}/a22-hydropath/d2-charge_values_dataframe.txt -o ${home_dir}/a22-hydropath/d4-Plotcharges -u 0 -d 500 --mode all --ylab "Average Charges"
+
+# ribominer-part15
+#d5 ribodensity at each postion
+#d6 enrichment mean density
+#d7 enrichment analysis
+#d8 plot enrichment raito.
+
+          commands:
+      - >-
+      mkdir -p ${home_dir}/a23-densityenrich/ && 
+      /root/miniconda3/bin/RiboDensityAtEachPosition -c ${home_dir}/a8-Ribominer_annot/longest.transcripts.info.txt -f ${home_dir}/a9-metaplots/attributes.txt -o ${home_dir}/a23-densityenrich/d5-RiboDensityAtEachPosition -U codon && \
+      /root/miniconda3/bin/enrichmentMeanDensity -i  ${enrichmentMeanDensity_name} -o ${home_dir}/a23-densityenrich/d6-enrichmentMeanDensity && \
+
+      /root/miniconda3/bin/EnrichmentAnalysis --ctrl ${home_dir}/a23-densityenrich/${enrichmentMeanDensity_ctrl} --treat ${home_dir}/a23-densityenrich/${enrichmentMeanDensity_case} -c ${home_dir}/a8-Ribominer_annot/longest.transcripts.info.txt -o ${home_dir}/a23-densityenrich/d7-EnrichmentAnalysis -U codon -M RPKM -l 150 -n 10 -m 1 -e 30 --CI 0.95 -u 0 -d 500 && \
+
+      /root/miniconda3/bin/PlotEnrichmentRatio -i ${home_dir}/a23-densityenrich/d7-EnrichmentAnalysis_enrichment_dataframe.txt -o ${home_dir}/a23-densityenrich/d8-PlotEnrichmentRatio -u 0 -d 500 --unit codon --mode all
+
+
 
 ```
 
@@ -721,13 +822,13 @@ volumes:
 prepare_transcripts -g /data/reference/tair/Arabidopsis_thaliana.TAIR10.43.gtf -f /data/reference/tair/Arabidopsis_thaliana.TAIR10.dna.toplevel.fa -o /data/reference/RiboCode_annot
 
 #a1 annotation
-OutputTranscriptInfo -c /data/reference/RiboCode_annot/transcripts_cds.txt -g /data/reference/tair/Arabidopsis_thaliana.TAIR10.43.gtf -f /data/reference/RiboCode_annot/transcripts_sequence.fa -o /home/sfs/${JobName}/a8-Ribominer_annot/longest.transcripts.info.txt -O /home/sfs/${JobName}/a8-Ribominer_annot/all.transcripts.info.txt
+OutputTranscriptInfo -c /data/reference/RiboCode_annot/transcripts_cds.txt -g /data/reference/tair/Arabidopsis_thaliana.TAIR10.43.gtf -f /data/reference/RiboCode_annot/transcripts_sequence.fa -o ${home_dir}/a8-Ribominer_annot/longest.transcripts.info.txt -O ${home_dir}/a8-Ribominer_annot/all.transcripts.info.txt
 
 #a2 transcript
-GetProteinCodingSequence -i /data/reference/RiboCode_annot/transcripts_sequence.fa  -c /home/sfs/${JobName}/a8-Ribominer_annot/longest.transcripts.info.txt -o /home/sfs/${JobName}/a8-Ribominer_annot/transcript --mode whole --table 1 
+GetProteinCodingSequence -i /data/reference/RiboCode_annot/transcripts_sequence.fa  -c ${home_dir}/a8-Ribominer_annot/longest.transcripts.info.txt -o ${home_dir}/a8-Ribominer_annot/transcript --mode whole --table 1 
 
 #a3 utr
-GetUTRSequences -i /home/sfs/${JobName}/a8-Ribominer_annot/transcript_transcript_sequences.fa -o /home/sfs/${JobName}/a8-Ribominer_annot/utr -c /data/reference/tair_ribocode/tair/transcripts_cds.txt
+GetUTRSequences -i ${home_dir}/a8-Ribominer_annot/transcript_transcript_sequences.fa -o ${home_dir}/a8-Ribominer_annot/utr -c /data/reference/tair_ribocode/tair/transcripts_cds.txt
 
 #a4 metaplot
 metaplots -a /data/reference/RiboCode_annot -r /data/data/colAligned.toTranscriptome.out.bam -o /data/data/a4-col
@@ -735,70 +836,70 @@ metaplots -a /data/reference/RiboCode_annot -r /data/data/d14Aligned.toTranscrip
 
 #a5 periodicity
 # 是的是的，需要index bam
-Periodicity -i /data/data/colAligned.toTranscriptome.sort.bam -a /data/reference/RiboCode_annot -o /data/data/a5-col_periodicity -c /home/sfs/${JobName}/a8-Ribominer_annot/longest.transcripts.info.txt -L 25 -R 35
-Periodicity -i /data/data/d14Aligned.toTranscriptome.sort.bam -a /data/reference/RiboCode_annot -o /data/data/a5-d14_periodicity -c /home/sfs/${JobName}/a8-Ribominer_annot/longest.transcripts.info.txt -L 25 -R 35
+Periodicity -i /data/data/colAligned.toTranscriptome.sort.bam -a /data/reference/RiboCode_annot -o /data/data/a5-col_periodicity -c ${home_dir}/a8-Ribominer_annot/longest.transcripts.info.txt -L 25 -R 35
+Periodicity -i /data/data/d14Aligned.toTranscriptome.sort.bam -a /data/reference/RiboCode_annot -o /data/data/a5-d14_periodicity -c ${home_dir}/a8-Ribominer_annot/longest.transcripts.info.txt -L 25 -R 35
 
 #a6 ribodensitydiffrance
-RiboDensityOfDiffFrames -f /data/data/attributes.txt -c /home/sfs/${JobName}/a8-Ribominer_annot/longest.transcripts.info.txt -o /data/data/a6-ribo-density-diff-frame
+RiboDensityOfDiffFrames -f ${home_dir}/a9-metaplots/attributes.txt -c ${home_dir}/a8-Ribominer_annot/longest.transcripts.info.txt -o /data/data/a6-ribo-density-diff-frame
 
 #a7 dan contamination
 StatisticReadsOnDNAsContam -i  /data/data/colAligned.sortedByCoord.out.bam  -g /data/reference/tair/Arabidopsis_thaliana.TAIR10.43.gtf -o  /data/data/a7-dna-contamination.col 
 StatisticReadsOnDNAsContam -i  /data/data/d14Aligned.sortedByCoord.out.bam  -g /data/reference/tair/Arabidopsis_thaliana.TAIR10.43.gtf -o  /data/data/a7-dna-contamination.d14  
 
 # a8 metagene
-MetageneAnalysisForTheWholeRegions -f /data/data/attributes.txt -c /home/sfs/${JobName}/a8-Ribominer_annot/longest.transcripts.info.txt -o /data/data/a8-metagene -b 15,90,60 -l 100 -n 10 -m 1 -e 5 --plot yes
+MetageneAnalysisForTheWholeRegions -f ${home_dir}/a9-metaplots/attributes.txt -c ${home_dir}/a8-Ribominer_annot/longest.transcripts.info.txt -o /data/data/a8-metagene -b 15,90,60 -l 100 -n 10 -m 1 -e 5 --plot yes
 
 # a9 plotmetagene analysis
 PlotMetageneAnalysisForTheWholeRegions -i /data/data/a8-metagene_scaled_density_dataframe.txt -o /data/data/a9-meta_gene_whole_regin -g col,d14 -r col__d14 -b 15,90,60 --mode all 
 
 #b1 meatgene
-MetageneAnalysis -f /data/data/attributes.txt -c /home/sfs/${JobName}/a8-Ribominer_annot/longest.transcripts.info.txt -o /data/data/b1-meat-cds -U codon -M RPKM -u 0 -d 500 -l 100 -n 10 -m 1 -e 5 --norm yes -y 100 --CI 0.95 --type CDS
+MetageneAnalysis -f ${home_dir}/a9-metaplots/attributes.txt -c ${home_dir}/a8-Ribominer_annot/longest.transcripts.info.txt -o /data/data/b1-meat-cds -U codon -M RPKM -u 0 -d 500 -l 100 -n 10 -m 1 -e 5 --norm yes -y 100 --CI 0.95 --type CDS
 
 #b2 metagene utr
-MetageneAnalysis -f /data/data/attributes.txt -c /home/sfs/${JobName}/a8-Ribominer_annot/longest.transcripts.info.txt -o /data/data/b2-meat-utr -U nt -M RPKM -u 100 -d 100 -l 100 -n 10 -m 1 -e 5 --norm yes -y 50 --CI 0.95 --type UTR
+MetageneAnalysis -f ${home_dir}/a9-metaplots/attributes.txt -c ${home_dir}/a8-Ribominer_annot/longest.transcripts.info.txt -o /data/data/b2-meat-utr -U nt -M RPKM -u 100 -d 100 -l 100 -n 10 -m 1 -e 5 --norm yes -y 50 --CI 0.95 --type UTR
 
 # b3 polarity calculation
-PolarityCalculation -f /data/data/attributes.txt -c /home/sfs/${JobName}/a8-Ribominer_annot/longest.transcripts.info.txt -o /data/data/b3-polarity -n 64
+PolarityCalculation -f ${home_dir}/a9-metaplots/attributes.txt -c ${home_dir}/a8-Ribominer_annot/longest.transcripts.info.txt -o /data/data/b3-polarity -n 64
 
 #b4 polt polarity
 PlotPolarity -i /data/data/b3-polarity_polarity_dataframe.txt -o /data/data/b4-plotpolarity -g col,d14 -r col__d14 -y 5 
 
 
 #b5 transcript enrich 
-RiboDensityForSpecificRegion -f /data/data/attributes.txt -c /home/sfs/${JobName}/a8-Ribominer_annot/longest.transcripts.info.txt -o /data/data/b5-transcript-enrich -U codon -M RPKM -L 25 -R 75
+RiboDensityForSpecificRegion -f ${home_dir}/a9-metaplots/attributes.txt -c ${home_dir}/a8-Ribominer_annot/longest.transcripts.info.txt -o /data/data/b5-transcript-enrich -U codon -M RPKM -L 25 -R 75
 
 #b6 ribosome aa
 ## select_trans.txt是转录本ID么师兄 如果没有的话应该会先和longest做交集的
-RiboDensityAtEachKindAAOrCodon -f /data/data/attributes.txt -c /home/sfs/${JobName}/a8-Ribominer_annot/longest.transcripts.info.txt -o /data/data/b6-ribosome-aa -M counts -S /data/select_trans.txt -l 100 -n 10 --table 1 -F /home/sfs/${JobName}/a8-Ribominer_annot/transcript_cds_sequences.fa 
+RiboDensityAtEachKindAAOrCodon -f ${home_dir}/a9-metaplots/attributes.txt -c ${home_dir}/a8-Ribominer_annot/longest.transcripts.info.txt -o /data/data/b6-ribosome-aa -M counts -S /data/select_trans.txt -l 100 -n 10 --table 1 -F ${home_dir}/a8-Ribominer_annot/transcript_cds_sequences.fa 
 
 #b7 plot ribodensity at each aa or codon
 PlotRiboDensityAtEachKindAAOrCodon -i /data/data/b6-ribosome-aa_all_codon_density.txt -o /data/data/b7-PlotRiboDensityAtEachKindAAOrCodon -g col,d14 -r col__d14 --level AA
 
 #b8 pausingscore
-PausingScore -f /data/data/attributes.txt -c /home/sfs/${JobName}/a8-Ribominer_annot/longest.transcripts.info.txt -o  /data/data/b8-PausingScore -M counts -S /data/select_trans.txt  -l 100 -n 10 --table 1 -F  /home/sfs/${JobName}/a8-Ribominer_annot/transcript_cds_sequences.fa
+PausingScore -f ${home_dir}/a9-metaplots/attributes.txt -c ${home_dir}/a8-Ribominer_annot/longest.transcripts.info.txt -o  /data/data/b8-PausingScore -M counts -S /data/select_trans.txt  -l 100 -n 10 --table 1 -F  ${home_dir}/a8-Ribominer_annot/transcript_cds_sequences.fa
 
 #b9 processing pausingscore
 ProcessPausingScore -i /data/data/b8-PausingScore_col_pausing_score.txt,/data/data/b8-PausingScore_d14_pausing_score.txt -o /data/data/b9-ProcessPausingScore -g col,d14 -r col__d14 --mode raw --ratio_filter 2 --pausing_score_filter 0.5
 
 # c0 ribodenstiy around tripleaamotif
-RiboDensityAroundTripleteAAMotifs -f /data/data/attributes.txt -c /home/sfs/${JobName}/a8-Ribominer_annot/longest.transcripts.info.txt -o /data/data/c0-RiboDensityAroundTripleteAAMotifs_PPP -M counts -S /data/select_trans.txt -l 100 -n 10 --table 1 -F /home/sfs/${JobName}/a8-Ribominer_annot/transcript_cds_sequences.fa --type2 PPP --type1 PP
+RiboDensityAroundTripleteAAMotifs -f ${home_dir}/a9-metaplots/attributes.txt -c ${home_dir}/a8-Ribominer_annot/longest.transcripts.info.txt -o /data/data/c0-RiboDensityAroundTripleteAAMotifs_PPP -M counts -S /data/select_trans.txt -l 100 -n 10 --table 1 -F ${home_dir}/a8-Ribominer_annot/transcript_cds_sequences.fa --type2 PPP --type1 PP
 
 # c1 plotribodensity around tria motifs.
 PlotRiboDensityAroundTriAAMotifs -i /data/data/c0-RiboDensityAroundTripleteAAMotifs_PPP_motifDensity_dataframe.txt -o /data/data/c1-PPP_plot -g col,d14 -r col__d14 --mode mean
 
 # c2 ribodensity around aa motifssh
 ## 这个是用户自己提供的，比如说之前你找到的那些可能富集更多核糖体的motif，需要自己构建
-RiboDensityAroundTripleteAAMotifs -f /data/data/attributes.txt -c /home/sfs/${JobName}/a8-Ribominer_annot/longest.transcripts.info.txt -o  /data/data/c2-RiboDensityAroundTripleteAAMotifs -M counts -S /data/select_trans.txt -l 100 -n 10 --table 1 -F /home/sfs/${JobName}/a8-Ribominer_annot/transcript_cds_sequences.fa --motifList1 /data/reference/tri_AA_motifs1.txt --motifList2 /data/reference/tri_AA_motifs2.txt
+RiboDensityAroundTripleteAAMotifs -f ${home_dir}/a9-metaplots/attributes.txt -c ${home_dir}/a8-Ribominer_annot/longest.transcripts.info.txt -o  /data/data/c2-RiboDensityAroundTripleteAAMotifs -M counts -S /data/select_trans.txt -l 100 -n 10 --table 1 -F ${home_dir}/a8-Ribominer_annot/transcript_cds_sequences.fa --motifList1 /data/reference/tri_AA_motifs1.txt --motifList2 /data/reference/tri_AA_motifs2.txt
 
 #c2b plot ribo density around aa motifs
 PlotRiboDensityAroundTriAAMotifs -i /data/data/c2-RiboDensityAroundTripleteAAMotifs_motifDensity_dataframe.txt -o /data/data/c2b-PPP_plot -g col,d14 -r col__d14 --mode mean
 
 #c3 rpf dist
-RPFdist -f /data/data/attributes.txt -c /home/sfs/${JobName}/a8-Ribominer_annot/longest.transcripts.info.txt -o /data/data/c3-RPFdist -M counts -S /data/select_trans.txt -l 100 -n 10 -m 1 -e 5
+RPFdist -f ${home_dir}/a9-metaplots/attributes.txt -c ${home_dir}/a8-Ribominer_annot/longest.transcripts.info.txt -o /data/data/c3-RPFdist -M counts -S /data/select_trans.txt -l 100 -n 10 -m 1 -e 5
 
 # c4 gcc
-GCContent -i /home/sfs/${JobName}/a8-Ribominer_annot/transcript_cds_sequences.fa -o /data/data/c4-GCContent-normal --mode normal
-GCContent -i /home/sfs/${JobName}/a8-Ribominer_annot/transcript_cds_sequences.fa -o /data/data/c4-GCContent-frames --mode frames
+GCContent -i ${home_dir}/a8-Ribominer_annot/transcript_cds_sequences.fa -o /data/data/c4-GCContent-normal --mode normal
+GCContent -i ${home_dir}/a8-Ribominer_annot/transcript_cds_sequences.fa -o /data/data/c4-GCContent-frames --mode frames
 
 
 # c5 plot gcc
@@ -809,20 +910,20 @@ PlotGCContent -i /data/data/c4-GCContent-frames_GC_content_frames.txt -o /data/d
 
 
 # c6 tAI
-tAI -i /home/sfs/${JobName}/a8-Ribominer_annot/transcript_cds_sequences_tAI.fa -t tair -o /data/data/c6-tAI -u 0 -d 500 --table 1 -N /data/aratha/araTha1-tRNAs-confidence-set.out
+tAI -i ${home_dir}/a8-Ribominer_annot/transcript_cds_sequences_tAI.fa -t tair -o /data/data/c6-tAI -u 0 -d 500 --table 1 -N /data/aratha/araTha1-tRNAs-confidence-set.out
 
 #c7 plot tAI
 tAIPlot -i /data/data/c6-tAI_tAI_dataframe.txt -o /data/data/c7-tAIPlot -u 0 -d 500 --mode all --start 5 --window 7 --step 1
 
 #c8 cAI
-cAI -i /home/sfs/${JobName}/a8-Ribominer_annot/transcript_cds_sequences_tAI.fa -o /data/data/c8-cAI -t tair -u 0 -d 500 --reference /home/sfs/${JobName}/a8-Ribominer_annot/reference.fa
+cAI -i ${home_dir}/a8-Ribominer_annot/transcript_cds_sequences_tAI.fa -o /data/data/c8-cAI -t tair -u 0 -d 500 --reference ${home_dir}/a8-Ribominer_annot/reference.fa
 
 #c9 cAI plot
 cAIPlot -i /data/data/c8-cAI_local_cAI_dataframe.txt -o /data/data/c9-cAIPlot -u 0 -d 500 --mode all --start 5 --window 7 --step 1
 
 # d1 hydropath charge
 ## 用户提供：hydropathy_index.txt AA_charge.txt 
-hydropathyCharge  -i /home/sfs/${JobName}/a8-Ribominer_annot/transcript_cds_sequences_tAI.fa -o /data/data/d1-hydropathyCharge -t select_gene --index /data/reference/hydropathy_index.txt -u 0 -d 500 --table 1
+hydropathyCharge  -i ${home_dir}/a8-Ribominer_annot/transcript_cds_sequences_tAI.fa -o /data/data/d1-hydropathyCharge -t select_gene --index /data/reference/hydropathy_index.txt -u 0 -d 500 --table 1
 
 # d3 plot hydropath charge
 PlotHydropathyCharge -i /data/data/d1-hydropathyCharge_values_dataframe.txt -o /data/data/d3-PlotHydropathyCharge  -u 0 -d 500 --mode all --ylab "Average Hydrophobicity"
@@ -831,13 +932,13 @@ PlotHydropathyCharge -i /data/data/d1-hydropathyCharge_values_dataframe.txt -o /
 PlotHydropathyCharge -i /data/data/d2-charge_values_dataframe.txt -o /data/data/d4-Plotcharges -u 0 -d 500 --mode all --ylab "Average Charges"
 
 #d5 ribodensity at each postion
-RiboDensityAtEachPosition -c /home/sfs/${JobName}/a8-Ribominer_annot/longest.transcripts.info.txt -f /data/data/attributes.txt -o /data/data/d5-RiboDensityAtEachPosition -U codon
+RiboDensityAtEachPosition -c ${home_dir}/a8-Ribominer_annot/longest.transcripts.info.txt -f ${home_dir}/a9-metaplots/attributes.txt -o /data/data/d5-RiboDensityAtEachPosition -U codon
 
 #d6 enrichment mean density
 enrichmentMeanDensity -i /data/data/d5-RiboDensityAtEachPosition_col_cds_codon_density.txt,/data/data/d5-RiboDensityAtEachPosition_d14_cds_codon_density.txt -o /data/data/d6-enrichmentMeanDensity
 
 #d7 enrichment analysis
-EnrichmentAnalysis --ctrl /data/data/d5-RiboDensityAtEachPosition_col_cds_codon_density.txt --treat /data/data/d5-RiboDensityAtEachPosition_d14_cds_codon_density.txt -c /home/sfs/${JobName}/a8-Ribominer_annot/longest.transcripts.info.txt -o /data/data/d7-EnrichmentAnalysis -U codon -M RPKM -l 150 -n 10 -m 1 -e 30 --CI 0.95 -u 0 -d 500
+EnrichmentAnalysis --ctrl /data/data/d5-RiboDensityAtEachPosition_col_cds_codon_density.txt --treat /data/data/d5-RiboDensityAtEachPosition_d14_cds_codon_density.txt -c ${home_dir}/a8-Ribominer_annot/longest.transcripts.info.txt -o /data/data/d7-EnrichmentAnalysis -U codon -M RPKM -l 150 -n 10 -m 1 -e 30 --CI 0.95 -u 0 -d 500
 
 #d8 plot enrichment raito.
 PlotEnrichmentRatio -i /data/data/d7-EnrichmentAnalysis_enrichment_dataframe.txt -o /data/data/d8-PlotEnrichmentRatio -u 0 -d 500 --unit codon --mode all

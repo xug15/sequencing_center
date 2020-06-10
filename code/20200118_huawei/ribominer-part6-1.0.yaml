@@ -1,0 +1,104 @@
+version: genecontainer_0_1
+workflow:
+  ribominer2e24y:
+    tool: 'ribominer:1.0'
+    type: GCS.Job
+    resources:
+      memory: 8G
+      cpu: 2C
+    commands:
+      - >-
+        mkdir -p ${home_dir}/a14-metageneAnalysis && /root/miniconda3/bin/MetageneAnalysis -f ${home_dir}/a9-metaplots/attributes.txt -c ${home_dir}/a8-Ribominer_annot/longest.transcripts.info.txt -o ${home_dir}/a14-metageneAnalysis/b1-meat-cds -U codon -M RPKM -u 0 -d 500 -l 100 -n 10 -m 1 -e 5
+        --norm yes -y 100 --CI 0.95 --type CDS && /root/miniconda3/bin/MetageneAnalysis -f ${home_dir}/a9-metaplots/attributes.txt -c ${home_dir}/a8-Ribominer_annot/longest.transcripts.info.txt -o ${home_dir}/a14-metageneAnalysis/b2-meat-utr -U nt -M RPKM -u 100 -d 100 -l 100 -n 10 -m 1 -e 5 --norm
+        yes -y 50 --CI 0.95 --type UTR 
+    metadata:
+      Designer:
+        id: 7fee5a13-ea93-49e4-aad4-4a8628c54b61
+    depends: []
+volumes:
+  volumes-4ndk:
+    mount_path: '/home/sfs'
+    mount_from:
+      pvc: '${GCS_SFS_PVC}'
+  genobs:
+    mount_path: '/home/obs'
+    mount_from:
+      pvc: '${GCS_DATA_PVC}'
+inputs:
+  JobName:
+    type: string
+    default: ribominner
+    description: 任务的名称
+  AccessKey:
+    type: string
+    description: ak
+    default: 5ULAGR0CWKBAEDV57Y6P
+  SecretKey:
+    type: string
+    default: gvroYZE9uUmp3igpEPAEQRfuQzUjcVQn9kBoHz02
+    description: sk
+  endpoint:
+    type: string
+    default: 'https://obs.cn-north-4.myhuaweicloud.com'
+    description: endpoint
+  obs_location:
+    type: string
+    default: 'obs://hw-gcs-logo-cn-north-4-06a54be3938010610f01c00da675d700'
+    description: obs桶的名称
+  obs_data_path:
+    type: string
+    default: 'arabidopsis/huawei_file/Ribocode/'
+    description: 原始数据在桶中的相对路径
+  obs_reference_gtf:
+    type: string
+    default: 'arabidopsis/huawei_file/refrence/Arabidopsis_thaliana.TAIR10.43.gtf'
+    description: 物种的gtf 注释文件
+  obs_reference_fasta:
+    type: string
+    default: 'arabidopsis/huawei_file/refrence/Arabidopsis_thaliana.TAIR10.dna.toplevel.fa.clean.fa'
+    description: 物种的fasta 注释文件
+  obs_reference_rRNA_bowtie:
+    type: string
+    default: 'arabidopsis/huawei_file/refrence/tair_rRNA_bowtie_index/tair.rRNA.fa'
+    description: 物种的核糖体序列，bowtie建库数据的在obs中的相对路径
+  obs_reference_genomeFile_star:
+    type: string
+    default: 'arabidopsis/huawei_file/refrence/tair_star/'
+    description: 物种的基因组序列，STAR建库数据的在obs中的相对路径
+  fastq_files:
+    type: array
+    default:
+      - SRR1958702.fq
+      - SRR1958703.fq
+    description: 原始数据文件名称
+  bam_files:
+    type: string
+    default: '/home/obs/output/riboseq-ribocode/riboseq-ribocode/a6-map/'
+    description: bamfile
+  home_dir:
+    type: string
+    default: '/home/obs/output/ribominner/ribominner/'
+    description: bamfile
+  adapter:
+    type: string
+    default: CTGTAGGCACCATCAAT
+    description: read的接头序列
+  gname:
+    type: string
+    default: 'SRR1958702.fqAligned.toTranscriptome.out,SRR1958703.fqAligned.toTranscriptome.out'
+    description: gene name
+  rname:
+    type: string
+    default: SRR1958702.fqAligned.toTranscriptome.out__SRR1958703.fqAligned.toTranscriptome.out
+    description: replace name
+metadata:
+  relationships: {}
+  Designer:
+    7fee5a13-ea93-49e4-aad4-4a8628c54b61:
+      size:
+        width: 90
+        height: 60
+      position:
+        x: 30
+        y: 30
+      z: 1

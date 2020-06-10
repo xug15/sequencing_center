@@ -1,0 +1,256 @@
+version: genecontainer_0_1
+workflow:
+  ribominer2e24y:
+    tool: 'ribominer:1.0'
+    type: GCS.Job
+    resources:
+      memory: 8G
+      cpu: 2C
+    commands:
+      - >-
+        mkdir -p /home/sfs/${JobName}/a7-RiboCode_annot &&  /root/miniconda3/bin/prepare_transcripts -g /home/obs/${obs_reference_gtf} -f /home/obs/${obs_reference_fasta} -o /home/sfs/${JobName}/a7-RiboCode_annot && mkdir -p /home/sfs/${JobName}/a8-Ribominer_annot && 
+        /root/miniconda3/bin/OutputTranscriptInfo -c /home/sfs/${JobName}/a7-RiboCode_annot/transcripts_cds.txt -g /home/obs/${obs_reference_gtf} -f /home/sfs/${JobName}/a7-RiboCode_annot/transcripts_sequence.fa -o /home/sfs/${JobName}/a8-Ribominer_annot/longest.transcripts.info.txt -O
+        /home/sfs/${JobName}/a8-Ribominer_annot/all.transcripts.info.txt && /root/miniconda3/bin/GetProteinCodingSequence -i /home/sfs/${JobName}/a7-RiboCode_annot/transcripts_sequence.fa  -c /home/sfs/${JobName}/a8-Ribominer_annot/longest.transcripts.info.txt -o
+        /home/sfs/${JobName}/a8-Ribominer_annot/transcript --mode whole --table 1 && /root/miniconda3/bin/GetUTRSequences -i /home/sfs/${JobName}/a8-Ribominer_annot/transcript_transcript_sequences.fa -o /home/sfs/${JobName}/a8-Ribominer_annot/utr -c
+        /home/sfs/${JobName}/a7-RiboCode_annot/transcripts_cds.txt
+    metadata:
+      Designer:
+        id: 49aebcfa-b635-46ea-b555-b9fb7878d910
+    depends: []
+  ribominer1y064:
+    tool: 'ribominer:1.0'
+    type: GCS.Job
+    resources:
+      memory: 8G
+      cpu: 2C
+    commands_iter:
+      command: |
+        mkdir -p /home/sfs/${JobName}/a9-metaplots && /root/miniconda3/bin/metaplots -a /home/sfs/${JobName}/a7-RiboCode_annot -r ${bam_files}/${1}Aligned.toTranscriptome.out.bam -o /home/sfs/${JobName}/a9-metaplots/${1}
+      vars_iter:
+        - '${fastq_files}'
+    metadata:
+      Designer:
+        id: 946fffcf-0d6d-4ba4-8aa2-759977c8a647
+    depends:
+      - target: ribominer2e24y
+        type: whole
+  obs-util4asm3:
+    tool: 'obs-util:0.1.1'
+    type: GCS.Job
+    resources:
+      memory: 8G
+      cpu: 2C
+    commands:
+      - 'obsutil config -i=${AccessKey} -k=${SecretKey} -e=${endpoint}&& obsutil mkdir -p ${obs_location}/output/${JobName}/  && obsutil cp -r -f /home/sfs/${JobName}/ ${obs_location}/output/${JobName}/ && rm -rf /home/sfs/${JobName} && echo Check sfs && ls -al /home/sfs && ls -al /home/obs/output'
+    metadata:
+      Designer:
+        id: 8cf9ab93-b1e8-41ae-bf11-5265d18536b5
+    depends:
+      - target: ribominer4byu7
+        type: whole
+    description: 灏嗙粨鏋滅Щ鍔ㄥ洖obsvolumn涓�
+  samtools2b3y3xu:
+    tool: 'samtools2bcftools:1.0'
+    type: GCS.Job
+    resources:
+      memory: 24G
+      cpu: 3C
+    commands_iter:
+      command: >
+        samtools sort -T ${bam_files}/${1}Aligned.toTranscriptome.tmp.bam -o ${bam_files}/${1}Aligned.toTranscriptome.out.sorted.bam ${bam_files}/${1}Aligned.toTranscriptome.out.bam && samtools index ${bam_files}/${1}Aligned.toTranscriptome.out.sorted.bam && samtools index
+        ${bam_files}/${1}Aligned.sortedByCoord.out.bam #
+      vars_iter:
+        - '${fastq_files}'
+    metadata:
+      Designer:
+        id: 010bdeda-4cb8-45b0-b669-a7ff39533a7d
+    depends:
+      - target: ribominer1y064
+        type: whole
+  ribominer4byu7:
+    tool: 'ribominer:1.0'
+    type: GCS.Job
+    resources:
+      memory: 8G
+      cpu: 2C
+    metadata:
+      Designer:
+        id: 49a12070-ad14-4742-8ad0-2a9e04535648
+    commands_iter:
+      command: >
+        mkdir -p /home/sfs/${JobName}/a10-periodicity && /root/miniconda3/bin/Periodicity -i ${bam_files}/${1}Aligned.toTranscriptome.out.sorted.bam -a /home/sfs/${JobName}/a7-RiboCode_annot -o /home/sfs/${JobName}/a10-periodicity/${1}_periodicity -c
+        /home/sfs/${JobName}/a8-Ribominer_annot/longest.transcripts.info.txt -L 25 -R 35
+      vars_iter:
+        - '${fastq_files}'
+    depends:
+      - target: samtools2b3y3xu
+        type: whole
+volumes:
+  volumes-4ndk:
+    mount_path: '/home/sfs'
+    mount_from:
+      pvc: '${GCS_SFS_PVC}'
+  genobs:
+    mount_path: '/home/obs'
+    mount_from:
+      pvc: '${GCS_DATA_PVC}'
+inputs:
+  JobName:
+    type: string
+    default: ribominner
+    description: 任务的名称
+  AccessKey:
+    type: string
+    description: ak
+    default: 5ULAGR0CWKBAEDV57Y6P
+  SecretKey:
+    type: string
+    default: gvroYZE9uUmp3igpEPAEQRfuQzUjcVQn9kBoHz02
+    description: sk
+  endpoint:
+    type: string
+    default: 'https://obs.cn-north-4.myhuaweicloud.com'
+    description: endpoint
+  obs_location:
+    type: string
+    default: 'obs://hw-gcs-logo-cn-north-4-06a54be3938010610f01c00da675d700'
+    description: obs桶的名称
+  obs_data_path:
+    type: string
+    default: 'arabidopsis/huawei_file/Ribocode/'
+    description: 原始数据在桶中的相对路径
+  obs_reference_gtf:
+    type: string
+    default: 'arabidopsis/huawei_file/refrence/Arabidopsis_thaliana.TAIR10.43.gtf'
+    description: 物种的gtf 注释文件
+  obs_reference_fasta:
+    type: string
+    default: 'arabidopsis/huawei_file/refrence/Arabidopsis_thaliana.TAIR10.dna.toplevel.fa.clean.fa'
+    description: 物种的fasta 注释文件
+  obs_reference_rRNA_bowtie:
+    type: string
+    default: 'arabidopsis/huawei_file/refrence/tair_rRNA_bowtie_index/tair.rRNA.fa'
+    description: 物种的核糖体序列，bowtie建库数据的在obs中的相对路径
+  obs_reference_genomeFile_star:
+    type: string
+    default: 'arabidopsis/huawei_file/refrence/tair_star/'
+    description: 物种的基因组序列，STAR建库数据的在obs中的相对路径
+  fastq_files:
+    type: array
+    default:
+      - SRR1958702.fq
+      - SRR1958703.fq
+    description: 原始数据文件名称
+  bam_files:
+    type: string
+    default: '/home/obs/output/riboseq-ribocode/riboseq-ribocode/a6-map/'
+    description: bamfile
+  adapter:
+    type: string
+    default: CTGTAGGCACCATCAAT
+    description: read的接头序列
+metadata:
+  relationships:
+    946fffcf-0d6d-4ba4-8aa2-759977c8a647:
+      references:
+        depends:
+          - target: ribominer2e24y
+            type: whole
+        relateto:
+          - samtools2b3y3xu
+    49aebcfa-b635-46ea-b555-b9fb7878d910:
+      references:
+        relateto:
+          - ribominer1y064
+    8cf9ab93-b1e8-41ae-bf11-5265d18536b5:
+      references:
+        depends:
+          - target: ribominer4byu7
+            type: whole
+    49a12070-ad14-4742-8ad0-2a9e04535648:
+      references:
+        relateto:
+          - obs-util4asm3
+        depends:
+          - target: samtools2b3y3xu
+            type: whole
+    010bdeda-4cb8-45b0-b669-a7ff39533a7d:
+      references:
+        depends:
+          - target: ribominer1y064
+            type: whole
+        relateto:
+          - ribominer4byu7
+  Designer:
+    49aebcfa-b635-46ea-b555-b9fb7878d910:
+      size:
+        width: 90
+        height: 60
+      position:
+        x: 30
+        y: 30
+      z: 1
+      relateto:
+        - 946fffcf-0d6d-4ba4-8aa2-759977c8a647
+    946fffcf-0d6d-4ba4-8aa2-759977c8a647:
+      size:
+        width: 90
+        height: 60
+      position:
+        x: 150
+        y: 30
+      z: 1
+      relateto:
+        - 010bdeda-4cb8-45b0-b669-a7ff39533a7d
+    010bdeda-4cb8-45b0-b669-a7ff39533a7d:
+      size:
+        width: 90
+        height: 60
+      position:
+        x: 270
+        y: 30
+      z: 1
+      relateto:
+        - 49a12070-ad14-4742-8ad0-2a9e04535648
+    49a12070-ad14-4742-8ad0-2a9e04535648:
+      size:
+        width: 90
+        height: 60
+      position:
+        x: 390
+        y: 30
+      z: 1
+      relateto:
+        - 8cf9ab93-b1e8-41ae-bf11-5265d18536b5
+    8cf9ab93-b1e8-41ae-bf11-5265d18536b5:
+      size:
+        width: 90
+        height: 60
+      position:
+        x: 510
+        y: 30
+      z: 1
+    d827d1c4-a846-4e04-8542-fbf9cd719254:
+      source:
+        id: 49aebcfa-b635-46ea-b555-b9fb7878d910
+      target:
+        id: 946fffcf-0d6d-4ba4-8aa2-759977c8a647
+      z: 10
+    cb4eb189-b9bd-4dd5-9fdc-38fe7155159d:
+      source:
+        id: 946fffcf-0d6d-4ba4-8aa2-759977c8a647
+      target:
+        id: 010bdeda-4cb8-45b0-b669-a7ff39533a7d
+      z: 10
+    e76c7302-983d-4d1f-8541-0e82d39d10f6:
+      source:
+        id: 010bdeda-4cb8-45b0-b669-a7ff39533a7d
+      target:
+        id: 49a12070-ad14-4742-8ad0-2a9e04535648
+      z: 10
+    25453f4b-b082-49db-b922-7fa15fd5e53c:
+      source:
+        id: 49a12070-ad14-4742-8ad0-2a9e04535648
+      target:
+        id: 8cf9ab93-b1e8-41ae-bf11-5265d18536b5
+      z: 10
