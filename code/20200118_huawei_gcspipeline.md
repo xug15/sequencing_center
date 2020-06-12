@@ -967,25 +967,39 @@ obsutil config -i=5ULAGR0CWKBAEDV57Y6P -k=gvroYZE9uUmp3igpEPAEQRfuQzUjcVQn9kBoHz
 
 ## blastn
 ```sh
-blastn  -query dna/H1N1-HA.fasta  -subject   dna/H7N9-HA.fasta   -out output/blastn
+    commands:
+      - 'mkdir -p /home/obs/${data_output} && blastn  -query /home/obs/${data_query}  -subject   /home/obs/${data_subject} -out /home/obs/${data_output}/output.txt'
+    
 ```
 
 ## blastp
 ```sh
-blastp  -query protein/VIM.fasta  -subject   protein/NMD.fasta   -out output/blastp
+    commands:
+      - 'blastp  -query /home/obs/${data_query}  -subject   /home/obs/${data_subject} -out /home/obs/${data_output}/output.txt'
+    
 ```
 
 ## alternative splicing
 ```sh
-echo "input/SRR065544_chrX.bam" > input/b1.txt
-echo "input/SRR065545_chrX.bam" > input/b2.txt
+          commands:
+      - >-
+echo "input/SRR065544_chrX.bam" > input/b1.txt && \
+echo "input/SRR065545_chrX.bam" > input/b2.txt && \
 python2 /usr/local/rMATS-turbo-Linux-UCS4/rmats.py \
     --b1 input/b1.txt --b2 input/b2.txt --gtf input/Mus_musculus_chrX.gtf --od output \
     -t paired --readLength 35
+
+      commands:
+      - >-
+        mkdir -p /home/obs/${data_output} && echo /home/obs/${ipbam} > /home/obs/${data_output}/b1.txt && \ echo /home/obs/${bgbam} > /home/obs/${data_output}/b2.txt && \ python2 /home/app/rMATS.4.0.2/rMATS-turbo-Linux-UCS4/rmats.py \ --b1 /home/obs/${data_output}/b1.txt --b2 \
+        /home/obs/${data_output}/b2.txt --gtf ${gtf} --od /home/obs/${data_output} \ -t paired --readLength 35
+        
 ```
 
 ## Chip-seq
 ```sh
+          commands:
+      - >-
 makeTagDirectory input/ip    input/ip.part.bam
 makeTagDirectory input/input input/input.part.bam
 After this step, input/ip & input/input will contain several .tags.tsv files, as well as a file named tagInfo.txt. This file contains information about your sequencing run, including the total number of tags considered. This file is used by later peak-calling programs to quickly reference information about the experiment. Then we call peak by using these tag file:

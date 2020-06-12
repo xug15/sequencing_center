@@ -301,23 +301,85 @@ samtools exec -it samtools bash
 
 ## blast
 ```sh
-docker tag bioinfo_tsinghua:latest swr.cn-north-4.myhuaweicloud.com/gangxu/blast:1.0
-
-docker push swr.cn-north-4.myhuaweicloud.com/gangxu/blast:1.0
-
+docker exec -it ribocode_ribominer bash
 sudo apt-get install ncbi-blast+
-docker exec -it 
+# 
+
+docker run -dt --name ribocode_ribominer yanglab/ribocode_ribominer:
+docker exec -it ribocode_ribominer bash
+apt-get install ncbi-blast+
+exit
+docker commit 6fc91d01a4f8 swr.cn-north-4.myhuaweicloud.com/gangxu/blast:1.1
 
 ```
 
 ## Chip-seq
 ```sh
-docker tag bioinfo_tsinghua:latest swr.cn-north-4.myhuaweicloud.com/gangxu/chip-seq:1.0
- 
-docker push swr.cn-north-4.myhuaweicloud.com/gangxu/chip-seq:1.0
+ docker exec -it ribocode_ribominer bash
+
+
+wget http://homer.ucsd.edu/homer/configureHomer.pl
+apt-get install zip unzip
+perl configureHomer.pl -install homer
+docker commit 6fc91d01a4f8 swr.cn-north-4.myhuaweicloud.com/gangxu/hommer:1.1
+docker push  swr.cn-north-4.myhuaweicloud.com/gangxu/hommer:1.1
+docker run --name chipseq -dt -v /Users/xugang/Desktop/bioinfo_tsinghua_share:/home/sfs swr.cn-north-4.myhuaweicloud.com/gangxu/hommer:1.1
+docker exec -it chipseq bash
+
+wget https://sourceforge.net/projects/samtools/files/samtools/1.10/samtools-1.10.tar.bz2
+wget https://sourceforge.net/projects/samtools/files/samtools/1.10/bcftools-1.10.tar.bz2
+apt-get update
+apt-get install libncurses5-dev
+apt-get install libbz2-dev
+apt-get install liblzma-dev
+
+docker commit 1615d7bbb1c4 swr.cn-north-4.myhuaweicloud.com/gangxu/hommer:1.2
+docker push  swr.cn-north-4.myhuaweicloud.com/gangxu/hommer:1.2
+
+
 ```
 
-## 
+## alternative splicing
+```sh
+
+docker exec -it ribocode_ribominer bash
+
+# For Ubuntu 14:
+pip install numpy
+apt-get update
+sudo apt-get install libblas-dev liblapack-dev
+sudo apt-get install libgsl0ldbl
+apt-get install libgsl23 libgslcblas0
+sudo apt-get install gfortran
+
+http://rnaseq-mats.sourceforge.net/rmats4.0.2/user_guide.htm
+
+tar -xzf rMATS.4.0.2.tgz
+cd rMATS.4.0.2/
+... # move/copy/download data to this folder.
+tar -xzf gtf.tgz
+tar -xzf testData.tgz
+
+cd rMATS.4.0.2/
+python2 rMATS-turbo-xxx-UCSx/rmats.py --b1 b1.txt --b2 b2.txt --gtf gtf/Homo_sapiens.Ensembl.GRCh37.75.gtf --od bam_test -t paired --readLength 50 --cstat 0.0001 --libType fr-unstranded
+
+apt-get install python-numpy python-scipy
+apt-get install libgfortran3
+
+docker commit 6fc91d01a4f8 swr.cn-north-4.myhuaweicloud.com/gangxu/alternative:1.2
+docker push swr.cn-north-4.myhuaweicloud.com/gangxu/alternative:1.2
+
+
+docker pull nunoagostinho/rmats
+docker run --name rmats -dt -v /home/xugang:/home/sfs nunoagostinho/rmats
+docker exec -it rmats bash
+wget https://github.com/Xinglab/rmats-turbo/releases/download/v4.1.0/rmats_turbo_v4_1_0.tar.gz
+cd /root/software/rMATS.3.2.5  && python RNASeq-MATS.py -b1 testData/231ESRP.25K.rep-1.bam,testData/231ESRP.25K.rep-2.bam -b2 testData/231EV.25K.rep-1.bam,testData/231EV.25K.rep-2.bam -gtf testData/test.gtf -o bam_test -t paired -len 50 -a 8 -c 0.0001 -analysis U -novelSS 1 -keepTemp
+
+docker tag  nunoagostinho/rmats swr.cn-north-4.myhuaweicloud.com/gangxu/alternative:1.3
+docker push swr.cn-north-4.myhuaweicloud.com/gangxu/alternative:1.3
+
+```
 
 ## 镜像的导出
 
