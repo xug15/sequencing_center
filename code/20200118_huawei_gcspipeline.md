@@ -98,6 +98,7 @@ support.huaweicloud.com/tr-gcs/gcs_tr_04_0004.html
 ```
 
 ## 流程描述
+```sh
     description: '将数据拷贝到制定目录下/home/sfs'
     description: 将原始的下机数据去除接头
     description: 去除低质量的数据    
@@ -105,6 +106,54 @@ support.huaweicloud.com/tr-gcs/gcs_tr_04_0004.html
     description: 去除核糖体的reads
     description: 比对到基因组上
     description: 将结果拷贝回obsvolumn中
+
+  (public-rnaseq-polya)
+主要应用于分析 poly A 建库的下机数据。主要分为6个步骤，去除reads的接头，去除低质量的 reads, 生成reads 质量信息报告，去除核糖体序列，将reads 比对到基因组中，将文件移动归档。
+
+inputs:
+  JobName:
+    type: string
+    default: ployarnaseq
+    description: 任务的名称
+  AccessKey:
+    type: string
+    description: ak
+    default: null
+  SecretKey:
+    type: string
+    default: null
+    description: sk
+  endpoint:
+    type: string
+    default: 'https://obs.cn-north-4.myhuaweicloud.com'
+    description: endpoint
+  obs_location:
+    type: string
+    default: 'obs://hw-gcs-logo-cn-north-4-06a54be3938010610f01c00da675d700'
+    description: obs桶的名称
+  obs_data_path:
+    type: string
+    default: 'arabidopsis/huawei_file/a1-fastq/'
+    description: 原始数据在桶中的相对路径。
+  obs_reference_rRNA_bowtie:
+    type: string
+    default: 'arabidopsis/huawei_file/refrence/tair_rRNA_bowtie_index/tair.rRNA.fa'
+    description: 物种的核糖体序列，bowtie建库数据的在obs中的相对路径
+  obs_reference_genomeFile_star:
+    type: string
+    default: 'arabidopsis/huawei_file/refrence/tair_star/'
+    description: 物种的基因组序列，STAR建库数据的在obs中的相对路径
+  fastq_files:
+    type: array
+    default:
+      - SRR3498212.fq
+      - SRR966479.fq
+    description: 原始数据文件名称
+  adapter:
+    type: string
+    default: AAAAAAAAA
+    description: read的接头序列
+```
 
 ## RNA-seq toal
 ```sh
@@ -713,10 +762,6 @@ volumes:
         - >-      
         mkdir -p ${home_dir}/a15-polarity && /root/miniconda3/bin/PolarityCalculation -f ${home_dir}/a9-metaplots/attributes.txt -c ${home_dir}/a8-Ribominer_annot/longest.transcripts.info.txt -o ${home_dir}/a15-polarity/b3-polarity -n 64 && 
         /root/miniconda3/bin/PlotPolarity -i ${home_dir}/a15-polarity/b3-polarity_polarity_dataframe.txt -o ${home_dir}/a15-polarity/b4-plotpolarity -g ${gname} -r ${rname} -y 5 
-
-
-
-
 
 # ribominer-part8
 #b5 transcript enrich 

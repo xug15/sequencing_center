@@ -1,0 +1,455 @@
+version: genecontainer_0_1
+workflow:
+  obs-util4asm3:
+    tool: 'obs-util:0.1.1'
+    type: GCS.Job
+    resources:
+      memory: 8G
+      cpu: 2C
+    commands:
+      - 'obsutil config -i=${AccessKey} -k=${SecretKey} -e=${endpoint}&& obsutil mkdir -p ${obs_location}/output/${JobName}/  && obsutil cp -r -f /home/sfs/${JobName}/ ${obs_location}/output/${JobName}/ && rm -rf /home/sfs/${JobName} && echo Check sfs && ls -al /home/sfs && ls -al /home/obs/output'
+    metadata:
+      Designer:
+        id: 99e5860c-7882-4284-9e55-a19406af432c
+    depends:
+      - target: ribocode-r3in1s
+        type: whole
+    description: 将结果移动回obsvolumn中
+  ribocode-r3in1s:
+    tool: 'ribocode-ribominer:1.0'
+    type: GCS.Job
+    resources:
+      memory: 16G
+      cpu: 2C
+    commands:
+      - >-
+        cat /home/sfs/${JobName}/a8-ribocode/ltrans.*.txt > /home/sfs/${JobName}/a8-ribocode/transcript.txt && rm -rf /home/sfs/${JobName}/a8-ribocode/ltrans.*.txt && cat /home/sfs/${JobName}/a8-ribocode/transcript.txt && /root/miniconda3/bin/metaplots -a /home/sfs/${JobName}/a7-ribocode_annotation
+        -i /home/sfs/${JobName}/a8-ribocode/transcript.txt -o /home/sfs/${JobName}/a8-ribocode/a && mkdir -p /home/sfs/${JobName}/a9-ribocode-result && /root/miniconda3/bin/RiboCode -a /home/sfs/${JobName}/a7-ribocode_annotation -c /home/sfs/${JobName}/a8-ribocode/a_pre_config.txt -l no -g -o
+        /home/sfs/${JobName}/a9-ribocode-result/   
+    metadata:
+      Designer:
+        id: 9ce25d2b-334c-4860-8b74-0c980ce0ef25
+    depends:
+      - target: ribocode-r2244f
+        type: whole
+    description: 对翻译的开放阅读框进行注释。
+  ribocode-r2244f:
+    tool: 'ribocode-ribominer:1.0'
+    type: GCS.Job
+    resources:
+      memory: 8G
+      cpu: 2C
+    commands_iter:
+      command: |
+        head /home/sfs/${JobName}/a6-map/${1}Aligned.toTranscriptome.out.bam && echo "/home/sfs/${JobName}/a6-map/${1}Aligned.toTranscriptome.out.bam" > /home/sfs/${JobName}/a8-ribocode/ltrans.${1}.txt;
+      vars_iter:
+        - '${fastq_files}'
+    metadata:
+      Designer:
+        id: a7d3dbdb-5343-4514-830d-f4f8aa087bc3
+    depends:
+      - target: ribocode-r1yp5m
+        type: whole
+    description: 将比对到转录本的位置信息汇总到一个文件中。
+  ribocode-r1yp5m:
+    tool: 'ribocode-ribominer:1.0'
+    type: GCS.Job
+    resources:
+      memory: 8G
+      cpu: 2C
+    commands:
+      - 'mkdir -p /home/sfs/${JobName}/a7-ribocode_annotation && /root/miniconda3/bin/prepare_transcripts -g /home/obs/${obs_reference_gtf} -f  /home/obs/${obs_reference_fasta} -o /home/sfs/${JobName}/a7-ribocode_annotation && mkdir -p /home/sfs/${JobName}/a8-ribocode  '
+    metadata:
+      Designer:
+        id: f9996b74-1c67-482e-9338-0568ce8e6412
+    depends:
+      - target: starmappin3aqud
+        type: whole
+    description: 产生Ribocode 注释文件。
+  cutadapter3zaks:
+    tool: 'cutadapter:1.0'
+    type: GCS.Job
+    resources:
+      memory: 8G
+      cpu: 2C
+    commands_iter:
+      command: |
+        mkdir -p /home/sfs/${JobName}/a2-cutadapter && \
+        ls /home/obs/${obs_data_path}/ && \
+        echo ${1} begin `date` /root/miniconda3/bin/cutadapt -m 18 \
+        --match-read-wildcards -a ${adapter} \
+        -o /home/sfs/${JobName}/a2-cutadapter/${1}_trimmed.fastq \
+        /home/sfs/${JobName}/a1-fastq/${1} && \
+        /root/miniconda3/bin/cutadapt -m 18 \
+        --match-read-wildcards -a ${adapter} \
+        -o /home/sfs/${JobName}/a2-cutadapter/${1}_trimmed.fastq \
+         /home/obs/${obs_data_path}/${1}
+      vars_iter:
+        - '${fastq_files}'
+    metadata:
+      Designer:
+        id: f53a398d-ad23-4e55-a206-897d05effee7
+    depends: []
+    description: 将原始的下机数据去除接头
+  starmappin3aqud:
+    tool: 'starmapping:1.0'
+    type: GCS.Job
+    resources:
+      memory: 64G
+      cpu: 8C
+    commands_iter:
+      command: |
+        mkdir -p /home/sfs/${JobName}/a6-map && \
+        echo ${1} begin `date` && \
+        bash /root/.bashrc && \
+         STAR --runThreadN 8 --alignEndsType EndToEnd \
+         --outFilterMismatchNmax 1 --outFilterMultimapNmax 1 \
+         --genomeDir /home/obs/${obs_reference_genomeFile_star} \
+         --readFilesIn /home/sfs/${JobName}/a5-rmrRNA/nonrRNA/nocontam_${1} \
+         --outFileNamePrefix /home/sfs/${JobName}/a6-map/${1} \
+         --outSAMtype BAM SortedByCoordinate \
+         --quantMode TranscriptomeSAM GeneCounts \
+         --limitBAMsortRAM 7110037687
+         
+      vars_iter:
+        - '${fastq_files}'
+    metadata:
+      Designer:
+        id: f6730ee8-6b2e-48a4-9d97-55c671405635
+    depends:
+      - target: bowtie124fr5n
+        type: whole
+    description: 比对到基因组上
+  bowtie124fr5n:
+    tool: 'bowtie12:1.1'
+    type: GCS.Job
+    resources:
+      memory: 8G
+      cpu: 2C
+    commands_iter:
+      command: |
+        mkdir -p /home/sfs/${JobName}/a5-rmrRNA && \
+        mkdir -p /home/sfs/${JobName}/a5-rmrRNA/nonrRNA && \
+        echo ${1} begin `date` && \
+        bash /root/.bashrc && \
+        /home/test/bowtie-1.2.3-linux-x86_64/bowtie \
+        -n 0 -norc --best -l 15 -p 8 \
+         --un=/home/sfs/${JobName}/a5-rmrRNA/nonrRNA/nocontam_${1} /home/obs/${obs_reference_rRNA_bowtie} \
+         -q /home/sfs/${JobName}/a3-filter/${1}_trimmedQfilter.fastq \
+         /home/sfs/${JobName}/a5-rmrRNA/${1}.alin > \
+         /home/sfs/${JobName}/a5-rmrRNA/${1}.err && \
+         rm -rf /home/sfs/${JobName}/a5-rmrRNA/${1}.alin 
+         
+      vars_iter:
+        - '${fastq_files}'
+    metadata:
+      Designer:
+        id: f292b73d-d383-4a9e-93b1-402b9e8d2333
+    depends:
+      - target: fastqc3wgoy
+        type: whole
+    description: 去除核糖体的reads
+  fastx-tool3a3vg:
+    tool: 'fastx-toolkit:1.0'
+    type: GCS.Job
+    resources:
+      memory: 8G
+      cpu: 2C
+    commands_iter:
+      command: |
+        mkdir -p /home/sfs/${JobName}/a3-filter && \
+        echo ${1} begin `date` && \
+        /home/test/bin/fastq_quality_filter \
+        -Q33 -v -q 25 -p 75 \
+        -i /home/sfs/${JobName}/a2-cutadapter/${1}_trimmed.fastq \
+        -o /home/sfs/${JobName}/a3-filter/${1}_trimmedQfilter.fastq 
+      vars_iter:
+        - '${fastq_files}'
+    metadata:
+      Designer:
+        id: cd609db0-f7ee-4d31-8111-1bb8344d1bd8
+    depends:
+      - target: cutadapter3zaks
+        type: whole
+    description: 去除低质量的数据
+  fastqc3wgoy:
+    tool: 'fastqc:1.0'
+    type: GCS.Job
+    resources:
+      memory: 8G
+      cpu: 2C
+    commands_iter:
+      command: |
+        mkdir -p /home/sfs/${JobName}/a4-qc && \
+        echo ${1} begin `date` && \
+        /home/test/FastQC/fastqc \
+        /home/sfs/${JobName}/a3-filter/${1}_trimmedQfilter.fastq \
+        -o /home/sfs/${JobName}/a4-qc
+      vars_iter:
+        - '${fastq_files}'
+    metadata:
+      Designer:
+        id: 26fb736b-fecf-4a6b-a047-ac3effb0d316
+    depends:
+      - target: fastx-tool3a3vg
+        type: whole
+    description: 对数据进行质量评估
+volumes:
+  volumes-4ndk:
+    mount_path: '/home/sfs'
+    mount_from:
+      pvc: '${GCS_SFS_PVC}'
+  genobs:
+    mount_path: '/home/obs'
+    mount_from:
+      pvc: '${GCS_DATA_PVC}'
+inputs:
+  JobName:
+    type: string
+    default: riboseq-ribocode
+    description: 任务的名称
+  AccessKey:
+    type: string
+    description: ak
+    default: 5ULAGR0CWKBAEDV57Y6P
+  SecretKey:
+    type: string
+    default: gvroYZE9uUmp3igpEPAEQRfuQzUjcVQn9kBoHz02
+    description: sk
+  endpoint:
+    type: string
+    default: 'https://obs.cn-north-4.myhuaweicloud.com'
+    description: endpoint
+  obs_location:
+    type: string
+    default: 'obs://hw-gcs-logo-cn-north-4-06a54be3938010610f01c00da675d700'
+    description: obs桶的名称
+  obs_data_path:
+    type: string
+    default: 'arabidopsis/huawei_file/Ribocode/'
+    description: 原始数据在桶中的相对路径
+  obs_reference_gtf:
+    type: string
+    default: 'arabidopsis/huawei_file/refrence/Arabidopsis_thaliana.TAIR10.43.gtf'
+    description: 物种的gtf 注释文件
+  obs_reference_fasta:
+    type: string
+    default: 'arabidopsis/huawei_file/refrence/Arabidopsis_thaliana.TAIR10.dna.toplevel.fa.clean.fa'
+    description: 物种的fasta 注释文件
+  obs_reference_rRNA_bowtie:
+    type: string
+    default: 'arabidopsis/huawei_file/refrence/tair_rRNA_bowtie_index/tair.rRNA.fa'
+    description: 物种的核糖体序列，bowtie建库数据的在obs中的相对路径
+  obs_reference_genomeFile_star:
+    type: string
+    default: 'arabidopsis/huawei_file/refrence/tair_star/'
+    description: 物种的基因组序列，STAR建库数据的在obs中的相对路径
+  fastq_files:
+    type: array
+    default:
+      - SRR1958702.fq
+      - SRR1958703.fq
+      - SRR1958704.fq
+      - SRR3498206.fq
+    description: 原始数据文件名称
+  adapter:
+    type: string
+    default: CTGTAGGCACCATCAAT
+    description: read的接头序列
+metadata:
+  relationships:
+    99e5860c-7882-4284-9e55-a19406af432c:
+      references:
+        depends:
+          - target: ribocode-r3in1s
+            type: whole
+    9ce25d2b-334c-4860-8b74-0c980ce0ef25:
+      references:
+        relateto:
+          - obs-util4asm3
+        depends:
+          - target: ribocode-r2244f
+            type: whole
+    a7d3dbdb-5343-4514-830d-f4f8aa087bc3:
+      references:
+        relateto:
+          - ribocode-r3in1s
+        depends:
+          - target: ribocode-r1yp5m
+            type: whole
+    f9996b74-1c67-482e-9338-0568ce8e6412:
+      references:
+        relateto:
+          - ribocode-r2244f
+        depends:
+          - target: starmappin3aqud
+            type: whole
+    f6730ee8-6b2e-48a4-9d97-55c671405635:
+      references:
+        relateto:
+          - ribocode-r1yp5m
+        depends:
+          - target: bowtie124fr5n
+            type: whole
+    f292b73d-d383-4a9e-93b1-402b9e8d2333:
+      references:
+        relateto:
+          - starmappin3aqud
+        depends:
+          - target: fastqc3wgoy
+            type: whole
+    26fb736b-fecf-4a6b-a047-ac3effb0d316:
+      references:
+        relateto:
+          - bowtie124fr5n
+        depends:
+          - target: fastx-tool3a3vg
+            type: whole
+    cd609db0-f7ee-4d31-8111-1bb8344d1bd8:
+      references:
+        depends:
+          - target: cutadapter3zaks
+            type: whole
+        relateto:
+          - fastqc3wgoy
+    f53a398d-ad23-4e55-a206-897d05effee7:
+      references:
+        relateto:
+          - fastx-tool3a3vg
+  Designer:
+    f53a398d-ad23-4e55-a206-897d05effee7:
+      size:
+        width: 90
+        height: 60
+      position:
+        x: 30
+        y: 30
+      z: 1
+      relateto:
+        - cd609db0-f7ee-4d31-8111-1bb8344d1bd8
+    cd609db0-f7ee-4d31-8111-1bb8344d1bd8:
+      size:
+        width: 90
+        height: 60
+      position:
+        x: 150
+        y: 30
+      z: 1
+      relateto:
+        - 26fb736b-fecf-4a6b-a047-ac3effb0d316
+    26fb736b-fecf-4a6b-a047-ac3effb0d316:
+      size:
+        width: 90
+        height: 60
+      position:
+        x: 270
+        y: 30
+      z: 1
+      relateto:
+        - f292b73d-d383-4a9e-93b1-402b9e8d2333
+    f292b73d-d383-4a9e-93b1-402b9e8d2333:
+      size:
+        width: 90
+        height: 60
+      position:
+        x: 390
+        y: 30
+      z: 1
+      relateto:
+        - f6730ee8-6b2e-48a4-9d97-55c671405635
+    f6730ee8-6b2e-48a4-9d97-55c671405635:
+      size:
+        width: 90
+        height: 60
+      position:
+        x: 510
+        y: 30
+      z: 1
+      relateto:
+        - f9996b74-1c67-482e-9338-0568ce8e6412
+    f9996b74-1c67-482e-9338-0568ce8e6412:
+      size:
+        width: 90
+        height: 60
+      position:
+        x: 630
+        y: 30
+      z: 1
+      relateto:
+        - a7d3dbdb-5343-4514-830d-f4f8aa087bc3
+    a7d3dbdb-5343-4514-830d-f4f8aa087bc3:
+      size:
+        width: 90
+        height: 60
+      position:
+        x: 750
+        y: 30
+      z: 1
+      relateto:
+        - 9ce25d2b-334c-4860-8b74-0c980ce0ef25
+    9ce25d2b-334c-4860-8b74-0c980ce0ef25:
+      size:
+        width: 90
+        height: 60
+      position:
+        x: 870
+        y: 30
+      z: 1
+      relateto:
+        - 99e5860c-7882-4284-9e55-a19406af432c
+    99e5860c-7882-4284-9e55-a19406af432c:
+      size:
+        width: 90
+        height: 60
+      position:
+        x: 990
+        y: 30
+      z: 1
+    237a8459-7475-48d2-be7f-28b97c0bf3da:
+      source:
+        id: f53a398d-ad23-4e55-a206-897d05effee7
+      target:
+        id: cd609db0-f7ee-4d31-8111-1bb8344d1bd8
+      z: 1
+    cea0f08f-af95-4f49-9d84-59278dd0166d:
+      source:
+        id: cd609db0-f7ee-4d31-8111-1bb8344d1bd8
+      target:
+        id: 26fb736b-fecf-4a6b-a047-ac3effb0d316
+      z: 1
+    a31f9733-20e8-4d54-9dfc-c359047ff27f:
+      source:
+        id: 26fb736b-fecf-4a6b-a047-ac3effb0d316
+      target:
+        id: f292b73d-d383-4a9e-93b1-402b9e8d2333
+      z: 1
+    7a1b8b39-6452-4ec0-ba33-a2466d90493b:
+      source:
+        id: f292b73d-d383-4a9e-93b1-402b9e8d2333
+      target:
+        id: f6730ee8-6b2e-48a4-9d97-55c671405635
+      z: 1
+    9ca5fa63-e94a-4f75-9c6d-ed1f2630b0d5:
+      source:
+        id: f6730ee8-6b2e-48a4-9d97-55c671405635
+      target:
+        id: f9996b74-1c67-482e-9338-0568ce8e6412
+      z: 1
+    ef25b5cc-0b11-449a-ba41-dc90d73e7005:
+      source:
+        id: f9996b74-1c67-482e-9338-0568ce8e6412
+      target:
+        id: a7d3dbdb-5343-4514-830d-f4f8aa087bc3
+      z: 1
+    d0358b6a-8a97-4570-a777-1d0cd7bf1724:
+      source:
+        id: a7d3dbdb-5343-4514-830d-f4f8aa087bc3
+      target:
+        id: 9ce25d2b-334c-4860-8b74-0c980ce0ef25
+      z: 1
+    3b3a5b05-0f12-4f48-bd42-7bdbe57ff83f:
+      source:
+        id: 9ce25d2b-334c-4860-8b74-0c980ce0ef25
+      target:
+        id: 99e5860c-7882-4284-9e55-a19406af432c
+      z: 1

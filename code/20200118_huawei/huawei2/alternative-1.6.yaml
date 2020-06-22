@@ -1,0 +1,54 @@
+version: genecontainer_0_1
+workflow:
+  alternativ3cgno:
+    tool: 'alternative:1.3'
+    type: GCS.Job
+    resources:
+      memory: 8G
+      cpu: 2C
+    commands:
+      - 'mkdir -p /home/obs/${data_output} && python /root/software/rMATS.3.2.5/RNASeq-MATS.py  -b1 /home/obs/${ipbam} -b2 /home/obs/${bgbam} -gtf /home/obs/${gtf} -o /home/obs/${data_output}  -t paired -len 35'
+    metadata:
+      Designer:
+        id: f461e274-772f-4a9d-9e72-ef630db1d004
+volumes:
+  volumes-4ndk:
+    mount_path: '/home/sfs'
+    mount_from:
+      pvc: '${GCS_SFS_PVC}'
+  genobs:
+    mount_path: '/home/obs'
+    mount_from:
+      pvc: '${GCS_DATA_PVC}'
+inputs:
+  JobName:
+    type: string
+    default: blastp
+    description: 任务的名称
+  ipbam:
+    type: string
+    default: 'alter-spl/input/SRR065544_chrX.bam'
+    description: 实验组的比对的bam文件
+  bgbam:
+    type: string
+    default: 'alter-spl/input/SRR065545_chrX.bam'
+    description: 对照组组的比对的bam文件
+  data_output:
+    type: string
+    default: 'alter-spl/onput/'
+    description: 输出结果在obs桶的位置。
+  gtf:
+    type: string
+    default: 'alter-spl/input/Mus_musculus_chrX.gtf'
+    description: 物种的gtf文件。
+metadata:
+  relationships: {}
+  Designer:
+    f461e274-772f-4a9d-9e72-ef630db1d004:
+      size:
+        width: 90
+        height: 60
+      position:
+        x: 80
+        y: 70
+      z: 1

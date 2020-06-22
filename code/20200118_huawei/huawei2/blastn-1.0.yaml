@@ -1,0 +1,50 @@
+version: genecontainer_0_1
+workflow:
+  blast33w53:
+    tool: 'blast:1.1'
+    type: GCS.Job
+    resources:
+      memory: 8G
+      cpu: 2C
+    commands:
+      - 'mkdir -p /home/obs/${data_output} && blastn  -query /home/obs/${data_query}  -subject   /home/obs/${data_subject} -out /home/obs/${data_output}/output.txt'
+    metadata:
+      Designer:
+        id: f70f5848-e1f5-412e-b49d-2f292f8c23a2
+volumes:
+  volumes-4ndk:
+    mount_path: '/home/sfs'
+    mount_from:
+      pvc: '${GCS_SFS_PVC}'
+  genobs:
+    mount_path: '/home/obs'
+    mount_from:
+      pvc: '${GCS_DATA_PVC}'
+inputs:
+  JobName:
+    type: string
+    default: blastp
+    description: 任务的名称
+  data_query:
+    type: string
+    default: '/blast/dna/H1N1-HA.fasta'
+    description: 需要查询的碱基序列
+  data_subject:
+    type: string
+    default: '/blast/dna/H7N9-HA.fasta'
+    description: 需要被比对的碱基序列
+  data_output:
+    type: string
+    default: '/blast/dna/'
+    description: 在obs桶上的输出结果路径
+metadata:
+  relationships: {}
+  Designer:
+    f70f5848-e1f5-412e-b49d-2f292f8c23a2:
+      size:
+        width: 90
+        height: 60
+      position:
+        x: -10
+        y: 30
+      z: 1
