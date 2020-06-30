@@ -1,0 +1,25 @@
+# iTorch
+
+## Docker images.
+https://hub.docker.com/r/dhunter/itorch-notebook
+
+```sh
+
+# Docker pull command
+docker pull dhunter/itorch-notebook
+
+# open one temp to test 
+docker run -it --rm -p 8888:8888 dhunter/itorch-notebook
+
+# or to mount a host directory (containing notebook files for example)
+docker run -it --rm -p 8888:8888 -v /Users/xugang/Desktop/bioinfo_tsinghua_share:/home/test dhunter/itorch-notebook
+
+# or to start a container and open a shell
+docker run -it --rm  dhunter/itorch-notebook /bin/bash
+Then visit localhost:8888 in your browser.
+
+http://localhost:8888
+```
+
+
+

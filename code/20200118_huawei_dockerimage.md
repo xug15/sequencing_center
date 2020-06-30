@@ -201,7 +201,9 @@ docker exec -it ribominer bash
 
 pip install ribominer --upgrade
 exit
-docker commit 6b77c3f83799  swr.cn-north-4.myhuaweicloud.com/gangxu/ribominer:1.0
+#docker commit 6b77c3f83799  swr.cn-north-4.myhuaweicloud.com/gangxu/ribominer:1.0
+docker commit 1ea96f908a46  swr.cn-north-4.myhuaweicloud.com/gangxu/ribominer:1.1
+docker push  swr.cn-north-4.myhuaweicloud.com/gangxu/ribominer:1.1
 ```
 
 ## cutadapter

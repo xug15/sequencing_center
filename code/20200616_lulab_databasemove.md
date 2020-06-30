@@ -486,5 +486,4 @@ for i in `ls /home/xugang/rbpome |grep sql$`;
 do echo "mysql -u clipdb3 -p67NR5GL7D7YsYBYJ rbpome < /home/xugang/rbpome/${i}";
 mysql -u root -p929daca0bb41a0c9 rbpome < /home/xugang/rbpome/${i}
 done;
-
 ```

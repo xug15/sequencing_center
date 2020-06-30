@@ -1043,15 +1043,74 @@ python2 /usr/local/rMATS-turbo-Linux-UCS4/rmats.py \
 
 ## Chip-seq
 ```sh
-          commands:
+# remove adapter
+    commands_iter:
+      command: |
+        mkdir -p /home/sfs/${JobName}/a2-cutadapter && \
+        echo ${1} begin `date` /root/miniconda3/bin/cutadapt -m 18 \
+        --match-read-wildcards -a ${adapter} \
+        -o /home/sfs/${JobName}/a2-cutadapter/${1}_trimmed.fastq \
+        /home/obs/${obs_data_path}/${1} && \
+        /root/miniconda3/bin/cutadapt -m 18 \
+        --match-read-wildcards -a ${adapter} \
+        -o /home/sfs/${JobName}/a2-cutadapter/${1}_trimmed.fastq \
+         /home/obs/${obs_data_path}/${1}
+      vars_iter:
+        - '${fastq_files}'
+# remove low quality
+   commands_iter:
+      command: |
+        mkdir -p /home/sfs/${JobName}/a3-filter && \
+        echo ${1} begin `date` && \
+        /home/test/bin/fastq_quality_filter \
+        -Q33 -v -q 25 -p 75 \
+        -i /home/sfs/${JobName}/a2-cutadapter/${1}_trimmed.fastq \
+        -o /home/sfs/${JobName}/a3-filter/${1}_trimmedQfilter.fastq 
+      vars_iter:
+        - '${fastq_files}'
+    commands_iter:
+      command: |
+        mkdir -p /home/sfs/${JobName}/a4-qc && \
+        echo ${1} begin `date` && \
+        /home/test/FastQC/fastqc \
+        /home/sfs/${JobName}/a3-filter/${1}_trimmedQfilter.fastq \
+        -o /home/sfs/${JobName}/a4-qc
+      vars_iter:
+        - '${fastq_files}'
+
+#bowtie mapping
+   commands_iter:
+      command: |
+        mkdir -p /home/sfs/${JobName}/a5-rmrRNA && \
+        mkdir -p /home/sfs/${JobName}/a5-rmrRNA/nonrRNA && \
+        echo ${1} begin `date` && \
+        bash /root/.bashrc && \
+        /home/test/bowtie-1.2.3-linux-x86_64/bowtie \
+        -n 0 -norc --best -l 15 -p 8 \
+         --un=/home/sfs/${JobName}/a5-rmrRNA/nonrRNA/nocontam_${1} /home/obs/${obs_reference_rRNA_bowtie} \
+         -q /home/sfs/${JobName}/a3-filter/${1}_trimmedQfilter.fastq \
+         /home/sfs/${JobName}/a5-rmrRNA/${1}.sam > \
+         /home/sfs/${JobName}/a5-rmrRNA/${1}.err
+         
+      vars_iter:
+        - '${fastq_files}'
+        
+# sam to bam
+    commands_iter:
+      command: |
+        samtools view -bS -o /home/sfs/${JobName}/a5-rmrRNA/${1}.bam /home/sfs/${JobName}/a5-rmrRNA/${1}.sam &&
+        samtools sort /home/sfs/${JobName}/a5-rmrRNA/${1}.bam /home/sfs/${JobName}/a5-rmrRNA/${1}.sorted   && 
+        samtools index /home/sfs/${JobName}/a5-rmrRNA/${1}.sorted.bam
+      vars_iter:
+        - '${fastq_files}'
+
+# homer peak
+commands:
       - >-
-makeTagDirectory input/ip    input/ip.part.bam
-makeTagDirectory input/input input/input.part.bam
-After this step, input/ip & input/input will contain several .tags.tsv files, as well as a file named tagInfo.txt. This file contains information about your sequencing run, including the total number of tags considered. This file is used by later peak-calling programs to quickly reference information about the experiment. Then we call peak by using these tag file:
+        mkdir -p  /home/obs/${data_output} && /home/app/hommer/bin/makeTagDirectory /home/obs/${data_output}/ip /home/sfs/${JobName}/a5-rmrRNA/${ipbam}.sorted.bam && export PATH=/home/app/hommer/bin/:$PATH && /home/app/hommer/bin/makeTagDirectory /home/obs/${data_output}/input 
+        /home/sfs/${JobName}/a5-rmrRNA/${bgbam}.sorted.bam && /home/app/hommer/bin/findPeaks /home/obs/${data_output}/ip -style factor -o /home/obs/${data_output}/part.peak -i /home/obs/${data_output}/input && /home/app/hommer/bin/findMotifsGenome.pl /home/obs/${data_output}/part.peak ${spieces}
+        /home/obs/${data_output}/part.motif.output -len 8 && mv /home/sfs/${JobName} /home/obs/${data_output}
 
-findPeaks input/ip/ -style factor -o output/part.peak -i input/input/
-
-findMotifsGenome.pl output/part.peak sacCer2 output/part.motif.output -len 8
 ```
 
 ## bash with parameters
