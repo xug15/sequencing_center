@@ -677,6 +677,89 @@ volumes:
 
 ## Ribo-seq RiboMiner
 
+### version 20200701
+### fajin数据 Quality Control (QC)，Metagene Analysis (MA) 完成。
+```sh
+# annotation, prepare transcript;output transcript info; get protein coding sequence; Get URT sequence.
+    commands:
+      - >-
+        mkdir -p /home/sfs/${JobName}/a7-RiboCode_annot &&  /root/miniconda3/bin/prepare_transcripts -g /home/obs/${obs_reference_gtf} -f /home/obs/${obs_reference_fasta} -o /home/sfs/${JobName}/a7-RiboCode_annot && mkdir -p /home/sfs/${JobName}/a8-Ribominer_annot && 
+        /root/miniconda3/bin/OutputTranscriptInfo -c /home/sfs/${JobName}/a7-RiboCode_annot/transcripts_cds.txt -g /home/obs/${obs_reference_gtf} -f /home/sfs/${JobName}/a7-RiboCode_annot/transcripts_sequence.fa -o /home/sfs/${JobName}/a8-Ribominer_annot/longest.transcripts.info.txt -O
+        /home/sfs/${JobName}/a8-Ribominer_annot/all.transcripts.info.txt && /root/miniconda3/bin/GetProteinCodingSequence -i /home/sfs/${JobName}/a7-RiboCode_annot/transcripts_sequence.fa  -c /home/sfs/${JobName}/a8-Ribominer_annot/longest.transcripts.info.txt -o
+        /home/sfs/${JobName}/a8-Ribominer_annot/transcript --mode whole --table 1 && /root/miniconda3/bin/GetUTRSequences -i /home/sfs/${JobName}/a8-Ribominer_annot/transcript_transcript_sequences.fa -o /home/sfs/${JobName}/a8-Ribominer_annot/utr -c
+        /home/sfs/${JobName}/a7-RiboCode_annot/transcripts_cds.txt
+# metaplots.
+    commands_iter:
+      command: |
+        mkdir -p /home/sfs/${JobName}/a9-metaplots && /root/miniconda3/bin/metaplots -a /home/sfs/${JobName}/a7-RiboCode_annot -r ${bam_files}/${1}Aligned.toTranscriptome.out.bam -o /home/sfs/${JobName}/a9-metaplots/${1}
+      vars_iter:
+        - '${fastq_files}'
+# bam sort, index.
+    commands_iter:
+      command: >
+        samtools sort -T ${bam_files}/${1}Aligned.toTranscriptome.tmp.bam -o ${bam_files}/${1}Aligned.toTranscriptome.out.sorted.bam ${bam_files}/${1}Aligned.toTranscriptome.out.bam && samtools index ${bam_files}/${1}Aligned.toTranscriptome.out.sorted.bam && samtools index
+        ${bam_files}/${1}Aligned.sortedByCoord.out.bam #
+      vars_iter:
+        - '${fastq_files}'
+
+# perodicity
+    commands_iter:
+      command: >
+        mkdir -p /home/sfs/${JobName}/a10-periodicity && /root/miniconda3/bin/Periodicity -i ${bam_files}/${1}Aligned.toTranscriptome.out.sorted.bam -a /home/sfs/${JobName}/a7-RiboCode_annot -o /home/sfs/${JobName}/a10-periodicity/${1}_periodicity -c
+        /home/sfs/${JobName}/a8-Ribominer_annot/longest.transcripts.info.txt -L 25 -R 35
+      vars_iter:
+        - '${fastq_files}'
+# generate attributes.txt
+    commands:
+      - >-
+        cd ${home_dir}/a9-metaplots/ && echo -e "#SampleName\tAlignmentFile\tStranded\tReadLength\tP-site" > attributes.txt && for i in `ls |grep _pre_config.txt`;do echo $i;grep -v "#" ${i}|grep .>> attributes.txt ;done && awk 'BEGIN {FS="\t"; OFS="\t"} {print $2, $4, $5, $1}' attributes.txt > 
+        attributes2.txt && mv  attributes2.txt  attributes.txt && sed -i 's/Aligned.toTranscriptome.out.bam/Aligned.toTranscriptome.out.sorted.bam/g' attributes.txt && cut -f 1 ${home_dir}/a8-Ribominer_annot/longest.transcripts.info.txt |sed '1d'  > ${home_dir}/a8-Ribominer_annot/select_trans.txt ;
+    
+# RiboDensityOfDiffFrames.
+    commands:
+      - 'mkdir -p ${home_dir}/a11-ribodensity && /root/miniconda3/bin/RiboDensityOfDiffFrames -f ${home_dir}/a9-metaplots/attributes.txt -c ${home_dir}/a8-Ribominer_annot/longest.transcripts.info.txt -o ${home_dir}/a11-ribodensity/a6-ribo-density-diff-frame'
+    
+# StatisticReadsOnDNAcontam
+    commands_iter:
+      command: |
+        mkdir -p ${home_dir}/a12-dna-contamination && /root/miniconda3/bin/StatisticReadsOnDNAsContam -i  ${bam_files}/${1}Aligned.sortedByCoord.out.bam  -g /home/obs/${obs_reference_gtf} -o  ${home_dir}/a12-dna-contamination/${1}
+      vars_iter:
+        - '${fastq_files}'
+# MetageneAnalysisForTheWholeRegions; PlotMetageneAnalysisForTheWholeRegions
+    commands:
+      - >-
+        mkdir -p  ${home_dir}/a13-metagene && /root/miniconda3/bin/MetageneAnalysisForTheWholeRegions -f ${home_dir}/a9-metaplots/attributes.txt -c ${home_dir}/a8-Ribominer_annot/longest.transcripts.info.txt -o ${home_dir}/a13-metagene/a8-metagene -b 15,90,60 -l 100 -n 10 -m 1 -e 5 --plot yes &&
+        /root/miniconda3/bin/PlotMetageneAnalysisForTheWholeRegions -i ${home_dir}/a13-metagene/a8-metagene_scaled_density_dataframe.txt -o ${home_dir}/a13-metagene/a9-meta_gene_whole_regin -g ${gname} -r ${rname} -b 15,90,60 --mode all    
+# MetageneAnalysis
+    commands:
+      - >-
+        mkdir -p ${home_dir}/a14-metageneAnalysis && /root/miniconda3/bin/MetageneAnalysis -f ${home_dir}/a9-metaplots/attributes.txt -c ${home_dir}/a8-Ribominer_annot/longest.transcripts.info.txt -o ${home_dir}/a14-metageneAnalysis/b1-meat-cds -U codon -M RPKM -u 0 -d 500 -l 100 -n 10 -m 1 -e 5
+        --norm yes -y 100 --CI 0.95 --type CDS && /root/miniconda3/bin/MetageneAnalysis -f ${home_dir}/a9-metaplots/attributes.txt -c ${home_dir}/a8-Ribominer_annot/longest.transcripts.info.txt -o ${home_dir}/a14-metageneAnalysis/b2-meat-utr -U nt -M RPKM -u 100 -d 100 -l 100 -n 10 -m 1 -e 5 --norm yes -y 50 --CI 0.95 --type UTR
+# PolarityCalculation 
+    commands:
+      - >-
+        mkdir -p ${home_dir}/a15-polarity && /root/miniconda3/bin/PolarityCalculation -f ${home_dir}/a9-metaplots/attributes.txt -c ${home_dir}/a8-Ribominer_annot/longest.transcripts.info.txt -o ${home_dir}/a15-polarity/b3-polarity -n 64 && /root/miniconda3/bin/PlotPolarity -i
+        ${home_dir}/a15-polarity/b3-polarity_polarity_dataframe.txt -o ${home_dir}/a15-polarity/b4-plotpolarity -g ${gname} -r ${rname} -y 5 
+# RiboDensityForSpecificRegion; RiboDensityAtEachKindAAOrCodon; PlotRiboDensityAtEachKindAAOrCodon
+      - >-
+        mkdir -p ${home_dir}/a16-ribodensitycodon &&  /root/miniconda3/bin/RiboDensityForSpecificRegion -f ${home_dir}/a9-metaplots/attributes.txt -c ${home_dir}/a8-Ribominer_annot/longest.transcripts.info.txt -o ${home_dir}/a16-ribodensitycodon/b5-transcript-enrich -U codon -M RPKM -L 25 -R 75  &&
+        /root/miniconda3/bin/RiboDensityAtEachKindAAOrCodon -f ${home_dir}/a9-metaplots/attributes.txt -c ${home_dir}/a8-Ribominer_annot/longest.transcripts.info.txt -o ${home_dir}/a16-ribodensitycodon/b6-ribosome-aa -M counts -S ${home_dir}/a8-Ribominer_annot/select_trans.txt  -l 100 -n 10 --table
+        1 -F ${home_dir}/a8-Ribominer_annot/transcript_cds_sequences.fa &&  /root/miniconda3/bin/PlotRiboDensityAtEachKindAAOrCodon -i ${home_dir}/a16-ribodensitycodon/b6-ribosome-aa_all_codon_density.txt -o ${home_dir}/a16-ribodensitycodon/b7-PlotRiboDensityAtEachKindAAOrCodon -g ${gname} -r
+        ${rname} --level AA
+
+# PausingScore
+    commands:
+      - >-
+        mkdir -p ${home_dir}/a17-PausingScore && /root/miniconda3/bin/PausingScore -f ${home_dir}/a9-metaplots/attributes.txt -c ${home_dir}/a8-Ribominer_annot/longest.transcripts.info.txt -o  ${home_dir}/a17-PausingScore/b8-PausingScore -M counts -S ${home_dir}/a8-Ribominer_annot/select_trans.txt 
+        -l 100 -n 10 --table 1 -F  ${home_dir}/a8-Ribominer_annot/transcript_cds_sequences.fa && /root/miniconda3/bin/ProcessPausingScore -i ${pause_name} -o ${home_dir}/a17-PausingScore/b9-ProcessPausingScore -g ${gname} -r ${rname} --mode raw --ratio_filter 0 --pausing_score_filter 0
+# move data.
+    commands:
+      - 'mv /home/sfs/${JobName} /home/obs/output/${JobName}/ '
+
+```
+
+###  拟南芥没有问题。
+### version 20200615
 ```sh
 # annotation.
     commands:
