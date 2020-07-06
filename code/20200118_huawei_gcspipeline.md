@@ -677,6 +677,11 @@ volumes:
 
 ## Ribo-seq RiboMiner
 
+**Quality Control (QC):** Quality control for ribosome profiling data, containing periodicity checking, reads distribution among different reading frames,length distribution of ribosome footprints and DNA contaminations.
+**Metagene Analysis (MA):** Metagene analysis among different samples to find possible ribosome stalling events.
+**Feature Analysis (FA):** Feature analysis among different gene sets identified in MA step to explain the possible ribosome stalling.
+**Enrichment Analysis (EA):** Enrichment analysis to find possible co-translation events.
+
 ### version 20200701
 ### fajin数据 Quality Control (QC)，Metagene Analysis (MA) 完成。
 ```sh
@@ -714,7 +719,7 @@ volumes:
       - >-
         cd ${home_dir}/a9-metaplots/ && echo -e "#SampleName\tAlignmentFile\tStranded\tReadLength\tP-site" > attributes.txt && for i in `ls |grep _pre_config.txt`;do echo $i;grep -v "#" ${i}|grep .>> attributes.txt ;done && awk 'BEGIN {FS="\t"; OFS="\t"} {print $2, $4, $5, $1}' attributes.txt > 
         attributes2.txt && mv  attributes2.txt  attributes.txt && sed -i 's/Aligned.toTranscriptome.out.bam/Aligned.toTranscriptome.out.sorted.bam/g' attributes.txt && cut -f 1 ${home_dir}/a8-Ribominer_annot/longest.transcripts.info.txt |sed '1d'  > ${home_dir}/a8-Ribominer_annot/select_trans.txt ;
-    
+
 # RiboDensityOfDiffFrames.
     commands:
       - 'mkdir -p ${home_dir}/a11-ribodensity && /root/miniconda3/bin/RiboDensityOfDiffFrames -f ${home_dir}/a9-metaplots/attributes.txt -c ${home_dir}/a8-Ribominer_annot/longest.transcripts.info.txt -o ${home_dir}/a11-ribodensity/a6-ribo-density-diff-frame'
@@ -725,6 +730,10 @@ volumes:
         mkdir -p ${home_dir}/a12-dna-contamination && /root/miniconda3/bin/StatisticReadsOnDNAsContam -i  ${bam_files}/${1}Aligned.sortedByCoord.out.bam  -g /home/obs/${obs_reference_gtf} -o  ${home_dir}/a12-dna-contamination/${1}
       vars_iter:
         - '${fastq_files}'
+
+######################
+# Metagene Analysis
+######################  
 # MetageneAnalysisForTheWholeRegions; PlotMetageneAnalysisForTheWholeRegions
     commands:
       - >-
@@ -740,7 +749,12 @@ volumes:
       - >-
         mkdir -p ${home_dir}/a15-polarity && /root/miniconda3/bin/PolarityCalculation -f ${home_dir}/a9-metaplots/attributes.txt -c ${home_dir}/a8-Ribominer_annot/longest.transcripts.info.txt -o ${home_dir}/a15-polarity/b3-polarity -n 64 && /root/miniconda3/bin/PlotPolarity -i
         ${home_dir}/a15-polarity/b3-polarity_polarity_dataframe.txt -o ${home_dir}/a15-polarity/b4-plotpolarity -g ${gname} -r ${rname} -y 5 
+
+##########################
+# Feature Analysis (FA)
+##########################        
 # RiboDensityForSpecificRegion; RiboDensityAtEachKindAAOrCodon; PlotRiboDensityAtEachKindAAOrCodon
+    commands:
       - >-
         mkdir -p ${home_dir}/a16-ribodensitycodon &&  /root/miniconda3/bin/RiboDensityForSpecificRegion -f ${home_dir}/a9-metaplots/attributes.txt -c ${home_dir}/a8-Ribominer_annot/longest.transcripts.info.txt -o ${home_dir}/a16-ribodensitycodon/b5-transcript-enrich -U codon -M RPKM -L 25 -R 75  &&
         /root/miniconda3/bin/RiboDensityAtEachKindAAOrCodon -f ${home_dir}/a9-metaplots/attributes.txt -c ${home_dir}/a8-Ribominer_annot/longest.transcripts.info.txt -o ${home_dir}/a16-ribodensitycodon/b6-ribosome-aa -M counts -S ${home_dir}/a8-Ribominer_annot/select_trans.txt  -l 100 -n 10 --table
@@ -750,11 +764,56 @@ volumes:
 # PausingScore
     commands:
       - >-
-        mkdir -p ${home_dir}/a17-PausingScore && /root/miniconda3/bin/PausingScore -f ${home_dir}/a9-metaplots/attributes.txt -c ${home_dir}/a8-Ribominer_annot/longest.transcripts.info.txt -o  ${home_dir}/a17-PausingScore/b8-PausingScore -M counts -S ${home_dir}/a8-Ribominer_annot/select_trans.txt 
-        -l 100 -n 10 --table 1 -F  ${home_dir}/a8-Ribominer_annot/transcript_cds_sequences.fa && /root/miniconda3/bin/ProcessPausingScore -i ${pause_name} -o ${home_dir}/a17-PausingScore/b9-ProcessPausingScore -g ${gname} -r ${rname} --mode raw --ratio_filter 0 --pausing_score_filter 0
+        mkdir -p ${home_dir}/a17-PausingScore && /root/miniconda3/bin/PausingScore -f ${home_dir}/a9-metaplots/attributes.txt -c ${home_dir}/a8-Ribominer_annot/longest.transcripts.info.txt -o  ${home_dir}/a17-PausingScore/b8-PausingScore -M counts -S ${home_dir}/a8-Ribominer_annot/select_trans.txt -l 100 -n 10 --table 1 -F  ${home_dir}/a8-Ribominer_annot/transcript_cds_sequences.fa && /root/miniconda3/bin/ProcessPausingScore -i ${pause_name} -o ${home_dir}/a17-PausingScore/b9-ProcessPausingScore -g ${gname} -r ${rname} --mode raw --ratio_filter 0 --pausing_score_filter 0
 # move data.
     commands:
       - 'mv /home/sfs/${JobName} /home/obs/output/${JobName}/ '
+
+```
+
+ribominer-feature-analysis
+```sh
+##########################
+# Feature Analysis (FA)
+##########################        
+# RiboDensityForSpecificRegion; RiboDensityAtEachKindAAOrCodon; PlotRiboDensityAtEachKindAAOrCodon
+    commands:
+      - >-
+        mkdir -p /home/obs/${obs_dir}/a16-ribodensitycodon2 &&  /root/miniconda3/bin/RiboDensityForSpecificRegion -f /home/obs/${obs_dir}/a9-metaplots/attributes.txt -c /home/obs/${longest_tra} -o /home/obs/${obs_dir}/a16-ribodensitycodon2/b5-transcript-enrich -U codon -M RPKM -L 25 -R 75  &&
+        /root/miniconda3/bin/RiboDensityAtEachKindAAOrCodon -f /home/obs/${obs_dir}/a9-metaplots/attributes.txt -c /home/obs/${longest_tra} -o /home/obs/${obs_dir}/a16-ribodensitycodon2/b6-ribosome-aa -M counts  -l 100 -n 10 --table
+        1 -F /home/obs/${trans_cds_seq} &&  /root/miniconda3/bin/PlotRiboDensityAtEachKindAAOrCodon -i /home/obs/${obs_dir}/a16-ribodensitycodon2/b6-ribosome-aa_all_codon_density.txt -o /home/obs/${obs_dir}/a16-ribodensitycodon2/b7-PlotRiboDensityAtEachKindAAOrCodon -g ${gname} -r
+        ${rname} --level AA
+
+# Ribosome density around the triplete amino acid (tri-AA) motifs.
+#
+    commands:
+      - >-
+      mkdir -p /home/obs/${obs_dir}/a18-AroundTriplete/ && 
+      /root/miniconda3/bin/RiboDensityAroundTripleteAAMotifs -f /home/obs/${obs_dir}/a9-metaplots/attributes.txt -c /home/obs/${longest_tra} -o /home/obs/${obs_dir}/a18-AroundTriplete/c0-RiboDensityAroundTripleteAAMotifs_PPP -M counts -l 100 -n 10 --table 1 -F /home/obs/${trans_cds_seq} --type2 PPP --type1 PP && 
+      /root/miniconda3/bin/PlotRiboDensityAroundTriAAMotifs -i /home/obs/${obs_dir}/a18-AroundTriplete/c0-RiboDensityAroundTripleteAAMotifs_PPP_motifDensity_dataframe.txt -o /home/obs/${obs_dir}/a18-AroundTriplete/c1-PPP_plot -g ${gname} -r ${rname} --mode mean
+# PausingScore
+    commands:
+      - >-
+        mkdir -p /home/obs/${obs_dir}/a17-PausingScore2 && /root/miniconda3/bin/PausingScore -f /home/obs/${obs_dir}/a9-metaplots/attributes.txt -c /home/obs/${longest_tra} -o  /home/obs/${obs_dir}/a17-PausingScore2/b8-PausingScore -M counts -l 100 -n 10 --table 1 -F  /home/obs/${trans_cds_seq} && /root/miniconda3/bin/ProcessPausingScore -i ${pause_name} -o /home/obs/${obs_dir}/a17-PausingScore2/b9-ProcessPausingScore -g ${gname} -r ${rname} --mode raw --ratio_filter 0 --pausing_score_filter 0
+# RPFdist calculation. GCContent
+          commands:
+      - >-
+      mkdir -p ${home_dir}/a20-RPFdist-GCContent/ && 
+          /root/miniconda3/bin/RPFdist -f ${home_dir}/a9-metaplots/attributes.txt -c /home/obs/${longest_tra} -o ${home_dir}/a20-RPFdist-GCContent/c3-RPFdist -M counts -l 100 -n 10 -m 1 -e 5 &&
+          /root/miniconda3/bin/GCContent -i /home/obs/${trans_cds_seq} -o ${home_dir}/a20-RPFdist-GCContent/c4-GCContent-normal --mode normal &&
+          /root/miniconda3/bin/GCContent -i /home/obs/${trans_cds_seq} -o ${home_dir}/a20-RPFdist-GCContent/c4-GCContent-frames --mode frames &&
+          /root/miniconda3/bin/PlotGCContent -i ${home_dir}/a20-RPFdist-GCContent/c4-GCContent-normal_GC_content.txt -o ${home_dir}/a20-RPFdist-GCContent/c5-PlotGCContent-normal --mode normal &&
+          /root/miniconda3/bin/PlotGCContent -i ${home_dir}/a20-RPFdist-GCContent/c4-GCContent-frames_GC_content_frames.txt -o ${home_dir}/a20-RPFdist-GCContent/c5-PlotGCContent-frames --mode frames
+
+# Local tRNA adaptation index and global tRNA adaptation index
+          commands:
+      - >-
+      mkdir -p ${home_dir}/a21-tAI-cAI/ && /root/miniconda3/bin/tAI -i 2954_up_cds_sequences.fa,1598_unblocked_cds_sequences.fa,433_down_cds_sequences.fa -t  2954_up,1598_unblocked,433_down -o ${home_dir}/a21-tAI-cAI/c6-tAI -u 0 -d 500 --table 1 -N tRNA_GCNs_Saccharomyces_cerevisiae.txt  &&
+       /root/miniconda3/bin/tAIPlot -i ${home_dir}/a21-tAI-cAI/c6-tAI_tAI_dataframe.txt -o ${home_dir}/a21-tAI-cAI/c7-tAIPlot -u 0 -d 500 --mode all --start 5 --window 7 --step 1 
+# tRNA index
+       &&
+       /root/miniconda3/bin/cAI -i 2954_up_cds_sequences.fa,1598_unblocked_cds_sequences.fa,433_down_cds_sequences.fa -o ${home_dir}/a21-tAI-cAI/c8-cAI -t tair -u 0 -d 500 --reference /home/obs/${longest_tra}  && 
+       /root/miniconda3/bin/cAIPlot -i ${home_dir}/a21-tAI-cAI/c8-cAI_local_cAI_dataframe.txt -o ${home_dir}/a21-tAI-cAI/c9-cAIPlot -u 0 -d 500 --mode all --start 5 --window 7 --step 1
 
 ```
 
