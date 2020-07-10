@@ -6,6 +6,7 @@
 * [Ribo-seq : De novo annotation ( RiboCode )](code/a3.denovo.md)
 * [Ribo-seq : RiboAnaly](https://github.com/xryanglab/RiboMiner)
 * [Huawei GCS](code/20200118_huawei.md)
+* [Machine learning](code/20200710_machinelearning.md)
 
 =====
 * [HTSeq](code/a4.HTSeq.md)

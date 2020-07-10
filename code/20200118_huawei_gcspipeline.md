@@ -770,6 +770,27 @@ volumes:
       - 'mv /home/sfs/${JobName} /home/obs/output/${JobName}/ '
 
 ```
+ribominer-Metagene-Analysis.sh(fajin 0708) 
+```sh
+######################
+# Metagene Analysis
+######################  
+# MetageneAnalysisForTheWholeRegions; PlotMetageneAnalysisForTheWholeRegions
+    commands:
+      - >-
+        mkdir -p  ${home_dir}/a13-metagene && cd /home/obs/fjdata/data && /root/miniconda3/bin/MetageneAnalysisForTheWholeRegions -f /home/obs/${attributes} -c /home/obs/${longest_tra} -o ${home_dir}/a13-metagene/a8-metagene -b 15,90,60 -l 100 -n 10 -m 1 -e 5 --plot yes &&
+        /root/miniconda3/bin/PlotMetageneAnalysisForTheWholeRegions -i ${home_dir}/a13-metagene/a8-metagene_scaled_density_dataframe.txt -o ${home_dir}/a13-metagene/a9-meta_gene_whole_regin -g ${gname} -r ${rname} -b 15,90,60 --mode all    
+# MetageneAnalysis
+    commands:
+      - >-
+        mkdir -p ${home_dir}/a14-metageneAnalysis && cd /home/obs/fjdata/data && /root/miniconda3/bin/MetageneAnalysis -f /home/obs/${attributes} -c /home/obs/${longest_tra} -o ${home_dir}/a14-metageneAnalysis/b1-meat-cds -U codon -M RPKM -u 0 -d 500 -l 100 -n 10 -m 1 -e 5
+        --norm yes -y 100 --CI 0.95 --type CDS && /root/miniconda3/bin/MetageneAnalysis -f /home/obs/${attributes} -c /home/obs/${longest_tra} -o ${home_dir}/a14-metageneAnalysis/b2-meat-utr -U nt -M RPKM -u 100 -d 100 -l 100 -n 10 -m 1 -e 5 --norm yes -y 50 --CI 0.95 --type UTR
+# PolarityCalculation 
+    commands:
+      - >-
+        mkdir -p ${home_dir}/a15-polarity && cd /home/obs/fjdata/data && /root/miniconda3/bin/PolarityCalculation -f /home/obs/${attributes} -c /home/obs/${longest_tra} -o ${home_dir}/a15-polarity/b3-polarity -n 64 && /root/miniconda3/bin/PlotPolarity -i
+        ${home_dir}/a15-polarity/b3-polarity_polarity_dataframe.txt -o ${home_dir}/a15-polarity/b4-plotpolarity -g ${gname} -r ${rname} -y 5 
+```
 
 ribominer-feature-analysis
 ```sh
@@ -806,14 +827,124 @@ ribominer-feature-analysis
           /root/miniconda3/bin/PlotGCContent -i ${home_dir}/a20-RPFdist-GCContent/c4-GCContent-frames_GC_content_frames.txt -o ${home_dir}/a20-RPFdist-GCContent/c5-PlotGCContent-frames --mode frames
 
 # Local tRNA adaptation index and global tRNA adaptation index
+    commands:
+      - >-  
+        mkdir -p ${home_dir}/a21-tAI-cAI/ && cd /home/obs/${transcript_location} && /root/miniconda3/bin/tAI -i up_cds_sequences.fa,unblocked_cds_sequences.fa,down_cds_sequences.fa -t  2954_up,1598_unblocked,433_down -o ${home_dir}/a21-tAI-cAI/c6-tAI -u 0 -d 500 --table 1 -N
+        /home/obs/${tRNA_GCNs}  && /root/miniconda3/bin/tAIPlot -i ${home_dir}/a21-tAI-cAI/c6-tAI_tAI_dataframe.txt -o ${home_dir}/a21-tAI-cAI/c7-tAIPlot -u 0 -d 500 --mode all --start 5 --window 7 --step 1  
+# Local codon adaptation index and global codon adaptation index
+ commands:
+      - >-
+        mkdir -p ${home_dir}/a21-tAI-cAI/ && cd /home/obs/${transcript_location} && /root/miniconda3/bin/cAI -i up_cds_sequences.fa,unblocked_cds_sequences.fa,down_cds_sequences.fa -o ${home_dir}/a21-tAI-cAI/c8-cAI -t 2954_up,1598_unblocked,433_down -u 0 -d 500 --reference /home/obs/${longest_cds_fa}  && 
+        /root/miniconda3/bin/cAIPlot -i ${home_dir}/a21-tAI-cAI/c8-cAI_local_cAI_dataframe.txt -o ${home_dir}/a21-tAI-cAI/c9-cAIPlot -u 0 -d 500 --mode all --start 5 --window 7 --step 1
+# Hydrophobicity calculation
+    commands:
+      - >-
+      mkdir -p ${home_dir}/a22-hydropath/ && cd /home/obs/${transcript_location} &&
+      /root/miniconda3/bin/hydropathyCharge  -i up_cds_sequences.fa,unblocked_cds_sequences.fa,down_cds_sequences.fa -t 2954_up,1598_unblocked,433_down -o ${home_dir}/a22-hydropath/d1-hydropathyCharge --index /home/obs/${obs_reference_hydropath} -u 0 -d 500  && 
+      /root/miniconda3/bin/PlotHydropathyCharge -i ${home_dir}/a22-hydropath/d1-hydropathyCharge_values_dataframe.txt -o ${home_dir}/a22-hydropath/d3-PlotHydropathyCharge  -u 0 -d 500 --mode all --ylab "Average Hydrophobicity" 
+
+#  Charge amino acids
+    commands:
+      - >-
+      mkdir -p ${home_dir}/a22-hydropath/ && cd /home/obs/${transcript_location} &&
+      /root/miniconda3/bin/hydropathyCharge -i up_cds_sequences.fa,unblocked_cds_sequences.fa,down_cds_sequences.fa -t 2954_up,1598_unblocked,433_down -o ${home_dir}/a22-hydropath/d2-charge --index /home/obs/${obs_reference_AAindex} -u 0 -d 500  && 
+      /root/miniconda3/bin/PlotHydropathyCharge -i ${home_dir}/a22-hydropath/d2-charge_values_dataframe.txt -o ${home_dir}/a22-hydropath/d4-Plotcharges -u 0 -d 500 --mode all --ylab "Average Charges"
+```
+
+ribominer-feature-analysis-fajin
+```sh
+##########################
+# Feature Analysis (FA)
+##########################        
+# RiboDensityForSpecificRegion; RiboDensityAtEachKindAAOrCodon; PlotRiboDensityAtEachKindAAOrCodon
+    commands:
+      - >-
+        mkdir -p /home/obs/${obs_dir}/a16-ribodensitycodon2 && cd /home/obs/fjdata/data &&  /root/miniconda3/bin/RiboDensityForSpecificRegion -f /home/obs/${attributes} -c /home/obs/${longest_tra} -o /home/obs/${obs_dir}/a16-ribodensitycodon2/b5-transcript-enrich -U codon -M RPKM -L 25 -R 75  &&
+        /root/miniconda3/bin/RiboDensityAtEachKindAAOrCodon -f /home/obs/${attributes} -c /home/obs/${longest_tra} -o /home/obs/${obs_dir}/a16-ribodensitycodon2/b6-ribosome-aa -M counts  -l 100 -n 10 --table 1 -F /home/obs/${trans_cds_seq} &&  /root/miniconda3/bin/PlotRiboDensityAtEachKindAAOrCodon -i /home/obs/${obs_dir}/a16-ribodensitycodon2/b6-ribosome-aa_all_codon_density.txt -o /home/obs/${obs_dir}/a16-ribodensitycodon2/b7-PlotRiboDensityAtEachKindAAOrCodon -g ${gname} -r
+        ${rname} --level AA
+
+# PausingScore
+    commands:
+   ·      - >-
+        mkdir -p /home/obs/${obs_dir}/a17-PausingScore2 && cd /home/obs/fjdata/data && /root/miniconda3/bin/PausingScore -f /home/obs/${attributes} -c /home/obs/${longest_tra} -o  /home/obs/${obs_dir}/a17-PausingScore2/all -M counts -l 100 -n 10 --table 1 -F  /home/obs/${trans_cds_seq} && cd /home/obs/${obs_dir}/a17-PausingScore2/ && /root/miniconda3/bin/ProcessPausingScore -i all_si-Ctrl-1_pausing_score.txt,all_si-Ctrl-2_pausing_score.txt,all_si-eIF5A-1_pausing_score.txt,all_si-eIF5A-2_pausing_score.txt -o /home/obs/${obs_dir}/a17-PausingScore2/b9-ProcessPausingScore -g ${gname} -r ${rname} --mode raw --ratio_filter 0 --pausing_score_filter 0
+
+# Ribosome density around the triplete amino acid (tri-AA) motifs.
+#
+    commands:
+      - >-
+      mkdir -p /home/obs/${obs_dir}/a18-AroundTriplete/ &&  cd /home/obs/fjdata/data &&
+      /root/miniconda3/bin/RiboDensityAroundTripleteAAMotifs -f /home/obs/${attributes} -c /home/obs/${longest_tra} -o /home/obs/${obs_dir}/a18-AroundTriplete/c0-RiboDensityAroundTripleteAAMotifs_PPP -M counts -l 100 -n 10 --table 1 -F /home/obs/${trans_cds_seq} --type2 PPP --type1 PP && 
+      /root/miniconda3/bin/PlotRiboDensityAroundTriAAMotifs -i /home/obs/${obs_dir}/a18-AroundTriplete/c0-RiboDensityAroundTripleteAAMotifs_PPP_motifDensity_dataframe.txt -o /home/obs/${obs_dir}/a18-AroundTriplete/c1-PPP_plot -g ${gname} -r ${rname} --mode mean    
+
+# RPFdist calculation. GCContent
           commands:
       - >-
-      mkdir -p ${home_dir}/a21-tAI-cAI/ && /root/miniconda3/bin/tAI -i 2954_up_cds_sequences.fa,1598_unblocked_cds_sequences.fa,433_down_cds_sequences.fa -t  2954_up,1598_unblocked,433_down -o ${home_dir}/a21-tAI-cAI/c6-tAI -u 0 -d 500 --table 1 -N tRNA_GCNs_Saccharomyces_cerevisiae.txt  &&
-       /root/miniconda3/bin/tAIPlot -i ${home_dir}/a21-tAI-cAI/c6-tAI_tAI_dataframe.txt -o ${home_dir}/a21-tAI-cAI/c7-tAIPlot -u 0 -d 500 --mode all --start 5 --window 7 --step 1 
-# tRNA index
-       &&
-       /root/miniconda3/bin/cAI -i 2954_up_cds_sequences.fa,1598_unblocked_cds_sequences.fa,433_down_cds_sequences.fa -o ${home_dir}/a21-tAI-cAI/c8-cAI -t tair -u 0 -d 500 --reference /home/obs/${longest_tra}  && 
-       /root/miniconda3/bin/cAIPlot -i ${home_dir}/a21-tAI-cAI/c8-cAI_local_cAI_dataframe.txt -o ${home_dir}/a21-tAI-cAI/c9-cAIPlot -u 0 -d 500 --mode all --start 5 --window 7 --step 1
+      mkdir -p ${home_dir}/a20-RPFdist-GCContent/ &&  cd /home/obs/fjdata/data &&
+          /root/miniconda3/bin/RPFdist -f ${home_dir}/a9-metaplots/attributes.txt -c /home/obs/${longest_tra} -o ${home_dir}/a20-RPFdist-GCContent/c3-RPFdist -M counts -l 100 -n 10 -m 1 -e 5 &&
+          /root/miniconda3/bin/GCContent -i /home/obs/${trans_cds_seq} -o ${home_dir}/a20-RPFdist-GCContent/c4-GCContent-normal --mode normal &&
+          /root/miniconda3/bin/GCContent -i /home/obs/${trans_cds_seq} -o ${home_dir}/a20-RPFdist-GCContent/c4-GCContent-frames --mode frames &&
+          /root/miniconda3/bin/PlotGCContent -i ${home_dir}/a20-RPFdist-GCContent/c4-GCContent-normal_GC_content.txt -o ${home_dir}/a20-RPFdist-GCContent/c5-PlotGCContent-normal --mode normal &&
+          /root/miniconda3/bin/PlotGCContent -i ${home_dir}/a20-RPFdist-GCContent/c4-GCContent-frames_GC_content_frames.txt -o ${home_dir}/a20-RPFdist-GCContent/c5-PlotGCContent-frames --mode frames
+
+# Local tRNA adaptation index and global tRNA adaptation index
+    commands:
+      - >-  
+        mkdir -p ${home_dir}/a21-tAI-cAI/ && cd /home/obs/${transcript_location} && /root/miniconda3/bin/tAI -i up_cds_sequences.fa,unblocked_cds_sequences.fa,down_cds_sequences.fa -t  2954_up,1598_unblocked,433_down -o ${home_dir}/a21-tAI-cAI/c6-tAI -u 0 -d 500 --table 1 -N
+        /home/obs/${tRNA_GCNs}  && /root/miniconda3/bin/tAIPlot -i ${home_dir}/a21-tAI-cAI/c6-tAI_tAI_dataframe.txt -o ${home_dir}/a21-tAI-cAI/c7-tAIPlot -u 0 -d 500 --mode all --start 5 --window 7 --step 1  
+# Local codon adaptation index and global codon adaptation index
+ commands:
+      - >-
+        mkdir -p ${home_dir}/a21-tAI-cAI/ && cd /home/obs/${transcript_location} && /root/miniconda3/bin/cAI -i up_cds_sequences.fa,unblocked_cds_sequences.fa,down_cds_sequences.fa -o ${home_dir}/a21-tAI-cAI/c8-cAI -t 2954_up,1598_unblocked,433_down -u 0 -d 500 --reference /home/obs/${longest_cds_fa}  && 
+        /root/miniconda3/bin/cAIPlot -i ${home_dir}/a21-tAI-cAI/c8-cAI_local_cAI_dataframe.txt -o ${home_dir}/a21-tAI-cAI/c9-cAIPlot -u 0 -d 500 --mode all --start 5 --window 7 --step 1
+# Hydrophobicity calculation
+    commands:
+      - >-
+      mkdir -p ${home_dir}/a22-hydropath/ && cd /home/obs/${transcript_location} &&
+      /root/miniconda3/bin/hydropathyCharge  -i up_cds_sequences.fa,unblocked_cds_sequences.fa,down_cds_sequences.fa -t 2954_up,1598_unblocked,433_down -o ${home_dir}/a22-hydropath/d1-hydropathyCharge --index /home/obs/${obs_reference_hydropath} -u 0 -d 500  && 
+      /root/miniconda3/bin/PlotHydropathyCharge -i ${home_dir}/a22-hydropath/d1-hydropathyCharge_values_dataframe.txt -o ${home_dir}/a22-hydropath/d3-PlotHydropathyCharge  -u 0 -d 500 --mode all --ylab "Average Hydrophobicity" 
+
+#  Charge amino acids
+    commands:
+      - >-
+      mkdir -p ${home_dir}/a22-hydropath/ && cd /home/obs/${transcript_location} &&
+      /root/miniconda3/bin/hydropathyCharge -i up_cds_sequences.fa,unblocked_cds_sequences.fa,down_cds_sequences.fa -t 2954_up,1598_unblocked,433_down -o ${home_dir}/a22-hydropath/d2-charge --index /home/obs/${obs_reference_AAindex} -u 0 -d 500  && 
+      /root/miniconda3/bin/PlotHydropathyCharge -i ${home_dir}/a22-hydropath/d2-charge_values_dataframe.txt -o ${home_dir}/a22-hydropath/d4-Plotcharges -u 0 -d 500 --mode all --ylab "Average Charges"
+```
+
+Enrichment Analysis (EA)
+```sh
+# Step 1: Calculate ribosome density at each position for each transcript.
+    commands:
+      - >-
+      mkdir -p ${home_dir}/EnrichmentAnalysis/GUS && mkdir -p ${home_dir}/EnrichmentAnalysis/MES && cd /home/obs/fjdata/data &&  
+      /root/miniconda3/bin/RiboDensityAtEachPosition -c /home/obs/${longest_tra} -f /home/obs/${GUS_attributes} -o ${home_dir}/EnrichmentAnalysis/GUS/GUS  -U codon  && 
+      /root/miniconda3/bin/RiboDensityAtEachPosition -c /home/obs/${longest_tra} -f /home/obs/${MES_attributes} -o ${home_dir}/EnrichmentAnalysis/MES/MES  -U codon 
+
+# Step 2: Calculate mean ribosome density for different replicates.
+    commands:
+      - >-
+        /root/miniconda3/bin/enrichmentMeanDensity -i ${home_dir}/EnrichmentAnalysis/GUS/GUS_GUS1-IP-1_cds_codon_density.txt,${home_dir}/EnrichmentAnalysis/GUS/GUS_GUS1-IP-2_cds_codon_density.txt -o ${home_dir}/EnrichmentAnalysis/GUS/GUS_IP && 
+        /root/miniconda3/bin/enrichmentMeanDensity -i ${home_dir}/EnrichmentAnalysis/GUS/GUS_GUS1-total-1_cds_codon_density.txt,${home_dir}/EnrichmentAnalysis/GUS/GUS_GUS1-total-2_cds_codon_density.txt -o ${home_dir}/EnrichmentAnalysis/GUS/GUS_total && 
+        /root/miniconda3/bin/enrichmentMeanDensity -i ${home_dir}/EnrichmentAnalysis/MES/MES_MES1-IP-1_cds_codon_density.txt,${home_dir}/EnrichmentAnalysis/MES/MES_MES1-IP-2_cds_codon_density.txt -o ${home_dir}/EnrichmentAnalysis/MES/MES_IP && 
+        /root/miniconda3/bin/enrichmentMeanDensity -i ${home_dir}/EnrichmentAnalysis/MES/MES_MES1-total-1_cds_codon_density.txt,${home_dir}/EnrichmentAnalysis/MES/MES_MES1-total-2_cds_codon_density.txt -o ${home_dir}/EnrichmentAnalysis/MES/MES_total
+
+
+# Step 3: Enrichment analysis.
+    commands:
+      - >-
+        /root/miniconda3/bin/EnrichmentAnalysis --ctrl ${home_dir}/EnrichmentAnalysis/GUS/GUS_total_mean_density.txt --treat ${home_dir}/EnrichmentAnalysis/GUS/GUS_IP_mean_density.txt -c /home/obs/${longest_tra} -o ${home_dir}/EnrichmentAnalysis/GUS/GUS -U codon -M RPKM -l 150 -n 10 -m 1 -e 30 --CI 0.95 -u 0 -d 500  &&  
+        /root/miniconda3/bin/EnrichmentAnalysis --ctrl ${home_dir}/EnrichmentAnalysis/MES/MES_total_mean_density.txt --treat ${home_dir}/EnrichmentAnalysis/MES/MES_IP_mean_density.txt -c /home/obs/${longest_tra} -o ${home_dir}/EnrichmentAnalysis/MES/MES -U codon -M RPKM -l 150 -n 10 -m 1 -e 30 --CI 0.95 -u 0 -d 500  
+
+# Step 4: Plot the enrichment ratio.
+
+
+# Notes: if you want to see the enrichment ratio for a single transcript, the EnrichmentAnalysisForSingleTrans would be helpful.
+    commands:
+      - >-
+      /root/miniconda3/bin/EnrichmentAnalysisForSingleTrans -i ${home_dir}/EnrichmentAnalysis/MES/MES_codon_ratio.txt -s GUS1 -o ${home_dir}/EnrichmentAnalysis/MES/MES_GUS1 -c /home/obs/${longest_tra}  --id-type gene_name --slide-window y --axhline 1 && 
+      /root/miniconda3/bin/EnrichmentAnalysisForSingleTrans -i ${home_dir}/EnrichmentAnalysis/MES/MES_codon_ratio.txt -s ARC1 -o ${home_dir}/EnrichmentAnalysis/MES/MES_ARC1 -c /home/obs/${longest_tra}  --id-type gene_name --slide-window y --axhline 1 && 
+      /root/miniconda3/bin/EnrichmentAnalysisForSingleTrans -i ${home_dir}/EnrichmentAnalysis/GUS/GUS_codon_ratio.txt -s MES1 -o ${home_dir}/EnrichmentAnalysis/GUS/GUS_MES1 -c /home/obs/${longest_tra}  --id-type gene_name --slide-window y --axhline 1 && 
+      /root/miniconda3/bin/EnrichmentAnalysisForSingleTrans -i ${home_dir}/EnrichmentAnalysis/GUS/GUS_codon_ratio.txt -s ARC1 -o ${home_dir}/EnrichmentAnalysis/GUS/GUS_ARC1 -c /home/obs/${longest_tra}  --id-type gene_name --slide-window y --axhline 1 
 
 ```
 

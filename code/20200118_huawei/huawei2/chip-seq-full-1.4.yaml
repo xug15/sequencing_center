@@ -1,0 +1,316 @@
+version: genecontainer_0_1
+workflow:
+  cutadapter3zaks:
+    tool: 'cutadapter:1.0'
+    type: GCS.Job
+    resources:
+      memory: 8G
+      cpu: 2C
+    commands_iter:
+      command: |
+        mkdir -p /home/sfs/${JobName}/a2-cutadapter && \
+        echo ${1} begin `date` /root/miniconda3/bin/cutadapt -m 18 \
+        --match-read-wildcards -a ${adapter} \
+        -o /home/sfs/${JobName}/a2-cutadapter/${1}_trimmed.fastq \
+        /home/obs/${obs_data_path}/${1} && \
+        /root/miniconda3/bin/cutadapt -m 18 \
+        --match-read-wildcards -a ${adapter} \
+        -o /home/sfs/${JobName}/a2-cutadapter/${1}_trimmed.fastq \
+         /home/obs/${obs_data_path}/${1}
+      vars_iter:
+        - '${fastq_files}'
+    metadata:
+      Designer:
+        id: bb1f9350-5f1b-4fb6-a220-b1d9310c6dcd
+    depends: []
+    description: 将原始的下机数据去除接头
+  bowtie124fr5n:
+    tool: 'bowtie12:1.1'
+    type: GCS.Job
+    resources:
+      memory: 8G
+      cpu: 2C
+    commands_iter:
+      command: |
+        mkdir -p /home/sfs/${JobName}/a5-map && \
+        echo ${1} begin `date` && \
+        bash /root/.bashrc && \
+        /home/test/bowtie2-2.3.5.1-linux-x86_64/bowtie2 \
+         -p 8 \
+         -x /home/obs/${obs_reference_bowtie2} \
+          /home/sfs/${JobName}/a3-filter/${1}_trimmedQfilter.fastq \
+         -S /home/sfs/${JobName}/a5-map/${1}.sam > \
+         /home/sfs/${JobName}/a5-map/${1}.ali
+         
+      vars_iter:
+        - '${fastq_files}'
+    metadata:
+      Designer:
+        id: 8a34b955-8253-4ed8-a706-b57cc4aaebf5
+    depends:
+      - target: fastqc3wgoy
+        type: whole
+    description: 将数据比对到基因组上
+  fastx-tool3a3vg:
+    tool: 'fastx-toolkit:1.0'
+    type: GCS.Job
+    resources:
+      memory: 8G
+      cpu: 2C
+    commands_iter:
+      command: |
+        mkdir -p /home/sfs/${JobName}/a3-filter && \
+        echo ${1} begin `date` && \
+        /home/test/bin/fastq_quality_filter \
+        -Q33 -v -q 25 -p 75 \
+        -i /home/sfs/${JobName}/a2-cutadapter/${1}_trimmed.fastq \
+        -o /home/sfs/${JobName}/a3-filter/${1}_trimmedQfilter.fastq 
+      vars_iter:
+        - '${fastq_files}'
+    metadata:
+      Designer:
+        id: e9352b28-012b-4ad3-bf34-1d40c7314e8f
+    depends:
+      - target: cutadapter3zaks
+        type: whole
+    description: 去除低质量的数据
+  fastqc3wgoy:
+    tool: 'fastqc:1.0'
+    type: GCS.Job
+    resources:
+      memory: 8G
+      cpu: 2C
+    commands_iter:
+      command: |
+        mkdir -p /home/sfs/${JobName}/a4-qc && \
+        echo ${1} begin `date` && \
+        /home/test/FastQC/fastqc \
+        /home/sfs/${JobName}/a3-filter/${1}_trimmedQfilter.fastq \
+        -o /home/sfs/${JobName}/a4-qc
+      vars_iter:
+        - '${fastq_files}'
+    metadata:
+      Designer:
+        id: cc36f089-8b1c-4d18-85f7-2f9c5e7d174f
+    depends:
+      - target: fastx-tool3a3vg
+        type: whole
+    description: 对数据进行质量评估
+  hommer54r0r:
+    tool: 'hommer:1.2'
+    type: GCS.Job
+    resources:
+      memory: 8G
+      cpu: 2C
+    commands:
+      - >-
+        mkdir -p  /home/sfs/${JobName}/a6-hommer && /home/app/hommer/bin/makeTagDirectory /home/sfs/${JobName}/a6-hommer/ip /home/sfs/${JobName}/a5-map/${ipbam}.sorted.bam && export PATH=/home/app/hommer/bin/:$PATH && /home/app/hommer/bin/makeTagDirectory /home/sfs/${JobName}/a6-hommer/input 
+        /home/sfs/${JobName}/a5-map/${bgbam}.sorted.bam && /home/app/hommer/bin/findPeaks /home/sfs/${JobName}/a6-hommer/ip -style factor -o /home/sfs/${JobName}/a6-hommer/part.peak -i /home/sfs/${JobName}/a6-hommer/input && /home/app/hommer/bin/findMotifsGenome.pl
+        /home/sfs/${JobName}/a6-hommer/part.peak ${spieces} /home/sfs/${JobName}/a6-hommer/part.motif.output -len ${motif_length} && cp -rf /home/sfs/${JobName} /home/obs/${data_output} && rm -rf /home/sfs/${JobName}
+    metadata:
+      Designer:
+        id: 3553a7d4-d007-48e3-8881-788e03850db2
+    depends:
+      - target: samtools2b1rq2o
+        type: whole
+    description: call peak and find motif.
+  samtools2b1rq2o:
+    tool: 'samtools2bcftools:1.0'
+    type: GCS.Job
+    resources:
+      memory: 8G
+      cpu: 2C
+    commands_iter:
+      command: |
+        samtools view -bS -o /home/sfs/${JobName}/a5-map/${1}.bam /home/sfs/${JobName}/a5-map/${1}.sam &&
+        samtools sort /home/sfs/${JobName}/a5-map/${1}.bam -o /home/sfs/${JobName}/a5-map/${1}.sorted.bam && 
+        samtools index /home/sfs/${JobName}/a5-map/${1}.sorted.bam
+      vars_iter:
+        - '${fastq_files}'
+    metadata:
+      Designer:
+        id: 3a5cd2d5-d59c-4754-9cdc-406bda8640e4
+    depends:
+      - target: bowtie124fr5n
+        type: whole
+    description: 格式转化sam 到bam
+volumes:
+  volumes-4ndk:
+    mount_path: '/home/sfs'
+    mount_from:
+      pvc: '${GCS_SFS_PVC}'
+  genobs:
+    mount_path: '/home/obs'
+    mount_from:
+      pvc: '${GCS_DATA_PVC}'
+inputs:
+  JobName:
+    type: string
+    default: chip-seq
+    description: 任务的名称
+  obs_data_path:
+    type: string
+    default: 'chipseq/chipseq/'
+    description: 原始数据在桶中的相对路径。
+  obs_reference_bowtie2:
+    type: string
+    default: 'chipseq/chipseq/bowtie2-index/chrome'
+    description: 物种的序列，bowtie建库数据的在obs中的相对路径
+  fastq_files:
+    type: array
+    default:
+      - SRR1569565.fastq
+      - SRR1569553.fastq
+    description: 原始数据文件名称
+  adapter:
+    type: string
+    default: GATCGGAAGAGCA
+    description: read的接头序列
+  ipbam:
+    type: string
+    default: SRR1569565.fastq
+    description: 实验组数据的bam文件在obs桶中的位置。
+  bgbam:
+    type: string
+    default: SRR1569553.fastq
+    description: 对照组实验的bam文件在obs桶中的位子
+  data_output:
+    type: string
+    default: 'output/'
+    description: 结果输出到obs桶的名称
+  spieces:
+    type: string
+    default: sacCer2
+    description: 物种名称
+  motif_length:
+    type: number
+    default: 8
+    description: motif 的长度
+metadata:
+  relationships:
+    8a34b955-8253-4ed8-a706-b57cc4aaebf5:
+      references:
+        depends:
+          - target: fastqc3wgoy
+            type: whole
+        relateto:
+          - samtools2b1rq2o
+    cc36f089-8b1c-4d18-85f7-2f9c5e7d174f:
+      references:
+        relateto:
+          - bowtie124fr5n
+        depends:
+          - target: fastx-tool3a3vg
+            type: whole
+    e9352b28-012b-4ad3-bf34-1d40c7314e8f:
+      references:
+        depends:
+          - target: cutadapter3zaks
+            type: whole
+        relateto:
+          - fastqc3wgoy
+    bb1f9350-5f1b-4fb6-a220-b1d9310c6dcd:
+      references:
+        relateto:
+          - fastx-tool3a3vg
+    3553a7d4-d007-48e3-8881-788e03850db2:
+      references:
+        depends:
+          - target: samtools2b1rq2o
+            type: whole
+    3a5cd2d5-d59c-4754-9cdc-406bda8640e4:
+      references:
+        relateto:
+          - hommer54r0r
+        depends:
+          - target: bowtie124fr5n
+            type: whole
+  Designer:
+    bb1f9350-5f1b-4fb6-a220-b1d9310c6dcd:
+      size:
+        width: 90
+        height: 60
+      position:
+        x: 30
+        y: 30
+      z: 1
+      relateto:
+        - e9352b28-012b-4ad3-bf34-1d40c7314e8f
+    e9352b28-012b-4ad3-bf34-1d40c7314e8f:
+      size:
+        width: 90
+        height: 60
+      position:
+        x: 150
+        y: 30
+      z: 1
+      relateto:
+        - cc36f089-8b1c-4d18-85f7-2f9c5e7d174f
+    cc36f089-8b1c-4d18-85f7-2f9c5e7d174f:
+      size:
+        width: 90
+        height: 60
+      position:
+        x: 270
+        y: 30
+      z: 1
+      relateto:
+        - 8a34b955-8253-4ed8-a706-b57cc4aaebf5
+    8a34b955-8253-4ed8-a706-b57cc4aaebf5:
+      size:
+        width: 90
+        height: 60
+      position:
+        x: 390
+        y: 30
+      z: 1
+      relateto:
+        - 3a5cd2d5-d59c-4754-9cdc-406bda8640e4
+    3a5cd2d5-d59c-4754-9cdc-406bda8640e4:
+      size:
+        width: 90
+        height: 60
+      position:
+        x: 510
+        y: 30
+      z: 1
+      relateto:
+        - 3553a7d4-d007-48e3-8881-788e03850db2
+    3553a7d4-d007-48e3-8881-788e03850db2:
+      size:
+        width: 90
+        height: 60
+      position:
+        x: 630
+        y: 30
+      z: 1
+    ce00723a-2d96-49ff-b694-f9ed7cd6c2b2:
+      source:
+        id: bb1f9350-5f1b-4fb6-a220-b1d9310c6dcd
+      target:
+        id: e9352b28-012b-4ad3-bf34-1d40c7314e8f
+      z: 1
+    caaeed02-a19b-4fd5-b05f-e04f507fc891:
+      source:
+        id: e9352b28-012b-4ad3-bf34-1d40c7314e8f
+      target:
+        id: cc36f089-8b1c-4d18-85f7-2f9c5e7d174f
+      z: 1
+    1018103c-1841-4c64-8fc6-acfa1b35e370:
+      source:
+        id: cc36f089-8b1c-4d18-85f7-2f9c5e7d174f
+      target:
+        id: 8a34b955-8253-4ed8-a706-b57cc4aaebf5
+      z: 1
+    d4de83af-40c6-47aa-a852-3a605330c74c:
+      source:
+        id: 8a34b955-8253-4ed8-a706-b57cc4aaebf5
+      target:
+        id: 3a5cd2d5-d59c-4754-9cdc-406bda8640e4
+      z: 1
+    83802bda-01de-4a82-8c94-dcff13c6d898:
+      source:
+        id: 3a5cd2d5-d59c-4754-9cdc-406bda8640e4
+      target:
+        id: 3553a7d4-d007-48e3-8881-788e03850db2
+      z: 1
