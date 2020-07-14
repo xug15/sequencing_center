@@ -1,6 +1,6 @@
 # GCS pipeline software lisence.
 
-* **去除接头**: [cutadapt](https://cutadapt.readthedocs.io/en/stable/),
+* **去除接头**: [cutadapt](https://cutadapt.readthedocs.io/en/stable/), **MIT license**   
 * **过滤低质量的片段** [fastx-toolkit](http://hannonlab.cshl.edu/fastx_toolkit/)
 * **DNA,RNA,蛋白序列比对** [blast](https://blast.ncbi.nlm.nih.gov/Blast.cgi?PAGE_TYPE=BlastDocs&DOC_TYPE=Download)
 * **评估下机数据质量** [FastQC](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/)
