@@ -12,62 +12,50 @@
 * **分析翻译的开放阅读框** [Ribocode](https://github.com/xryanglab/RiboCode) **The MIT License (MIT)**
 * **分析翻译翻译停滞，起始快慢** [RiboMiner](https://github.com/xryanglab/RiboMiner) **GPL-3.0 License**
 * **寻找motif** [Homer](http://homer.ucsd.edu/homer/motif/) **Christopher Benner, Open source**
-* **分析可变剪切** [rMATS](http://rnaseq-mats.sourceforge.net/) ****
+* **分析可变剪切** [rMATS](http://rnaseq-mats.sourceforge.net/) **the 2-Clause BSD License**
 
 七种开源许可证
 
 
-Max_Law
-简书作者
-1.7462017-06-16 16:16打开App
-相信大家在玩 node ，webpack，npm，bower ..etc 时，都会在它们的 package.json 文件中，或者 init 过程中都会遇到这样的一个键值对：
-
-"license": "MIT",
-
-这个 license 就是开源许可说明，各大组织设立了为代码开源许可的规范文档，当作者声明此文档类型时，他人必须遵守该文档类型的规范。（当然啦这是君子条款）
-
-一张图说解释所有（采用请标明作者）：
-
-
-七种开源许可.jpg
-Apache许可
-
-Apache许可证(Apache License)，是一个在Apache软件基金会发布的自由软件许可证，最初为Apache http服务器而撰写。Apache许可证要求被授权者保留版权和放弃权利的申明，但它不是一个反版权的许可证。
-
-
-Apache许可标志
+## Apache许可证(Apache License)，
+一个在Apache软件基金会发布的自由软件许可证，最初为Apache http服务器而撰写。Apache许可证要求被授权者保留版权和放弃权利的申明，但它不是一个反版权的许可证。
 
 当前版本 Apache License, Version 2.0
 下列各版本文档由开源代码促进会提供：
 
-
 [Open Source Initiative 开放源代码促进会](https://www.baidu.com/link?url=URumiVk2r5c4a3InYW8Tg3TdP8XhpqlIltMR8gxfg4PaYXBmc2EPjZy8-gMVwVAv&wd=&eqid=86f62abe000044d20000000659438da6)
-MIT许可
+
+## MIT许可
 
 MIT许可证之名源自麻省理工学院（Massachusetts Institute of Technology, MIT），又称“X条款”（X License）或“X11条款”（X11 License）。
 MIT是和BSD一样宽范的许可协议，作者只想保留版权,而无任何其他了限制。也就是说，你必须在你的发行版里包含原许可协议的声明，无论你是以二进制发布的还是以源代码发布的。
 当前版本 The MIT License
-ISC许可
+
+## ISC许可
 
 ISC许可证是一种开放源代码许可证，在功能上与两句版的BSD许可证相同。
 这份许可证是由ISC（Internet Systems Consortium）所发明，在ISC释出软件时所使用的。
 当前版本 ISC License (ISC)
-BSD许可
+
+## BSD许可
 
 BSD开源协议（original BSD license、FreeBSD license、Original BSD license）是一个给于使用者很大自由的协议，BSD 代码鼓励代码共享，但需要尊重代码作者的著作权。
 BSD由于允许使用者修改和重新发布代码，也允许使用或在BSD代码上开发商业软件发布和销售，因此是对商业集成很友好的协议。
 当前版本 The 2-Clause BSD License
-GPL许可
+
+## GPL许可
 
 GPL，是GNU General Public License的缩写，是GNU通用公共授权非正式的中文翻译。它并非由自由软件基金会所发表，亦非使用GNU通用公共授权的软件的法定发布条款
 只有GNU通用公共授权英文原文的版本始具有此等效力。
 当前版本 GNU General Public License
-Mozilla许可
+
+## Mozilla许可
 
 MPL是The Mozilla Public License的简写，是1998年初Netscape的 Mozilla小组为其开源软件项目设计的软件许可证。
 MPL许可证出现的最重要原因就是，Netscape公司认为GPL许可证没有很好地平衡开发者对 源代码的需求和他们利用源代码获得的利益。
 当前版本 Mozilla Public License
-LGPL许可
+
+## LGPL许可
 
 LGPL是 GNU Lesser General Public License (GNU 宽通用公共许可证)的缩写形式，旧称GNU Library General Public License (GNU 库通用公共许可证),后来改称作Lesser GPL，即为更宽松的GPL，在宽松程度上与BSD, Apache,XFree86 许可证相似。
 当前版本 Lesser General Public License
