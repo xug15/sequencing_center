@@ -14,8 +14,7 @@
 * **寻找motif** [Homer](http://homer.ucsd.edu/homer/motif/) **Christopher Benner, Open source**
 * **分析可变剪切** [rMATS](http://rnaseq-mats.sourceforge.net/) **the 2-Clause BSD License**
 
-
-===========
+------------
 
 **七种开源许可证**
 
