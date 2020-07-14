@@ -9,8 +9,8 @@
 * **序列比对到转录组** [STAR](https://code.google.com/archive/p/rna-star/) **Creative Commons Attribution license (CC BY 4.0)**
 * **分析高通量数据结果** [HTSeq](https://htseq.readthedocs.io/en/master/) **GNU General Public License**
 * **分析翻译效率** [Xtail](https://github.com/xryanglab/xtail) **GPL version 3 or any later version**
-* **分析翻译的开放阅读框** [Ribocode](https://github.com/xryanglab/RiboCode) ****
-* **分析翻译翻译停滞，起始快慢** [RiboMiner](https://github.com/xryanglab/RiboMiner) ****
+* **分析翻译的开放阅读框** [Ribocode](https://github.com/xryanglab/RiboCode) **The MIT License (MIT)**
+* **分析翻译翻译停滞，起始快慢** [RiboMiner](https://github.com/xryanglab/RiboMiner) **GPL-3.0 License**
 * **寻找motif** [Homer](http://homer.ucsd.edu/homer/motif/) ****
 * **分析可变剪切** [rMATS](http://rnaseq-mats.sourceforge.net/) ****
 
