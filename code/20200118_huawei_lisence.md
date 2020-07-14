@@ -14,8 +14,10 @@
 * **寻找motif** [Homer](http://homer.ucsd.edu/homer/motif/) **Christopher Benner, Open source**
 * **分析可变剪切** [rMATS](http://rnaseq-mats.sourceforge.net/) **the 2-Clause BSD License**
 
-七种开源许可证
 
+===========
+
+**七种开源许可证**
 
 ## Apache许可证(Apache License)，
 一个在Apache软件基金会发布的自由软件许可证，最初为Apache http服务器而撰写。Apache许可证要求被授权者保留版权和放弃权利的申明，但它不是一个反版权的许可证。
