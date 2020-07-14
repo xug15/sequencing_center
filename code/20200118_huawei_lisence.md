@@ -3,7 +3,7 @@
 * **去除接头**: [cutadapt](https://cutadapt.readthedocs.io/en/stable/), **MIT license**   
 * **过滤低质量的片段** [fastx-toolkit](http://hannonlab.cshl.edu/fastx_toolkit/) **the Affero GPL (AGPL) version 3 or later.**
 * **DNA,RNA,蛋白序列比对** [blast](https://blast.ncbi.nlm.nih.gov/Blast.cgi?PAGE_TYPE=BlastDocs&DOC_TYPE=Download) **NA**
-* **评估下机数据质量** [FastQC](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/) ****
+* **评估下机数据质量** [FastQC](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/) **the GNU General public license**
 * **短序列比对** [bowtie](http://bowtie-bio.sourceforge.net/index.shtml) ****
 * **短序列比对** [bowtie2](http://bowtie-bio.sourceforge.net/bowtie2/index.shtml) ****
 * **序列比对到转录组** [STAR](https://code.google.com/archive/p/rna-star/) ****
