@@ -7,8 +7,8 @@
 * **短序列比对** [bowtie](http://bowtie-bio.sourceforge.net/index.shtml) **Artistic 2.0 license**
 * **短序列比对** [bowtie2](http://bowtie-bio.sourceforge.net/bowtie2/index.shtml) **GPLv3 license**
 * **序列比对到转录组** [STAR](https://code.google.com/archive/p/rna-star/) **Creative Commons Attribution license (CC BY 4.0)**
-* **分析高通量数据结果** [HTSeq](https://htseq.readthedocs.io/en/master/) ****
-* **分析翻译效率** [Xtail](https://github.com/xryanglab/xtail) ****
+* **分析高通量数据结果** [HTSeq](https://htseq.readthedocs.io/en/master/) **GNU General Public License**
+* **分析翻译效率** [Xtail](https://github.com/xryanglab/xtail) **GPL version 3 or any later version**
 * **分析翻译的开放阅读框** [Ribocode](https://github.com/xryanglab/RiboCode) ****
 * **分析翻译翻译停滞，起始快慢** [RiboMiner](https://github.com/xryanglab/RiboMiner) ****
 * **寻找motif** [Homer](http://homer.ucsd.edu/homer/motif/) ****
