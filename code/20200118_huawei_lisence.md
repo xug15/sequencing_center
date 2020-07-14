@@ -11,7 +11,7 @@
 * **分析翻译效率** [Xtail](https://github.com/xryanglab/xtail) **GPL version 3 or any later version**
 * **分析翻译的开放阅读框** [Ribocode](https://github.com/xryanglab/RiboCode) **The MIT License (MIT)**
 * **分析翻译翻译停滞，起始快慢** [RiboMiner](https://github.com/xryanglab/RiboMiner) **GPL-3.0 License**
-* **寻找motif** [Homer](http://homer.ucsd.edu/homer/motif/) ****
+* **寻找motif** [Homer](http://homer.ucsd.edu/homer/motif/) **Christopher Benner, Open source**
 * **分析可变剪切** [rMATS](http://rnaseq-mats.sourceforge.net/) ****
 
 七种开源许可证
