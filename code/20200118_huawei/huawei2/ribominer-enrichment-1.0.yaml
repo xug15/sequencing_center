@@ -1,0 +1,238 @@
+version: genecontainer_0_1
+workflow:
+  ribominer3q1ls:
+    tool: 'ribominer:1.1'
+    type: GCS.Job
+    resources:
+      memory: 8G
+      cpu: 2C
+    commands:
+      - >-
+        mkdir -p ${home_dir}/EnrichmentAnalysis/GUS && mkdir -p ${home_dir}/EnrichmentAnalysis/MES && cd /home/obs/fjdata/data &&   /root/miniconda3/bin/RiboDensityAtEachPosition -c /home/obs/${longest_tra} -f /home/obs/${GUS_attributes} -o ${home_dir}/EnrichmentAnalysis/GUS/GUS  -U codon  && 
+        /root/miniconda3/bin/RiboDensityAtEachPosition -c /home/obs/${longest_tra} -f /home/obs/${MES_attributes} -o ${home_dir}/EnrichmentAnalysis/MES/MES  -U codon  
+    metadata:
+      Designer:
+        id: df303114-3fac-4b95-b699-5c51e8300ff4
+  ribominer2mcui:
+    tool: 'ribominer:1.1'
+    type: GCS.Job
+    resources:
+      memory: 8G
+      cpu: 2C
+    commands:
+      - >-
+        /root/miniconda3/bin/enrichmentMeanDensity -i ${home_dir}/EnrichmentAnalysis/GUS/GUS_GUS1-IP-1_cds_codon_density.txt,${home_dir}/EnrichmentAnalysis/GUS/GUS_GUS1-IP-2_cds_codon_density.txt -o ${home_dir}/EnrichmentAnalysis/GUS/GUS_IP &&  /root/miniconda3/bin/enrichmentMeanDensity -i
+        ${home_dir}/EnrichmentAnalysis/GUS/GUS_GUS1-total-1_cds_codon_density.txt,${home_dir}/EnrichmentAnalysis/GUS/GUS_GUS1-total-2_cds_codon_density.txt -o ${home_dir}/EnrichmentAnalysis/GUS/GUS_total &&  /root/miniconda3/bin/enrichmentMeanDensity -i
+        ${home_dir}/EnrichmentAnalysis/MES/MES_MES1-IP-1_cds_codon_density.txt,${home_dir}/EnrichmentAnalysis/MES/MES_MES1-IP-2_cds_codon_density.txt -o ${home_dir}/EnrichmentAnalysis/MES/MES_IP &&  /root/miniconda3/bin/enrichmentMeanDensity -i
+        ${home_dir}/EnrichmentAnalysis/MES/MES_MES1-total-1_cds_codon_density.txt,${home_dir}/EnrichmentAnalysis/MES/MES_MES1-total-2_cds_codon_density.txt -o ${home_dir}/EnrichmentAnalysis/MES/MES_total
+    metadata:
+      Designer:
+        id: 10cfeb55-867b-4447-88e9-6909c4350d75
+    depends:
+      - target: ribominer3q1ls
+        type: whole
+  ribominer322t9:
+    tool: 'ribominer:1.1'
+    type: GCS.Job
+    resources:
+      memory: 8G
+      cpu: 2C
+    commands:
+      - >-
+        /root/miniconda3/bin/EnrichmentAnalysis --ctrl ${home_dir}/EnrichmentAnalysis/GUS/GUS_total_mean_density.txt --treat ${home_dir}/EnrichmentAnalysis/GUS/GUS_IP_mean_density.txt -c /home/obs/${longest_tra} -o ${home_dir}/EnrichmentAnalysis/GUS/GUS -U codon -M RPKM -l 150 -n 10 -m 1 -e 30 --CI
+        0.95 -u 0 -d 500  &&   /root/miniconda3/bin/EnrichmentAnalysis --ctrl ${home_dir}/EnrichmentAnalysis/MES/MES_total_mean_density.txt --treat ${home_dir}/EnrichmentAnalysis/MES/MES_IP_mean_density.txt -c /home/obs/${longest_tra} -o ${home_dir}/EnrichmentAnalysis/MES/MES -U codon -M RPKM -l 150
+        -n 10 -m 1 -e 30 --CI 0.95 -u 0 -d 500   
+    metadata:
+      Designer:
+        id: 2978b11d-d860-42cf-bac9-54390d629bae
+    depends:
+      - target: ribominer2mcui
+        type: whole
+  ribominer4akgx:
+    tool: 'ribominer:1.1'
+    type: GCS.Job
+    resources:
+      memory: 8G
+      cpu: 2C
+    commands:
+      - >-
+        /root/miniconda3/bin/EnrichmentAnalysisForSingleTrans -i ${home_dir}/EnrichmentAnalysis/MES/MES_codon_ratio.txt -s GUS1 -o ${home_dir}/EnrichmentAnalysis/MES/MES_GUS1 -c /home/obs/${longest_tra}  --id-type gene_name --slide-window y --axhline 1 && 
+        /root/miniconda3/bin/EnrichmentAnalysisForSingleTrans -i ${home_dir}/EnrichmentAnalysis/MES/MES_codon_ratio.txt -s ARC1 -o ${home_dir}/EnrichmentAnalysis/MES/MES_ARC1 -c /home/obs/${longest_tra}  --id-type gene_name --slide-window y --axhline 1 && 
+        /root/miniconda3/bin/EnrichmentAnalysisForSingleTrans -i ${home_dir}/EnrichmentAnalysis/GUS/GUS_codon_ratio.txt -s MES1 -o ${home_dir}/EnrichmentAnalysis/GUS/GUS_MES1 -c /home/obs/${longest_tra}  --id-type gene_name --slide-window y --axhline 1 && 
+        /root/miniconda3/bin/EnrichmentAnalysisForSingleTrans -i ${home_dir}/EnrichmentAnalysis/GUS/GUS_codon_ratio.txt -s ARC1 -o ${home_dir}/EnrichmentAnalysis/GUS/GUS_ARC1 -c /home/obs/${longest_tra}  --id-type gene_name --slide-window y --axhline 1 
+    metadata:
+      Designer:
+        id: 18e6b192-147e-4bac-9c3b-a334c3881db3
+    depends:
+      - target: ribominer322t9
+        type: whole
+volumes:
+  volumes-4ndk:
+    mount_path: '/home/sfs'
+    mount_from:
+      pvc: '${GCS_SFS_PVC}'
+  genobs:
+    mount_path: '/home/obs'
+    mount_from:
+      pvc: '${GCS_DATA_PVC}'
+inputs:
+  JobName:
+    type: string
+    default: ribominner-fj
+    description: 任务的名称
+  obs_reference_gtf:
+    type: string
+    default: 'fjdata/Ref/Ref/Saccharomyces_extend.gtf'
+    description: 物种的gtf 注释文件
+  obs_reference_fasta:
+    type: string
+    default: 'fjdata/Ref/Ref/Saccharomyces_genome.fa'
+    description: 物种的fasta 注释文件
+  fastq_files:
+    type: array
+    default:
+      - SRR5008134.fq
+      - SRR5008135.fq
+    description: 原始数据文件名称.（文件名根据之前的ribo-xtail 会产生以改名字+后缀的文件。用于后面的分析）
+  bam_files:
+    type: string
+    default: '/home/obs/fjdata/bam'
+    description: '比对结果的bam文件，在obs中的目录。(obs挂载在目录/home/obs 下， output/riboseq-ribocode/riboseq-ribocode/a6-map/ 为在obs中的目录)'
+  home_dir:
+    type: string
+    default: '/home/obs/output/ribominner-fj/ribominner-fj/'
+    description: 在sfs中的目录。（不用修改）
+  gname:
+    type: string
+    default: 'SRR5008134.fqAligned.toTranscriptome.out,SRR5008135.fqAligned.toTranscriptome.out'
+    description: 样品的名称，以逗号分开。（样品名称加后缀：Aligned.toTranscriptome.out）
+  rname:
+    type: string
+    default: SRR5008134.fqAligned.toTranscriptome.out__SRR5008135.fqAligned.toTranscriptome.out
+    description: 样品的名称，组之间用“__”分隔，一组的样品重复用逗号分隔。
+  pause_name:
+    type: string
+    default: '${home_dir}/a17-PausingScore/b8-PausingScore_SRR5008134.fqAligned.toTranscriptome.out_pausing_score.txt,${home_dir}/a17-PausingScore/b8-PausingScore_SRR5008135.fqAligned.toTranscriptome.out_pausing_score.txt'
+    description: '计算每个样品的暂停的值，用逗号隔开，格式为${home_dir}/a17-PausingScore/b8-PausingScore_+样品名称+Aligned.toTranscriptome.out_pausing_score.txt'
+  obs_dir:
+    type: string
+    default: '/output/ribominner-fj/ribominner-fj/'
+    description: 在obs中的目录。
+  longest_tra:
+    type: string
+    default: '/fjdata/Ref_fajin/Ref/longest.transcripts.info.extended.txt'
+    description: 在obs中的目录。
+  trans_cds_seq:
+    type: string
+    default: '/fjdata/Ref_fajin/Ref/longest_cds_sequences.fa'
+    description: 在obs中的目录。
+  transcript_location:
+    type: string
+    default: '/fjdata/Ref_fajin/Ref/'
+    description: 在obs中的目录。
+  tRNA_GCNs:
+    type: string
+    default: '/fjdata/tRNA_GCNs_Saccharomyces_cerevisiae.txt'
+    description: 在obs中的目录。
+  longest_cds_fa:
+    type: string
+    default: '/fjdata/Ref_fajin/Ref/longest_cds_sequences.fa'
+    description: 在obs中的目录
+  obs_reference_hydropath:
+    type: string
+    default: '/fjdata/hydropathy.txt'
+    description: 在obs中的目录
+  obs_reference_AAindex:
+    type: string
+    default: '/fjdata/AA_charge.txt'
+    description: 在obs中的目录
+  GUS_attributes:
+    type: string
+    default: '/fjdata/data/GSE116570/GUS/attributes.txt'
+    description: 在obs中的目录
+  MES_attributes:
+    type: string
+    default: '/fjdata/data/GSE116570/MES/attributes.txt'
+    description: 在obs中的目录
+metadata:
+  relationships:
+    10cfeb55-867b-4447-88e9-6909c4350d75:
+      references:
+        depends:
+          - target: ribominer3q1ls
+            type: whole
+        relateto:
+          - ribominer322t9
+    df303114-3fac-4b95-b699-5c51e8300ff4:
+      references:
+        relateto:
+          - ribominer2mcui
+    2978b11d-d860-42cf-bac9-54390d629bae:
+      references:
+        depends:
+          - target: ribominer2mcui
+            type: whole
+        relateto:
+          - ribominer4akgx
+    18e6b192-147e-4bac-9c3b-a334c3881db3:
+      references:
+        depends:
+          - target: ribominer322t9
+            type: whole
+  Designer:
+    df303114-3fac-4b95-b699-5c51e8300ff4:
+      size:
+        width: 90
+        height: 60
+      position:
+        x: 30
+        y: 30
+      z: 1
+      relateto:
+        - 10cfeb55-867b-4447-88e9-6909c4350d75
+    10cfeb55-867b-4447-88e9-6909c4350d75:
+      size:
+        width: 90
+        height: 60
+      position:
+        x: 150
+        y: 30
+      z: 1
+      relateto:
+        - 2978b11d-d860-42cf-bac9-54390d629bae
+    2978b11d-d860-42cf-bac9-54390d629bae:
+      size:
+        width: 90
+        height: 60
+      position:
+        x: 270
+        y: 30
+      z: 1
+      relateto:
+        - 18e6b192-147e-4bac-9c3b-a334c3881db3
+    18e6b192-147e-4bac-9c3b-a334c3881db3:
+      size:
+        width: 90
+        height: 60
+      position:
+        x: 390
+        y: 30
+      z: 1
+    a369d9d7-01a2-4011-b0d6-ebbdeddbd188:
+      source:
+        id: df303114-3fac-4b95-b699-5c51e8300ff4
+      target:
+        id: 10cfeb55-867b-4447-88e9-6909c4350d75
+      z: 10
+    8e4288a2-4ae6-4461-b013-7d702a61778d:
+      source:
+        id: 10cfeb55-867b-4447-88e9-6909c4350d75
+      target:
+        id: 2978b11d-d860-42cf-bac9-54390d629bae
+      z: 10
+    80675a0d-1235-4c3c-ab6d-399261df9266:
+      source:
+        id: 2978b11d-d860-42cf-bac9-54390d629bae
+      target:
+        id: 18e6b192-147e-4bac-9c3b-a334c3881db3
+      z: 10

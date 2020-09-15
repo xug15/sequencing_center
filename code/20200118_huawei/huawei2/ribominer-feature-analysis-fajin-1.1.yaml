@@ -1,0 +1,273 @@
+version: genecontainer_0_1
+workflow:
+  ribominer1uakz:
+    tool: 'ribominer:1.1'
+    type: GCS.Job
+    resources:
+      memory: 8G
+      cpu: 2C
+    commands:
+      - >-
+        mkdir -p /home/obs/${obs_dir}/a16-ribodensitycodon2 && cd /home/obs/fjdata/data && /root/miniconda3/bin/RiboDensityForSpecificRegion -f /home/obs/${attributes} -c /home/obs/${longest_tra} -o /home/obs/${obs_dir}/a16-ribodensitycodon2/b5-transcript-enrich -U codon -M RPKM -L 25 -R 75  &&
+        /root/miniconda3/bin/RiboDensityAtEachKindAAOrCodon -f /home/obs/${attributes} -c /home/obs/${longest_tra} -o /home/obs/${obs_dir}/a16-ribodensitycodon2/b6-ribosome-aa -M counts  -l 100 -n 10 --table 1 -F /home/obs/${trans_cds_seq} &&  /root/miniconda3/bin/PlotRiboDensityAtEachKindAAOrCodon
+        -i /home/obs/${obs_dir}/a16-ribodensitycodon2/b6-ribosome-aa_all_codon_density.txt -o /home/obs/${obs_dir}/a16-ribodensitycodon2/b7-PlotRiboDensityAtEachKindAAOrCodon -g ${gname} -r ${rname} --level AA
+    metadata:
+      Designer:
+        id: 1d69b3ce-92e6-4bc7-bebc-98b58ff59b75
+    depends: []
+    description: RiboDensityForSpecificRegion; RiboDensityAtEachKindAAOrCodon; PlotRiboDensityAtEachKindAAOrCodon
+  ribominer46l0k:
+    tool: 'ribominer:1.1'
+    type: GCS.Job
+    resources:
+      memory: 8G
+      cpu: 2C
+    commands:
+      - >-
+        mkdir -p /home/obs/${obs_dir}/a17-PausingScore2 && cd /home/obs/fjdata/data && /root/miniconda3/bin/PausingScore -f /home/obs/${attributes} -c /home/obs/${longest_tra} -o  /home/obs/${obs_dir}/a17-PausingScore2/all -M counts -l 100 -n 10 --table 1 -F  /home/obs/${trans_cds_seq} && cd
+        /home/obs/${obs_dir}/a17-PausingScore2/ && /root/miniconda3/bin/ProcessPausingScore -i all_si-Ctrl-1_pausing_score.txt,all_si-Ctrl-2_pausing_score.txt,all_si-eIF5A-1_pausing_score.txt,all_si-eIF5A-2_pausing_score.txt -o /home/obs/${obs_dir}/a17-PausingScore2/b9-ProcessPausingScore -g
+        ${gname} -r ${rname} --mode raw --ratio_filter 0 --pausing_score_filter 0
+    metadata:
+      Designer:
+        id: 6521dee7-5d50-40e4-af4c-72f3b9cc7663
+  ribominer39g8c:
+    tool: 'ribominer:1.1'
+    type: GCS.Job
+    resources:
+      memory: 8G
+      cpu: 2C
+    commands:
+      - >-
+        mkdir -p /home/obs/${obs_dir}/a18-AroundTriplete/ &&  cd /home/obs/fjdata/data && /root/miniconda3/bin/RiboDensityAroundTripleteAAMotifs -f /home/obs/${attributes} -c /home/obs/${longest_tra} -o /home/obs/${obs_dir}/a18-AroundTriplete/c0-RiboDensityAroundTripleteAAMotifs_PPP -M counts -l 100
+        -n 10 --table 1 -F /home/obs/${trans_cds_seq} --type2 PPP --type1 PP &&  /root/miniconda3/bin/PlotRiboDensityAroundTriAAMotifs -i /home/obs/${obs_dir}/a18-AroundTriplete/c0-RiboDensityAroundTripleteAAMotifs_PPP_motifDensity_dataframe.txt -o /home/obs/${obs_dir}/a18-AroundTriplete/c1-PPP_plot
+        -g ${gname} -r ${rname} --mode mean 
+    metadata:
+      Designer:
+        id: f2ffb32d-8be9-4a47-9779-5671b9ebb772
+    description: AroundTriplete
+  ribominer4ca05:
+    tool: 'ribominer:1.1'
+    type: GCS.Job
+    resources:
+      memory: 8G
+      cpu: 2C
+    commands:
+      - |-
+        mkdir -p ${home_dir}/a20-RPFdist-GCContent/ &&  cd /home/obs/fjdata/data &&
+          /root/miniconda3/bin/RPFdist -f ${home_dir}/a9-metaplots/attributes.txt -c /home/obs/${longest_tra} -o ${home_dir}/a20-RPFdist-GCContent/c3-RPFdist -M counts -l 100 -n 10 -m 1 -e 5 &&
+          /root/miniconda3/bin/GCContent -i /home/obs/${trans_cds_seq} -o ${home_dir}/a20-RPFdist-GCContent/c4-GCContent-normal --mode normal &&
+          /root/miniconda3/bin/GCContent -i /home/obs/${trans_cds_seq} -o ${home_dir}/a20-RPFdist-GCContent/c4-GCContent-frames --mode frames &&
+          /root/miniconda3/bin/PlotGCContent -i ${home_dir}/a20-RPFdist-GCContent/c4-GCContent-normal_GC_content.txt -o ${home_dir}/a20-RPFdist-GCContent/c5-PlotGCContent-normal --mode normal &&
+          /root/miniconda3/bin/PlotGCContent -i ${home_dir}/a20-RPFdist-GCContent/c4-GCContent-frames_GC_content_frames.txt -o ${home_dir}/a20-RPFdist-GCContent/c5-PlotGCContent-frames --mode frames
+    metadata:
+      Designer:
+        id: 7e3b0134-1b15-4ce8-b026-53af943d432d
+  ribominer1shfk:
+    tool: 'ribominer:1.1'
+    type: GCS.Job
+    resources:
+      memory: 8G
+      cpu: 2C
+    commands:
+      - >-
+        mkdir -p ${home_dir}/a21-tAI-cAI/ && cd /home/obs/${transcript_location} && /root/miniconda3/bin/tAI -i up_cds_sequences.fa,unblocked_cds_sequences.fa,down_cds_sequences.fa -t  2954_up,1598_unblocked,433_down -o ${home_dir}/a21-tAI-cAI/c6-tAI -u 0 -d 500 --table 1 -N /home/obs/${tRNA_GCNs} 
+        && /root/miniconda3/bin/tAIPlot -i ${home_dir}/a21-tAI-cAI/c6-tAI_tAI_dataframe.txt -o ${home_dir}/a21-tAI-cAI/c7-tAIPlot -u 0 -d 500 --mode all --start 5 --window 7 --step 1 
+    metadata:
+      Designer:
+        id: eb4bb71d-92ae-4a80-a962-ebf96091ca4b
+  ribominer44d1n:
+    tool: 'ribominer:1.1'
+    type: GCS.Job
+    resources:
+      memory: 8G
+      cpu: 2C
+    commands:
+      - >-
+        mkdir -p ${home_dir}/a21-tAI-cAI/ && cd /home/obs/${transcript_location} && /root/miniconda3/bin/cAI -i up_cds_sequences.fa,unblocked_cds_sequences.fa,down_cds_sequences.fa -o ${home_dir}/a21-tAI-cAI/c8-cAI -t 2954_up,1598_unblocked,433_down -u 0 -d 500 --reference
+        /home/obs/${longest_cds_fa}  &&  /root/miniconda3/bin/cAIPlot -i ${home_dir}/a21-tAI-cAI/c8-cAI_local_cAI_dataframe.txt -o ${home_dir}/a21-tAI-cAI/c9-cAIPlot -u 0 -d 500 --mode all --start 5 --window 7 --step 1
+    metadata:
+      Designer:
+        id: ea3ce925-82e0-4344-b5fa-352c04e1b35e
+  ribominer8s7t:
+    tool: 'ribominer:1.1'
+    type: GCS.Job
+    resources:
+      memory: 8G
+      cpu: 2C
+    commands:
+      - >-
+        mkdir -p ${home_dir}/a22-hydropath/ && cd /home/obs/${transcript_location} && /root/miniconda3/bin/hydropathyCharge  -i up_cds_sequences.fa,unblocked_cds_sequences.fa,down_cds_sequences.fa -t 2954_up,1598_unblocked,433_down -o ${home_dir}/a22-hydropath/d1-hydropathyCharge --index
+        /home/obs/${obs_reference_hydropath} -u 0 -d 500  && /root/miniconda3/bin/PlotHydropathyCharge -i ${home_dir}/a22-hydropath/d1-hydropathyCharge_values_dataframe.txt -o ${home_dir}/a22-hydropath/d3-PlotHydropathyCharge  -u 0 -d 500 --mode all --ylab "Average Hydrophobicity" 
+    metadata:
+      Designer:
+        id: bab6f335-781d-450c-b5cb-a5306cfa5a58
+  ribominer3q1ls:
+    tool: 'ribominer:1.1'
+    type: GCS.Job
+    resources:
+      memory: 8G
+      cpu: 2C
+    commands:
+      - >-
+        mkdir -p ${home_dir}/a22-hydropath/ && cd /home/obs/${transcript_location} && /root/miniconda3/bin/hydropathyCharge -i up_cds_sequences.fa,unblocked_cds_sequences.fa,down_cds_sequences.fa -t 2954_up,1598_unblocked,433_down -o ${home_dir}/a22-hydropath/d2-charge --index
+        /home/obs/${obs_reference_AAindex} -u 0 -d 500  &&  /root/miniconda3/bin/PlotHydropathyCharge -i ${home_dir}/a22-hydropath/d2-charge_values_dataframe.txt -o ${home_dir}/a22-hydropath/d4-Plotcharges -u 0 -d 500 --mode all --ylab "Average Charges"
+    metadata:
+      Designer:
+        id: 9c1799ba-dcf6-4c6c-8425-866e832c9115
+volumes:
+  volumes-4ndk:
+    mount_path: '/home/sfs'
+    mount_from:
+      pvc: '${GCS_SFS_PVC}'
+  genobs:
+    mount_path: '/home/obs'
+    mount_from:
+      pvc: '${GCS_DATA_PVC}'
+inputs:
+  JobName:
+    type: string
+    default: ribominner-fj
+    description: 任务的名称
+  obs_reference_gtf:
+    type: string
+    default: 'fjdata/Ref/Ref/Saccharomyces_extend.gtf'
+    description: 物种的gtf 注释文件
+  obs_reference_fasta:
+    type: string
+    default: 'fjdata/Ref/Ref/Saccharomyces_genome.fa'
+    description: 物种的fasta 注释文件
+  fastq_files:
+    type: array
+    default:
+      - SRR5008134.fq
+      - SRR5008135.fq
+    description: 原始数据文件名称.（文件名根据之前的ribo-xtail 会产生以改名字+后缀的文件。用于后面的分析）
+  bam_files:
+    type: string
+    default: '/home/obs/fjdata/bam'
+    description: '比对结果的bam文件，在obs中的目录。(obs挂载在目录/home/obs 下， output/riboseq-ribocode/riboseq-ribocode/a6-map/ 为在obs中的目录)'
+  home_dir:
+    type: string
+    default: '/home/obs/output/ribominner-fj/ribominner-fj/'
+    description: 在sfs中的目录。（不用修改）
+  gname:
+    type: string
+    default: 'si-Ctrl,si-eIF5A'
+    description: 样品的名称，以逗号分开。（样品名称加后缀：Aligned.toTranscriptome.out）
+  rname:
+    type: string
+    default: 'si-Ctrl-1,si-Ctrl-2__si-eIF5A-1,si-eIF5A-2'
+    description: 样品的名称，组之间用“__”分隔，一组的样品重复用逗号分隔。
+  pause_name:
+    type: string
+    default: '${home_dir}/a17-PausingScore/b8-PausingScore_SRR5008134.fqAligned.toTranscriptome.out_pausing_score.txt,${home_dir}/a17-PausingScore/b8-PausingScore_SRR5008135.fqAligned.toTranscriptome.out_pausing_score.txt'
+    description: '计算每个样品的暂停的值，用逗号隔开，格式为${home_dir}/a17-PausingScore/b8-PausingScore_+样品名称+Aligned.toTranscriptome.out_pausing_score.txt'
+  obs_dir:
+    type: string
+    default: '/output/ribominner-fj/ribominner-fj/'
+    description: 在obs中的目录。
+  longest_tra:
+    type: string
+    default: '/fjdata/Ref_fajin/Ref/longest.transcripts.info.extended.txt'
+    description: 在obs中的目录。
+  trans_cds_seq:
+    type: string
+    default: '/fjdata/Ref_fajin/Ref/longest_cds_sequences.fa'
+    description: 在obs中的目录。
+  transcript_location:
+    type: string
+    default: '/fjdata/Ref_fajin/Ref/'
+    description: 在obs中的目录。
+  tRNA_GCNs:
+    type: string
+    default: '/fjdata/tRNA_GCNs_Saccharomyces_cerevisiae.txt'
+    description: 在obs中的目录。
+  longest_cds_fa:
+    type: string
+    default: '/fjdata/Ref_fajin/Ref/longest_cds_sequences.fa'
+    description: 在obs中的目录
+  obs_reference_hydropath:
+    type: string
+    default: '/fjdata/hydropathy.txt'
+    description: 在obs中的目录
+  obs_reference_AAindex:
+    type: string
+    default: '/fjdata/AA_charge.txt'
+    description: 在obs中的目录
+  attributes:
+    type: string
+    default: '/fjdata/data/GSE89704/attributes.txt'
+    description: 在obs中的目录
+metadata:
+  relationships:
+    1d69b3ce-92e6-4bc7-bebc-98b58ff59b75:
+      references: {}
+    f2ffb32d-8be9-4a47-9779-5671b9ebb772:
+      references: {}
+    6521dee7-5d50-40e4-af4c-72f3b9cc7663:
+      references: {}
+  Designer:
+    f2ffb32d-8be9-4a47-9779-5671b9ebb772:
+      size:
+        width: 90
+        height: 60
+      position:
+        x: 30
+        y: 80
+      z: 1
+    6521dee7-5d50-40e4-af4c-72f3b9cc7663:
+      size:
+        width: 90
+        height: 60
+      position:
+        x: 30
+        y: -10
+      z: 1
+    1d69b3ce-92e6-4bc7-bebc-98b58ff59b75:
+      size:
+        width: 90
+        height: 60
+      position:
+        x: 30
+        y: -90
+      z: 1
+    7e3b0134-1b15-4ce8-b026-53af943d432d:
+      size:
+        width: 90
+        height: 60
+      position:
+        x: 30
+        y: 170
+      z: 1
+    eb4bb71d-92ae-4a80-a962-ebf96091ca4b:
+      size:
+        width: 90
+        height: 60
+      position:
+        x: 30
+        y: 260
+      z: 1
+    ea3ce925-82e0-4344-b5fa-352c04e1b35e:
+      size:
+        width: 90
+        height: 60
+      position:
+        x: 40
+        y: 360
+      z: 1
+    bab6f335-781d-450c-b5cb-a5306cfa5a58:
+      size:
+        width: 90
+        height: 60
+      position:
+        x: 40
+        y: 440
+      z: 1
+    9c1799ba-dcf6-4c6c-8425-866e832c9115:
+      size:
+        width: 90
+        height: 60
+      position:
+        x: 30
+        y: 530
+      z: 1
