@@ -8,6 +8,11 @@
 * [Huawei GCS](code/20200118_huawei.md)
 * [Machine learning](code/20200710_machinelearning.md)
 
+## pipeline
+* [SNP](code/20200923_snp.md)
+
+
+
 =====
 * [HTSeq](code/a4.HTSeq.md)
 
@@ -18,6 +23,9 @@
 
 ## Data.
 * [Data](code/a5.data.md)
+
+
+
 
 * 鲁伯埙
 > 2019年8月14日从方剑火师姐那里接收数据。  
