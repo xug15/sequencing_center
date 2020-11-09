@@ -10,7 +10,7 @@
 
 ## pipeline
 * [SNP](code/20200923_snp.md)
-
+* [RNAseq](code/rnaseq)
 
 
 =====
