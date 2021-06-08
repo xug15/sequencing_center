@@ -4,7 +4,7 @@
 * [Ribo-seq : Raw data process pipeline](code/a1.raw_process.md)
 * [Ribo-seq : Differential translations ( Xtail )](code/a2.differential.md)
 * [Ribo-seq : De novo annotation ( RiboCode )](code/a3.denovo.md)
-* [Ribo-seq : RiboAnaly](https://github.com/xryanglab/RiboMiner)
+* [Ribo-seq : RiboMiner](https://github.com/xryanglab/RiboMiner)
 * [Huawei GCS](code/20200118_huawei.md)
 * [Machine learning](code/20200710_machinelearning.md)
 
