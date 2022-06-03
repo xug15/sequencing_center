@@ -1,0 +1,480 @@
+gtf=/home/xugang/data/reference/hg38/Homo_sapiens.GRCh38.100.chr.gtf
+genome=/home/xugang/data/reference/hg38/Homo_sapiens.GRCh38.dna.primary_assembly.fa.clean.fa
+thread=50
+output=output
+ref=${output}/a0_annotation/transcripts_sequence.fa
+localpth=`pwd`
+[[ -d $output ]] || mkdir -p $output
+basecaller(){
+
+[[ -d $output/a1-basecaller ]] || mkdir -p $output/a1-basecaller
+#conda activate albacore
+echo -e "tar -xvzf $f5 -C $output/a1-basecaller/"
+#tar -xvzf $f5 -C $output/a1-basecaller/ > $output/a1-basecaller/tmp
+echo -e "mv $output/a1-basecaller/fast5/ $output/a1-basecaller/$name.f5 "
+#mv $output/a1-basecaller/fast5/ $output/a1-basecaller/$name.f5
+echo -e "conda run -n albacore read_fast5_basecaller.py -i $output/a1-basecaller/$name.f5 -s $output/a1-basecaller/$name -t 30 -r -k SQK-RNA001 -f FLO-MIN106 -o fast5,fastq --disable_filtering"
+conda run -n albacore read_fast5_basecaller.py -i $output/a1-basecaller/$name.f5 -s $output/a1-basecaller/$name -t 30 -r -k SQK-RNA001 -f FLO-MIN106 -o fast5,fastq --disable_filtering
+#conda deactivate
+cat $output/a1-basecaller/$name/workspace/*.fastq | sed 's/U/T/g' > $output/a1-basecaller/$name/$name.fq
+#rm -rf $output/a1-basecaller/$name.f5 $output/a1-basecaller/tmp
+}
+baserm(){
+rm -rf $output/a1-basecaller/$name/workspace/
+
+}
+ribocodeannf(){
+[[ -d $output/a0_annotation ]] || mkdir -p $output/a0_annotation
+
+# prepare_transcripts -g ${gtf} -f ${genome} -o ${output}/a0_annotation
+}
+
+
+graphmapf(){
+[[ -d $output/a2-graphmap ]] || mkdir -p $output/a2-graphmap
+
+echo -e "graphmap align -r ${output}/a0_annotation/transcripts_sequence.fa -d $output/a1-basecaller/$name/$name.fq -o $output/a2-graphmap/$name.sam  --double-index"
+graphmap align -r ${output}/a0_annotation/transcripts_sequence.fa -d $output/a1-basecaller/$name/$name.fq -o $output/a2-graphmap/$name.sam  --double-index
+
+}
+
+
+graphmapgf(){
+[[ -d $output/a2-graphmap ]] || mkdir -p $output/a2-graphmap
+
+echo -e "graphmap align -r ${genome} -d $output/a1-basecaller/$name/$name.fq -o $output/a2-graphmap/$name.genome.sam  --double-index"
+graphmap align -r ${genome} -d $output/a1-basecaller/$name/$name.fq -o $output/a2-graphmap/$name.genome.sam  --double-index
+
+}
+
+samf(){
+
+
+samtools view -bT ${output}/a0_annotation/transcripts_sequence.fa -F 16 $output/a2-graphmap/$name.sam > $output/a2-graphmap/$name.gene.bam
+samtools sort $output/a2-graphmap/$name.gene.bam > $output/a2-graphmap/$name.gene.s.bam
+samtools index $output/a2-graphmap/$name.gene.s.bam
+}
+
+samgf(){
+
+samtools view -bT ${genome} -F 16 $output/a2-graphmap/$name.genome.sam > $output/a2-graphmap/$name.gene.genome.bam
+samtools sort $output/a2-graphmap/$name.gene.genome.bam > $output/a2-graphmap/$name.gene.s.genome.bam
+samtools index $output/a2-graphmap/$name.gene.s.genome.bam
+
+
+}
+
+
+nanopolishindex(){
+nanopolish index -d $output/a1-basecaller/$name.f5 $output/a1-basecaller/$name/$name.fq
+}
+
+nanopolishalign(){
+[[ -d $output/a3-nanopolish ]] || mkdir $output/a3-nanopolish 
+echo "nanopolish eventalign -t 20  --reads $output/a1-basecaller/$name/$name.fq --bam $output/a2-graphmap/$name.gene.s.bam --genome $ref --print-read-names --scale-events > $output/a3-nanopolish/$name.gene.event"
+nanopolish eventalign -t 20  --reads $output/a1-basecaller/$name/$name.fq --bam $output/a2-graphmap/$name.gene.s.bam --genome $ref --print-read-names --scale-events > $output/a3-nanopolish/$name.gene.event
+}
+
+nanopolishaligng(){
+[[ -d $output/a3-nanopolish ]] || mkdir $output/a3-nanopolish 
+echo "nanopolish eventalign -t 20  --reads $output/a1-basecaller/$name/$name.fq --bam $output/a2-graphmap/$name.gene.s.bam --genome $ref --print-read-names --scale-events > $output/a3-nanopolish/$name.gene.event"
+nanopolish eventalign -t 20  --reads $output/a1-basecaller/$name/$name.fq --bam $output/a2-graphmap/$name.gene.s.genome.bam --genome $genome --print-read-names --scale-events > $output/a3-nanopolish/$name.gene.genome.event
+}
+
+
+statisevent(){
+echo "perl a2.current.pl $output/a3-nanopolish/$name.gene.event"
+perl a2.current.pl $output/a3-nanopolish/$name.gene.event 
+}
+statiseventg(){
+
+echo "perl a2.current.pl $output/a3-nanopolish/$name.gene.genome.event"
+perl a2.current.pl $output/a3-nanopolish/$name.gene.genome.event 
+
+}
+readevent(){
+
+[[ -d $output/a4-readevent ]] || mkdir -p $output/a4-readevent
+
+[[ -d $output/a3-nanopolish/$name ]] || mkdir -p $output/a3-nanopolish/$name
+
+[[ -d $output/a3-nanopolish/$name/result ]] || mkdir -p $output/a3-nanopolish/$name/result
+
+
+echo -e "split -l 185069885 $output/a3-nanopolish/$name.gene.event $output/a3-nanopolish/$name/$name"
+#split -l 185069885 $output/a3-nanopolish/$name.gene.event $output/a3-nanopolish/$name/$name
+
+cp ab.split.pl $output/a3-nanopolish/$name
+cp ac.check.pl $output/a3-nanopolish/$name
+cd $output/a3-nanopolish/$name/
+
+#rm -rf tmp
+
+for i in `ls | grep $name`;
+do
+	echo $i;
+echo -e "perl ab.split.pl $i"
+#perl ab.split.pl $i
+
+done
+cd -
+
+
+#ls $output/a3-nanopolish/$name/tmp|grep -v ch$ | grep -v cpp$|grep -v R$|grep -v bk$ | xargs -I "{tr}" -P ${thread} perl ac.check.pl $output/a3-nanopolish/$name/tmp/{tr}
+
+cp /home/app/PORE-cupine-master/for_single_gene/* $output/a3-nanopolish/$name/tmp
+cd $output/a3-nanopolish/$name/tmp
+echo "/usr/bin/Rscript /home/app/PORE-cupine-master/for_single_gene/Read_events_tsv.R -f $localpth/$output/a3-nanopolish/$name.gene.event -o $localpth/$output/a4-readevent/$name.combined.RData"
+echo -e "ls |grep -v cpp$|grep -v R$|grep -v bk$ grep -v 'ch.ch'| xargs -I "{tr}" -P ${thread} /usr/bin/Rscript Read_events_tsv.R -f {tr} -o {tr}.combined.RData"
+ls |grep -v cpp$|grep -v R$|grep -v bk$ | grep -v 'ch.ch'| grep ch | xargs -I "{tr}" -P ${thread} /usr/bin/Rscript Read_events_tsv.R -f {tr} -o {tr}.combined.RData
+
+#/usr/bin/Rscript Read_events_tsv.R -f $name.gene.event -o $name.combined.RData
+cd -
+
+
+
+}
+mvRdata(){
+[[ -d $output/a4-readevent/$name ]] || mkdir -p $output/a4-readevent/$name
+for i in `ls  $output/a3-nanopolish/$name/tmp/|grep dat.f.combined`;do 
+mv $output/a3-nanopolish/$name/tmp/$i $output/a4-readevent/$name
+done
+# mv $output/a3-nanopolish/$name/tmp/dat.f.combined.*.combined.RData.RData $output/a4-readevent/$name
+[[ -d $output/a6-time/a1-readevent/$name ]] || mkdir -p $output/a6-time/a1-readevent/$name
+for i in `ls  $output/a3-nanopolish/$name/tmp/|grep combined.RData`;do
+mv $output/a3-nanopolish/$name/tmp/$i $output/a6-time/a1-readevent/$name
+
+done
+
+}
+extracttime(){
+[[ -d $output/a6-time/$name ]] || mkdir -p $output/a6-time/$name
+
+cp a14.extracttime.pl $output/a6-time/a1-readevent/$name
+# cd path
+cd $output/a6-time/a1-readevent/$name
+ls |grep RData.sum.tsv | xargs -I "{tr}" -P ${thread} perl a14.extracttime.pl {tr}
+cd -
+#cd back place
+for i in `ls $output/a6-time/a1-readevent/$name|grep tsv.tab.tsv`;do 
+	mv $output/a6-time/a1-readevent/$name/$i $output/a6-time/$name
+done
+for i in `ls $output/a6-time/a1-readevent/$name|grep tsv.fa.tsv`;do
+        mv $output/a6-time/a1-readevent/$name/$i $output/a6-time/$name
+done
+
+#[[ -d $output/a6-time-sum ]] || mkdir -p $output/a6-time-sum
+#perl a3.current.combined.pl $output/a6-time/a1-readevent/$name.combined.RData.tsv
+#perl a3.current.combined.pl $output/a6-time/a1-readevent/$name.combined.RData.sum.tsv
+#mv $output/a6-time/a1-readevent/$name.combined.RData.tsv.sta.tsv $output/a6-time/$name.time.tsv
+#mv $output/a6-time/a1-readevent/$name.combined.RData.sum.tsv.sta.tsv $output/a6-time-sum/$name.sum.time.tsv
+
+}
+transform(){
+
+# ls |grep RData.sum.tsv.fa.tsv$| sed 's/.fa.tsv//' | xargs -I "{tr}" -P 1 ls {tr}.fa.tsv {tr}.tab.tsv 
+echo "ls $output/a6-time/$name |grep RData.sum.tsv.fa.tsv$| sed 's/.fa.tsv//' | xargs -I "{tr}" -P ${thread} /usr/bin/Rscript a15.ks.R $output/a6-time/$name/{tr}.tab.tsv $output/a6-time/$name/{tr}.fa.tsv"
+ls $output/a6-time/$name |grep RData.sum.tsv.fa.tsv$| sed 's/.fa.tsv//' | xargs -I "{tr}" -P ${thread} /usr/bin/Rscript a15.ks.R $output/a6-time/$name/{tr}.tab.tsv $output/a6-time/$name/{tr}.fa.tsv 
+
+}
+timeckeck(){
+[[ -d $output/a7-checktime/$name ]] || mkdir -p $output/a7-checktime/$name
+for i in `ls $output/a6-time/$name| grep tab.tsvks.tsv$`;
+do 
+count=`cut -f 3 $output/a6-time/$name/$i|sort -u|wc -l`
+#echo $i ${count}
+if [ $count -gt 10 ]  ;then
+
+filename="${i/.ch.combined.RData.sum.tsv.tab.tsvks.tsv/.ks.tsv}"
+#echo $i ${count} $filename
+cp $output/a6-time/$name/$i $output/a7-checktime/$name/$filename
+fi
+done
+
+
+}
+predict_structure(){
+[[ -d $output/a8-ks/$name ]] || mkdir -p $output/a8-ks/$name
+[[ -d $output/a9-predict/$name ]] || mkdir -p $output/a9-predict/$name
+for i in {1..33};do
+filen=file$i
+[[ -d $output/a7-checktime/$name/$filen  ]] || mkdir -p $output/a7-checktime/$name/$filen
+done
+
+for j in  na p0 p1 ;
+do 
+	filen=file$j
+	[[ -d $output/a7-checktime/$name/$filen  ]] || mkdir -p $output/a7-checktime/$name/$filen
+done
+
+
+for i in `ls $output/a7-checktime/$name|grep .ks.tsv$`;
+do 
+tran="${i/.ks.tsv/}"
+#echo $i $tran
+grep -A 1 $tran $output/a0_annotation/transcripts_sequence.fa > $output/a8-ks/$name/$tran.fa
+length=`head -n 1 $output/a8-ks/$name/$tran.fa|cut -f 2 -d ' '`
+#echo perl a7.ks.fa.pos.pl $output/a7-checktime/$name/$i $output/a8-ks/$name/$tran.fa 0.4
+perl a7.ks.fa.pos.pl $output/a7-checktime/$name/$i $output/a8-ks/$name/$tran.fa 0.4
+
+#echo -e "RME -d SHAPE -p 38 $output/a7-checktime/$name/$i.12.range.tsv $output/a9-predict/$name/$i"
+#RME -d SHAPE -p 38 $output/a7-checktime/$name/$i.12.range.tsv $output/a9-predict/$name/$i
+for j in {0..29};
+do
+mv $output/a7-checktime/$name/$i.$j.range.tsv $output/a7-checktime/$name/file$j
+done
+for j in  na p0 p1  ;
+do mv $output/a7-checktime/$name/$i.$j.range.tsv $output/a7-checktime/$name/file$j
+done
+
+
+done
+# echo -e " ls $output/a7-checktime/$name/ |grep 12.range.tsv$|sed 's/.12.range.tsv//' | xargs -I "{tr}" -P ${thread} RME -p 1 -d SHAPE $output/a7-checktime/$name/{tr}.12.range.tsv $output/a9-predict/$name/{tr} "
+
+#for i in `ls $output/a7-checktime/$name/file12`;do
+#	echo $i;
+#	RME -p 38 -d SHAPE $output/a7-checktime/$name/file12/$i $output/a9-predict/$name/$i
+#done
+
+}
+
+predict_structure2(){
+[[ -d $output/a7-checktime/$name/file12/length5000 ]] || mkdir -p $output/a7-checktime/$name/file12/length5000
+for i in `ls $output/a7-checktime/$name/file12|grep tsv$`;
+do 
+count=`wc -l $output/a7-checktime/$name/file12/$i | cut -f 1 -d ' '`
+if [ "$count"  -lt 5000  ] ; then
+cp $output/a7-checktime/$name/file12/$i $output/a7-checktime/$name/file12/length5000	
+fi
+done
+}
+predict_structure3(){
+
+[[ -d $output/a9-predict/$name/ ]] || mkdir -p $output/a9-predict/$name/
+ls $output/a7-checktime/$name/file12/length5000 |grep 12.range.tsv$|sed 's/.ks.tsv.12.range.tsv//' | xargs -I "{tr}" -P ${thread} RME -p 2 -d SHAPE $output/a7-checktime/$name/file12/length5000/{tr}.ks.tsv.12.range.tsv $output/a9-predict/$name/{tr}
+
+#for i in `ls $output/a7-checktime/$name/file12`;
+#do
+#fn="${i/.ks.tsv.12.range.tsv/}"
+#echo $i $fn
+#RME -p 38 -d SHAPE $output/a7-checktime/$name/file12/$i $output/a9-predict/$name/$fn
+#done
+
+}
+
+reactivity(){
+modified=$1
+unmodified=$2
+length=$3
+[[ -d $output/a5-reactivity ]] || mkdir -p $output/a5-reactivity
+[[ -d $output/a7-mod ]] || mkdir -p $output/a7-mod
+cp /home/app/PORE-cupine-master/for_single_gene/* $output/a4-readevent
+cd $output/a4-readevent
+echo "/usr/bin/Rscript ./SVM_plus.R -m $modified -u $unmodified -o $modified.csv -l $length"
+/usr/bin/Rscript ./SVM_plus.R -m $modified -u $unmodified -o $modified -l $length
+#ls
+echo "mv *.csv ../a5-reactivity/$modified.csv"
+
+mv *csv ../a5-reactivity/
+mv *mod_mat.tsv ../a7-mod
+cd ../..
+
+}
+split_time(){
+
+[[ -d $output/a7-mod-sum ]] || mkdir -p $output/a7-mod-sum	
+cp $output/a6-time/a1-readevent/*combined.RData.tsv $output/a7-mod
+cp $output/a6-time/a1-readevent/*combined.RData.sum.tsv $output/a7-mod-sum
+cp $output/a7-mod/*RDatamod_mat.tsv $output/a7-mod-sum
+
+for i in `ls $output/a7-mod/|grep RDatamod_mat.tsv$`;
+do echo $i;
+readinfo="${i/RDatamod_mat.tsv/RData.tsv}";
+echo $readinfo
+echo -e "perl a4.unmod.event.pl $output/a7-mod/$i $output/a7-mod/$readinfo 440"
+perl a4.unmod.event.pl $output/a7-mod/$i $output/a7-mod/$readinfo 440
+echo -e "perl a5.mod.event.pl $output/a7-mod/$i $output/a7-mod/$readinfo 440"
+perl a5.mod.event.pl $output/a7-mod/$i $output/a7-mod/$readinfo 440
+done
+
+for i in `ls $output/a7-mod-sum/|grep RDatamod_mat.tsv$`;
+do 
+readinfo="${i/RDatamod_mat.tsv/RData.sum.tsv}";
+echo $readinfo
+echo $i
+echo -e "perl a4.unmod.event.pl $output/a7-mod-sum/$i $output/a7-mod-sum/$readinfo 440"
+perl a4.unmod.event.pl $output/a7-mod-sum/$i $output/a7-mod-sum/$readinfo 440
+echo -e "perl a5.mod.event.pl $output/a7-mod-sum/$i $output/a7-mod-sum/$readinfo 440"
+perl a5.mod.event.pl $output/a7-mod-sum/$i $output/a7-mod-sum/$readinfo 440
+done
+
+
+
+[[ -d $output/a8-pos-time ]] || mkdir -p $output/a8-pos-time
+for i in `ls $output/a7-mod/|grep RDatamod_mat.tsv$`;
+do
+readinfo="${i/.combined.RDatamod_mat.tsv/}";
+echo $readinfo
+echo -e "perl a6.forposition.pl $output/a7-mod/$readinfo.mod.tsv"
+perl a6.forposition.pl $output/a7-mod/$readinfo.mod.tsv
+echo -e "perl a6.forposition.pl $output/a7-mod/$readinfo.unmod.tsv"
+perl a6.forposition.pl $output/a7-mod/$readinfo.unmod.tsv
+
+mv $output/a7-mod/$readinfo.mod.pos.tsv $output/a8-pos-time
+mv $output/a7-mod/$readinfo.unmod.pos.tsv $output/a8-pos-time
+
+done
+
+[[ -d $output/a8-pos-time-sum ]] || mkdir -p $output/a8-pos-time-sum
+for i in `ls $output/a7-mod-sum/|grep RDatamod_mat.tsv$`;
+do
+readinfo="${i/.combined.RDatamod_mat.tsv/}";
+echo $readinfo
+echo -e "perl a6.forposition.pl $output/a7-mod-sum/$readinfo.mod.tsv"
+perl a6.forposition.pl $output/a7-mod-sum/$readinfo.mod.tsv
+
+echo -e "perl a6.forposition.pl $output/a7-mod-sum/$readinfo.unmod.tsv"
+perl a6.forposition.pl $output/a7-mod-sum/$readinfo.unmod.tsv
+
+mv $output/a7-mod-sum/$readinfo.mod.pos.tsv $output/a8-pos-time-sum
+mv $output/a7-mod-sum/$readinfo.unmod.pos.tsv $output/a8-pos-time-sum
+done
+
+
+
+
+}
+
+
+
+
+run_loop(){
+#ribocodeannf
+for i in `ls rawdata|grep fast5`;
+do 
+	#echo $i;
+	name="${i/_fast5/}"
+	name="${name/.tar.gz/}"
+	echo $name
+	f5=rawdata/$i
+	echo $f5
+#basecaller
+#baserm
+#graphmapf
+#graphmapgf
+#samf
+#samgf
+#nanopolishindex
+#nanopolishalign
+#nanopolishaligng
+#statisevent
+statiseventg
+#readevent
+#mvRdata
+#extracttime
+#transform
+#timeckeck
+#predict_structure
+#predict_structure2
+#predict_structure3
+done
+}
+
+run_loop
+#name=test
+#transform
+#timeckeck
+#predict_structure
+#predict_structure2
+
+
+#reactivity Tetra_NAI_N3_1.combined.RData Tetra_unmod.combined.RData 421
+#reactivity Tetra_NAI_N3_25min.combined.RData Tetra_unmod.combined.RData 421
+#reactivity Tetra_NAI_N3_2.combined.RData Tetra_unmod.combined.RData 421
+#reactivity Tetra_NAI_N3_denatured.combined.RData Tetra_unmod.combined.RData 421
+#reactivity Tetra_unmod2.combined.RData Tetra_unmod.combined.RData 421
+
+#split_time
+
+
+predict(){
+val=$1
+echo -e "perl a7.ks.fa.pos.pl output/a10-ks/nai_n3_ks.tsv tetra_ribozyme.fa $val"
+perl a7.ks.fa.pos.pl output/a10-ks/nai_n3_ks.tsv tetra_ribozyme.fa $val
+[[ -d $output/a12-predict ]] || mkdir -p $output/a12-predict
+for i in `ls output/a10-ks/|grep range.tsv`;do echo $i;
+RME -d SHAPE -p 38 $output/a10-ks/$i $output/a12-predict/$i
+
+done
+[[ -d $output/a13-jpg ]] || mkdir -p $output/a13-jpg
+for i in `ls output/a12-predict/|grep range.tsv`;do echo $i;
+for j in `ls output/a12-predict/$i`;do
+echo $i/$j;	
+cut -f 3 output/a10-ks/$i |sed s/NA/0/ > tmp ;
+sed 1d tmp |tr '\n' ';' > tmp2
+color=`cat tmp2`;
+rm tmp tmp2;
+echo -e "java -cp /Users/xugang/Desktop/sequencing_center_desktop/2020/rna_structure/VARNAv3-93-src.jar fr.orsay.lri.varna.applications.VARNAcmd -i a12-predict/$i/$j -colorMapStyle \"0:#FFFFFF;0.65:#d0c9c9;1:#d6341e\" -colorMap \"$color\" "> $output/a13-jpg/code_${i}_${j}.sh
+java -cp /home/app/varna/VARNAv3-93-src.jar fr.orsay.lri.varna.applications.VARNAcmd -i $output/a12-predict/$i/$j -o $output/a13-jpg/${i}_${j}.svg -colorMapStyle "0:#FFFFFF;0.65:#d0c9c9;1:#d6341e" -colorMap \"${color}\"
+
+#java -cp /home/app/varna/VARNAv3-93-src.jar fr.orsay.lri.varna.applications.VARNAcmd -i $output/a12-predict/$i/$j -o $output/a13-jpg/${i}_${j}.svg -colorMapStyle heat
+# -colorMapStyle "-0.38:#FFFFFF;3.13:#d6341e" -colorMap "0.05;3.7;0.4"
+done
+done
+[[ -d $output/a15-history/$val ]] || mkdir -p $output/a15-history/$val
+cp -r $output/a13-jpg/ $output/a15-history/$val
+cp -r $output/a12-predict $output/a15-history/$val
+
+ 
+}
+
+
+
+
+#split dot parent file into ct file.
+#perl a10.dp2ct.pl pdb_00805.dp
+
+#assest the ct
+
+assestf(){
+echo -e "\n$1" >> list.txt
+
+for i in `ls $output/a12-predict|grep tsv`;
+do 
+
+for j in `ls $output/a12-predict/$i`;do 
+
+	echo $i;
+	echo $i >> list.txt;
+
+perl a9.assuse.pl $output/a12-predict/$i/$j PDB_00805_part_1.ct 103 241 1 139 >> list.txt
+perl a9.assuse.pl $output/a12-predict/$i/$j PDB_00805_part_2.ct 103 241 1 139 >> list.txt
+perl a9.assuse.pl $output/a12-predict/$i/$j PDB_00805_part_3.ct 103 241 1 139 >> list.txt
+perl a9.assuse.pl $output/a12-predict/$i/$j PDB_00805_part_4.ct 103 241 1 139 >> list.txt
+done
+
+done
+}
+
+loop_test(){
+rm list.txt
+#for k in 0.1 0.15 0.2 0.25 0.3 0.35 0.4 0.45 0.5 0.55 0.6 0.65 0.7 0.75 0.8 0.85 0.9 0.95 ;
+for k in 0.45 ;
+do
+echo $k
+predict $k
+#assestf $k
+done;
+}
+
+makeclean(){
+rm -rf $output/a1-basecaller/*
+}
+#makeclean
+#Rscript a11.ks.R 
+#loop_test
+
+#perl a7.ks.fa.pos.pl output/a10-ks/nai_n3_ks.tsv tetra_ribozyme.fa 0.95
+
+
+
